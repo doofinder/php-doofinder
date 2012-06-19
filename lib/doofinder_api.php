@@ -24,8 +24,7 @@ class DoofinderApi{
      * Its only method is to query the doofinder search server
      * Returns a DoofinderResults object
      */  
-    //const url = 'http://search1.doofinder.com';
-    const url = 'http://localhost:8080';
+    const url = 'http://search1.doofinder.com';
     const DEFAULT_TIMEOUT = 10000;
     const DEFAULT_RPP = 10;
     const DEFAULT_PARAMS_PREFIX = 'df_param_';
