@@ -53,19 +53,34 @@ Quick & Dirty
 A few more tips
 ---------------
 
-# Extra Options When querying #
+## Extra Options When querying ##
 
 ````php
 
-$df_results = $df->query('test query', // query string
-                         3, // page num. if null is specified, defaults to 1
+$df_results = $df->query('test query',           // query string
+                         3,                      // page num. 
                          array(
-                             'rpp' => 4, // results per page. default to 10
-                             'timeout' => 8000, // timeout in milisecs for the server to drop the connection
-                             'types' => array('product', 'question'), // types of item to search for. defauult to all
+                             'rpp' => 4,         // results per page
+                             'timeout' => 8000,  // timeout in milisecs
+                             'types' => array(   // types of item 
+                                 'product', 
+                                 'question'), 
                          ));
-                         
-# "serialize" #
+````
+
+### Defaults ###
+````php
+
+$df->query('test query') == $df->query('test query',
+                                       1,                      // page num
+                                       array(
+                                           'rpp' => 10,        // 10 results per page
+                                           'timeout' => 10000, // 10 secs timeout
+                                           'types' => array()  // any type
+                                           ));
+````
+
+## "serialize" ##
 
 ````php
 
@@ -84,38 +99,42 @@ you can use it to build links to searh results:
 
 ````
 
-# "unserialize" #
+## "unserialize" ##
 
 ````php
 
 $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9');
 $df->unserialize(); // get search string, pagenum, rpp, etc from the request
-$df_results = $df->query(); // no need to specify query or page.
+$df_results = $df->query(); // no need to specify query or page, it's already set through the 'unserialize' method
 ````
 
-# extra constructor options #
+## extra constructor options ##
 
 ````php
 $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', // hashid
-                   true, // use the request params from a previous $df->serialize()
-                         // to set objet's state . defaults to false
+                   true,                               // unserialize from request params
                    array(
-                     'prefix' => 'sp_df_df', // prefix to use when serializing to params. 
-                                             // defaults to 'df_param_'
-                     'api_version' => '3.0', // api version of the search server to use
-                                             // defaults to '3.0'
-                     'restricted_request' => 'post' // when unserializing , use only 
-                                                    // params from 'post' or 'get' methods. 
-                                                    // defaults to any
+                     'prefix' => 'sp_df_df_',           // prefix to use when serializing
+                     'api_version' => '3.0',           // api version of the search server
+                     'restricted_request' => 'post'    // use only  params from 'post' or 'get' methods. 
                    ));
                    
 ````
 
-# some other useful methods #
+### Defaults ###
+````php
+$df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',  // hashid
+                   false,                               // don't unserialize from request
+                   array(
+                      'prefix' => 'df_param_',
+                      'api_version'=> '3.0'
+                      )); // if no restricted_request specified, $_REQUEST is used
+
+## some other useful methods ##
 
 ````php
-$df->has_next(); // boolean true if there is a next page of results
-$df->has_prev(); // boolean true if there is a prev page of results
-$df->num_pages(); // total number of pages
-$df->get_page(); // get the actual page number
+$df->has_next();     // boolean true if there is a next page of results
+$df->has_prev();     // boolean true if there is a prev page of results
+$df->num_pages();    // total number of pages
+$df->get_page();     // get the actual page number
 ````
