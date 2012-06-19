@@ -109,6 +109,14 @@ $df->from_querystring(); // get search string, pagenum, rpp, etc from the reques
 $df_results = $df->query(); // no need to specify query or page, it's already set through the 'from_querystring' method
 ````
 
+Also , the second arg in constructor has the same effect. This code is equivalent to the code above:
+````php
+<?php
+$df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
+                   true  // call "from_querystring" when initializing
+                   );
+$df->results = $df->query();                  
+
 ## extra constructor options ##
 
 ````php
@@ -132,6 +140,7 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',  // hashid
                       'prefix' => 'df_param_',
                       'api_version'=> '3.0'
                       )); // if no restricted_request specified, $_REQUEST is used
+````                      
 
 ## some other useful methods ##
 
