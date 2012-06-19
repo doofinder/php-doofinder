@@ -9,7 +9,7 @@ Quick & Dirty
 * Include the lib
 
 ````php
-<?php include('lib/doofinder_php_api.php');
+<?php include('lib/doofinder_api.php');
 ````
 
 * Instantiate the object
@@ -28,24 +28,24 @@ Quick & Dirty
 
 ````php
 <?php 
-    $df_results->getProperty('results_per_page'); // returns results per page.
-    $df_results->getProperty('page'); // returns the page of the results
-    $df_results->getProperty('total'); // total number of results
-    $df_results->getProperty('query'); // query used
-    $df_results->getProperty('hashid');
-    $df_results->getProperty('max_score'); // maximun score obtained in the search results
+$df_results->getProperty('results_per_page'); // returns results per page.
+$df_results->getProperty('page'); // returns the page of the results
+$df_results->getProperty('total'); // total number of results
+$df_results->getProperty('query'); // query used
+$df_results->getProperty('hashid');
+$df_results->getProperty('max_score'); // maximun score obtained in the search results
 
 
-    foreach($df_results->getResults() as $result){
-        echo $result['body']."\n"; // description of the item
-        echo $result['dfid']."\n"; // doofinder id. uniquely identifies this item
-        echo $result['price']."\n"; // string, may come with currency sign
-        echo $result['header']."\n"; // title of the item
-        echo $result['href']."\n" ; // url of the item's page
-        echo $result['image']."\n" ; // url of the item's image
-        echo $result['type']."\n" ; // item's type. "product" at the moment 
-        echo $result['id']."\n" ; // item's id, as it comes from the xml feed
-    }
+foreach($df_results->getResults() as $result){
+    echo $result['body']."\n"; // description of the item
+    echo $result['dfid']."\n"; // doofinder id. uniquely identifies this item
+    echo $result['price']."\n"; // string, may come with currency sign
+    echo $result['header']."\n"; // title of the item
+    echo $result['href']."\n" ; // url of the item's page
+    echo $result['image']."\n" ; // url of the item's image
+    echo $result['type']."\n" ; // item's type. "product" at the moment 
+    echo $result['id']."\n" ; // item's id, as it comes from the xml feed
+}
 
 ````
 
@@ -56,7 +56,7 @@ A few more tips
 ## Extra Options When querying ##
 
 ````php
-
+<?php
 $df_results = $df->query('test query',           // query string
                          3,                      // page num. 
                          array(
@@ -70,7 +70,7 @@ $df_results = $df->query('test query',           // query string
 
 ### Defaults ###
 ````php
-
+<?php
 $df->query('test query') == $df->query('test query',
                                        1,                      // page num
                                        array(
@@ -83,7 +83,7 @@ $df->query('test query') == $df->query('test query',
 ## "to_querystring" ##
 
 ````php
-
+<?php
 echo $df->to_querystring(3); // the argument is the page number. 
                         // if none specified, current page is used
 
@@ -103,7 +103,7 @@ you can use it to build links to searh results:
 ## "from_querystring" ##
 
 ````php
-
+<?php
 $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9');
 $df->from_querystring(); // get search string, pagenum, rpp, etc from the request
 $df_results = $df->query(); // no need to specify query or page, it's already set through the 'from_querystring' method
@@ -154,25 +154,23 @@ One quick example
 </form>
 
 <?php
-include('/home/jzarate/havet/doofinder-php/lib/doofinder_api.php');
-
-$df = new DoofinderApi('6a96504dc173514cab1e0198af92e6e9',true);
+include('lib/doofinder_api.php');
+$df = new DoofinderApi('6a96xxxdc173514cab1e0198a123e6e9',true);
 $df_results = $df->query(); // if no df_param_query, no call is done, so no harm in this
 ?>
 
 <ul>
-<?php if(isset($df_results)):
-  foreach($df_results->getResults() as $result) : ?>
+<?php foreach($df_results->getResults() as $result) : ?>
   <li><?php echo $result['header']?></li>
-<?php endforeach ;
-  endif ?>
+<?php endforeach ?>
 </ul>  
+
 <?php if($df->has_prev()):?>
 <a href="?<?php echo $df->to_querystring($df->get_page()-1)?>">Prev</a>
 <?php endif?>
 Number of pages: <?php echo $df->num_pages()?>
-    <?php if($df->has_next()):?>
+<?php if($df->has_next()):?>
 <a href="?<?php echo $df->to_querystring($df->get_page()+1)?>">Next</a>
 <?php endif?>
-  
+
 ````
