@@ -116,6 +116,7 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
                    true  // call "from_querystring" when initializing
                    );
 $df->results = $df->query();                  
+````
 
 ## extra constructor options ##
 
