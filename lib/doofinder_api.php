@@ -86,7 +86,7 @@ class DoofinderApi{
         $this->hashid = $hashid;
         if($from_params)
         {
-            $this->unserialize();
+            $this->from_querystring();
         }
         
     }
@@ -128,6 +128,7 @@ class DoofinderApi{
      * @return DoofinderResults results
      */
     public function query($query=null, $page=null, $options = array()){
+        
         $query = $query?$query:$this->query_string;
         $this->page = $page?(int)$page:$this->page ;
 
@@ -150,6 +151,17 @@ class DoofinderApi{
                         'types'=>$this->types
                         );
 
+        if(trim($query)== ''){
+            $jsonstring = '{
+                "results":[], 
+                "results_per_page":'.$this->rpp.',
+                "page": 1,
+                "total": 0,
+                "query": "",
+                "hashid": "'.$this->hashid.'"
+                }';
+            return new DooFinderResults($jsonstring);
+        }
         $df_results = $this->api_call($params);
         $this->page = $df_results->getProperty('page');
         $this->total = $df_results->getProperty('total');
@@ -188,12 +200,12 @@ class DoofinderApi{
     }
 
     /**
-     * serialize
+     * to_querystring
      *
      * 'serialize' the object's state to querystring params
      * @param int $page the pagenumber. defaults to the current page
      */
-    public function serialize($page=null){
+    public function to_querystring($page=null){
         $page = $page? $page : $this->page;
         if($page > 1)
         {
@@ -218,14 +230,14 @@ class DoofinderApi{
     }
 
     /**
-     * unserialize
+     * from_querystring
      *
      * obtain object's state from querystring params
      * @param string $params  where to obtain params from:
      *                       - 'GET' $_GET params (default)
      *                       - 'POST' $_POST params
          */
-    public function unserialize(){
+    public function from_querystring(){
         $this->query_string = array_key_exists($this->params_prefix.'query', 
                                                $this->serialization_array)?
             $this->serialization_array[$this->params_prefix.'query']:null;
@@ -379,6 +391,3 @@ class DoofinderException extends Exception{
     
 }
 
-//$fake_hashid = '6a96504dc173514cab1e0198af92e6e9';
-
-//$df = new DoofinderApi($fake_hashid);

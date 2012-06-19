@@ -80,14 +80,15 @@ $df->query('test query') == $df->query('test query',
                                            ));
 ````
 
-## "serialize" ##
+## "to_querystring" ##
 
 ````php
 
-echo $df->serialize(3); // the argument is the page number. 
+echo $df->to_querystring(3); // the argument is the page number. 
                         // if none specified, current page is used
 
 // outputs querystring that represents the object's needed params to fetch results of page 3
+// every param has the (configurable) "df_param_" prefix to avoid conflicts
 // query=df_param_test+query&df_param_rpp=4&df_param_timeout=8000&df_param_page=3
 
 ````
@@ -95,26 +96,27 @@ echo $df->serialize(3); // the argument is the page number.
 you can use it to build links to searh results:
 
 ````html
-'<a href="results.php?<?php echo $df->serialize(4)?>">Next Page</a>'
+'<a href="results.php?<?php echo $df->to_querystring(4)?>">Next Page</a>'
 
 ````
 
-## "unserialize" ##
+## "from_querystring" ##
 
 ````php
 
 $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9');
-$df->unserialize(); // get search string, pagenum, rpp, etc from the request
-$df_results = $df->query(); // no need to specify query or page, it's already set through the 'unserialize' method
+$df->from_querystring(); // get search string, pagenum, rpp, etc from the request
+$df_results = $df->query(); // no need to specify query or page, it's already set through the 'from_querystring' method
 ````
 
 ## extra constructor options ##
 
 ````php
+<?php
 $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', // hashid
-                   true,                               // unserialize from request params
+                   true,                               // get params from request
                    array(
-                     'prefix' => 'sp_df_df_',           // prefix to use when serializing
+                     'prefix' => 'sp_df_df_',           // prefix to use with to_querystring
                      'api_version' => '3.0',           // api version of the search server
                      'restricted_request' => 'post'    // use only  params from 'post' or 'get' methods. 
                    ));
@@ -123,8 +125,9 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', // hashid
 
 ### Defaults ###
 ````php
+<?php
 $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',  // hashid
-                   false,                               // don't unserialize from request
+                   false,                               // don't obtain status from request
                    array(
                       'prefix' => 'df_param_',
                       'api_version'=> '3.0'
@@ -133,8 +136,43 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',  // hashid
 ## some other useful methods ##
 
 ````php
+<?php
 $df->has_next();     // boolean true if there is a next page of results
 $df->has_prev();     // boolean true if there is a prev page of results
 $df->num_pages();    // total number of pages
 $df->get_page();     // get the actual page number
+````
+
+One quick example
+-----------------
+
+````html
+<form method="get" action="">
+  <input type="text" name="df_param_query">
+  <input type="hidden" name="df_param_rpp" value="3">
+  <input type="submit" value="search!">
+</form>
+
+<?php
+include('/home/jzarate/havet/doofinder-php/lib/doofinder_api.php');
+
+$df = new DoofinderApi('6a96504dc173514cab1e0198af92e6e9',true);
+$df_results = $df->query(); // if no df_param_query, no call is done, so no harm in this
+?>
+
+<ul>
+<?php if(isset($df_results)):
+  foreach($df_results->getResults() as $result) : ?>
+  <li><?php echo $result['header']?></li>
+<?php endforeach ;
+  endif ?>
+</ul>  
+<?php if($df->has_prev()):?>
+<a href="?<?php echo $df->to_querystring($df->get_page()-1)?>">Prev</a>
+<?php endif?>
+Number of pages: <?php echo $df->num_pages()?>
+    <?php if($df->has_next()):?>
+<a href="?<?php echo $df->to_querystring($df->get_page()+1)?>">Next</a>
+<?php endif?>
+  
 ````
