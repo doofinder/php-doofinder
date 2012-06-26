@@ -58,9 +58,9 @@ class DoofinderApi{
      */
     function __construct($hashid, $from_params=false, $options = array()){
         $this->params_prefix = array_key_exists('prefix', $options) ? 
-            $options['prefix'] : $this::DEFAULT_PARAMS_PREFIX;
+            $options['prefix'] : self::DEFAULT_PARAMS_PREFIX;
         $this->api_version = array_key_exists('api_version', $options) ?
-            $options['api_version'] : $this::DEFAULT_API_VERSION;
+            $options['api_version'] : self::DEFAULT_API_VERSION;
         $this->serialization_array = $_REQUEST;
         if(array_key_exists('restricted_request', $options))
         {
@@ -96,7 +96,7 @@ class DoofinderApi{
         // remove the php special encoding of parameters
         // see http://www.php.net/manual/en/function.http-build-query.php#78603
         $args = preg_replace('/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', $args); 
-        $url = $this::url.'/'.$this->api_version.'/search?'.$args;
+        $url = self::url.'/'.$this->api_version.'/search?'.$args;
 
         $session = curl_init($url);
         curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET'); 
@@ -132,10 +132,10 @@ class DoofinderApi{
         $this->page = $page?(int)$page:$this->page ;
 
         $this->rpp = (int)array_key_exists('rpp', $options) ? 
-            $options['rpp']:($this->rpp? $this->rpp : $this::DEFAULT_RPP);
+            $options['rpp']:($this->rpp? $this->rpp : self::DEFAULT_RPP);
 
         $this->timeout = (int)array_key_exists('timeout', $options) ? 
-            $options['timeout'] : ($this->timeout? $this->timeout : $this::DEFAULT_TIMEOUT);
+            $options['timeout'] : ($this->timeout? $this->timeout : self::DEFAULT_TIMEOUT);
 
         $this->types = array_key_exists('types', $options) ? 
             $options['types'] : ($this->types? $this->types : array());
@@ -210,11 +210,11 @@ class DoofinderApi{
         {
             $to_params[$this->params_prefix.'page'] =  $page;
         }
-        if($this->rpp && $this->rpp!=$this::DEFAULT_RPP)
+        if($this->rpp && $this->rpp!=self::DEFAULT_RPP)
         {
             $to_params[$this->params_prefix.'rpp'] = $this->rpp;
         }
-        if($this->timeout && $this->timeout!=$this::DEFAULT_TIMEOUT)
+        if($this->timeout && $this->timeout!=self::DEFAULT_TIMEOUT)
         {
             $to_params[$this->params_prefix.'timeout']= $this->timeout;
         }
@@ -245,11 +245,11 @@ class DoofinderApi{
             (int)$this->serialization_array[$this->params_prefix.'page']:1;
         $this->rpp = array_key_exists($this->params_prefix.'rpp', 
                                       $this->serialization_array)? 
-            (int) $this->serialization_array[$this->params_prefix.'rpp']: $this::DEFAULT_RPP;
+            (int) $this->serialization_array[$this->params_prefix.'rpp']: self::DEFAULT_RPP;
         $this->timeout = array_key_exists($this->params_prefix.'timeout', 
                                           $this->serialization_array) ? 
             (int) $this->serialization_array[$this->params_prefix.'timeout'] : 
-            $this::DEFAULT_TIMEOUT;
+            self::DEFAULT_TIMEOUT;
         $this->types = array_key_exists($this->params_prefix.'types', 
                                         $this->serialization_array) ? 
             $this->serialization_array[$this->params_prefix.'types'] : null;
