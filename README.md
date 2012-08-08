@@ -34,6 +34,7 @@ $df_results->getProperty('total'); // total number of results
 $df_results->getProperty('query'); // query used
 $df_results->getProperty('hashid');
 $df_results->getProperty('max_score'); // maximun score obtained in the search results
+$df_results->getProperty('doofinder_status'); // special doofinder status. see below
 
 
 foreach($df_results->getResults() as $result){
@@ -48,6 +49,10 @@ foreach($df_results->getResults() as $result){
 }
 
 ````
+
+
+                     
+                      
 
 
 A few more tips
@@ -151,6 +156,20 @@ $df->has_next();     // boolean true if there is a next page of results
 $df->has_prev();     // boolean true if there is a prev page of results
 $df->num_pages();    // total number of pages
 $df->get_page();     // get the actual page number
+````
+
+Account status info
+-------------------
+
+Regarding your account status, The results object have a ````status```` property and an ````isOk()```` method that may inform you if there's some 'special circumstance'
+
+````
+<?php
+$df_results->status;   // 'success' : everything went fine. results should be available
+                       // 'exhausted': the account has reached its query limit. no results provided
+                       // 'notfound': no account could be found with the provided hashid. no results provided
+
+$df_results->isOk();   // true if status is 'success'
 ````
 
 One quick example

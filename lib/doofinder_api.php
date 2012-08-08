@@ -336,9 +336,15 @@ class DoofinderApi{
  * - getResults: get an array with the results
  */
 class DoofinderResults{
+
+    // doofinder status
+    const SUCCESS = 'success';      // everything ok
+    const NOTFOUND = 'notfound';    // no account with the provided hashid found
+    const EXHAUSTED = 'exhausted';  // the account has reached its query limit
     
     private $properties = null;
     private $results = null;
+    public $status = null;
     
     /**
      * Constructor
@@ -352,7 +358,17 @@ class DoofinderResults{
                 $this->properties[$kkey] = $vall;
             }
         }
-        $this->results = $raw_results['results'];
+        // doofinder status
+        $this->status = isset($this->properties['doofinder_status'])? 
+            $this->properties['doofinder_status'] : self::SUCCESS;
+
+        
+        $this->results = array();
+
+        if(isset($raw_results['results']) && is_array($raw_results['results']))
+        {
+            $this->results = $raw_results['results'];
+        }
     }
 
     /**
@@ -382,6 +398,16 @@ class DoofinderResults{
      */
     public function getResults(){
         return $this->results;
+    }
+    /**
+     * isOk
+     *
+     * checks if all went well
+     * @return boolean true if the status is 'success'.
+     *                 false if the status is not.
+     */
+    public function isOk(){
+        return $this->status == self::SUCCESS;
     }
 }
 
