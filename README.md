@@ -132,7 +132,8 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', // hashid
                    array(
                      'prefix' => 'sp_df_df_',           // prefix to use with to_querystring
                      'api_version' => '3.0',           // api version of the search server
-                     'restricted_request' => 'post'    // use only  params from 'post' or 'get' methods. 
+                     'restricted_request' => 'post',   // use only  params from 'post' or 'get' methods. 
+                     'to_iso' => true                  // encode results in iso-8859-1 (default is utf8)
                    ));
                    
 ````
@@ -144,7 +145,8 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',  // hashid
                    false,                               // don't obtain status from request
                    array(
                       'prefix' => 'df_param_',
-                      'api_version'=> '3.0'
+                      'api_version'=> '3.0',
+                      'to_iso' => false
                       )); // if no restricted_request specified, $_REQUEST is used
 ````                      
 
