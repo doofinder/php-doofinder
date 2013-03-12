@@ -24,8 +24,7 @@ class DoofinderApi{
      * Its only method is to query the doofinder search server
      * Returns a DoofinderResults object
      */  
-    //    const url = 'http://search1.doofinder.com';
-    const url = 'http://localhost:8881';
+    const url = 'http://search1.doofinder.com';
     const DEFAULT_TIMEOUT = 10000;
     const DEFAULT_RPP = 10;
     const DEFAULT_PARAMS_PREFIX = 'df_param_';
@@ -44,7 +43,6 @@ class DoofinderApi{
     private $max_score = null; 
     private $params_prefix = null;
     private $serialization_array = null;
-    private $to_iso = null;
 
     /**
      * Constructor. account's hashid and api version set here
@@ -54,8 +52,6 @@ class DoofinderApi{
      * @param array $options. associative array with some options:
      *                -'prefix' (default: 'df_param_')=> the prefix to use when serializing. 
      *                -'api_version' (default: '3.0')=> the api of the search server to query
-     *                -'to_iso' (default: false) => whether if convert results to iso-8859-1 or not
-     *                         default charset is utf8
      *                -'restricted_request'(default: $_REQUEST):  =>restrict request object 
      *                         to look for params when unserializing. either 'get' or 'post'
      * @throws DoofinderException if $hashid is not a md5 hash or api is no 3.0 or 1.0
@@ -77,9 +73,6 @@ class DoofinderApi{
                     break;
             }
         }
-        $this->to_iso = array_key_exists('to_iso', $options) ?
-            $options['to_iso'] : false;
-
         $patt = '/^[0-9a-f]{32}$/i';
         if(!preg_match($patt, $hashid))
         {
@@ -115,7 +108,7 @@ class DoofinderApi{
         curl_close($session);
 
         if (floor($http_code / 100) == 2) {
-            return new DoofinderResults($response, $this->to_iso);
+            return new DoofinderResults($response);
         }
         throw new DoofinderException($response);
     }
@@ -146,8 +139,6 @@ class DoofinderApi{
 
         $this->types = array_key_exists('types', $options) ? 
             $options['types'] : ($this->types? $this->types : array());
-
-
 
 
         $params = array(
@@ -359,10 +350,8 @@ class DoofinderResults{
      * Constructor
      *
      * @param string $json_string stringified json returned by doofinder search server
-     * @param boolean to_iso (default: false) whether to convert results in iso-8859-1. 
-     *
      */
-    function __construct($json_string, $to_iso=false){
+    function __construct($json_string){
         $raw_results = json_decode($json_string, true);
         foreach($raw_results as $kkey => $vall){
             if(!is_array($vall)){
@@ -378,17 +367,10 @@ class DoofinderResults{
 
         if(isset($raw_results['results']) && is_array($raw_results['results']))
         {
-            if($to_iso){
-                array_walk_recursive($raw_results['results'], array($this, 'toIso'));
-            }
             $this->results = $raw_results['results'];
         }
     }
 
-    private function toIso(&$value, $key){
-        $value = utf8_decode($value);
-    }
-    
     /**
      * getProperty
      *
@@ -408,8 +390,7 @@ class DoofinderResults{
      *                   Each result is of the form:
      *                     array('header'=>..., 
      *                           'body' => .., 
-     *                           'price' => ..,
-     *                           'sale_price' => ..., // not always
+     *                           'price' => .., 
      *                           'href' => ..., 
      *                           'image' => ..., 
      *                           'type' => ..., 

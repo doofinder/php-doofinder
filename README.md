@@ -41,7 +41,7 @@ foreach($df_results->getResults() as $result){
     echo $result['body']."\n"; // description of the item
     echo $result['dfid']."\n"; // doofinder id. uniquely identifies this item
     echo $result['price']."\n"; // string, may come with currency sign
-    echo $result['sale_price']."\n"; // may or may not be present.
+    echo $result['sale_price']."\n"; // may or may not be present
     echo $result['header']."\n"; // title of the item
     echo $result['href']."\n" ; // url of the item's page
     echo $result['image']."\n" ; // url of the item's image
@@ -58,6 +58,21 @@ foreach($df_results->getResults() as $result){
 
 A few more tips
 ---------------
+
+## UTF-8 encoding ##
+
+The results are always in utf-8 encoding. If you're using it on an iso-8859-1 encoded page,
+you can use utf8_decode
+
+````php
+<?php
+foreach($df_results->getResults() as $result){
+    echo utf8_decode($result['body'])."\n"; 
+}
+````
+
+Of course, you can use any other decoding-encoding library of your choice. The doofinder-php
+library will always produce utf8 data.
 
 ## Extra Options When querying ##
 
@@ -133,8 +148,7 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', // hashid
                    array(
                      'prefix' => 'sp_df_df_',           // prefix to use with to_querystring
                      'api_version' => '3.0',           // api version of the search server
-                     'restricted_request' => 'post',   // use only  params from 'post' or 'get' methods. 
-                     'to_iso' => true                  // encode results in iso-8859-1 (default is utf8)
+                     'restricted_request' => 'post'    // use only  params from 'post' or 'get' methods. 
                    ));
                    
 ````
@@ -146,8 +160,7 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',  // hashid
                    false,                               // don't obtain status from request
                    array(
                       'prefix' => 'df_param_',
-                      'api_version'=> '3.0',
-                      'to_iso' => false
+                      'api_version'=> '3.0'
                       )); // if no restricted_request specified, $_REQUEST is used
 ````                      
 
