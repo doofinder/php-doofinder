@@ -408,7 +408,8 @@ class DoofinderResults{
      *                   Each result is of the form:
      *                     array('header'=>..., 
      *                           'body' => .., 
-     *                           'price' => .., 
+     *                           'price' => ..,
+     *                           'sale_price' => ..., // not always
      *                           'href' => ..., 
      *                           'image' => ..., 
      *                           'type' => ..., 

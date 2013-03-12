@@ -41,6 +41,7 @@ foreach($df_results->getResults() as $result){
     echo $result['body']."\n"; // description of the item
     echo $result['dfid']."\n"; // doofinder id. uniquely identifies this item
     echo $result['price']."\n"; // string, may come with currency sign
+    echo $result['sale_price']."\n"; // may or may not be present.
     echo $result['header']."\n"; // title of the item
     echo $result['href']."\n" ; // url of the item's page
     echo $result['image']."\n" ; // url of the item's image
