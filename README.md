@@ -86,7 +86,7 @@ echo "Max price found: ".$price_facet['ranges'][0]['max']."\n";
 Caution: the "query_name" parameter
 -----------------------------------
 
-When you issue a query to doofinder, the search engine tries different types of search, in order to provide the best possible results. This "types of search" are controlled by the ````query_name```` parameter.
+When you issue a query to doofinder, the search engine tries different types of search in order to provide the best possible results. This "types of search" are controlled by the ````query_name```` parameter.
 
 However, if you're going to apply filters to a query, that means you're going to make the search again with certain restrictions, therefore you're not interested in let doofinder find the best "type of search" for you again, but you want to do the search exactly the same way you did when first querying, so the results with applied filters are consistent with that.
 
@@ -118,6 +118,9 @@ I short:
   - Once you got the results, you can use ````$dfResults->getProperty('query_name')```` to know which ````query_name```` was the one doofinder chose.
   - If you want to make further filtering on those search results, you should instruct doofinder to use the same ````query_name```` you got from the first search results.
   - Each time you do any new query, don't specify ````query_name````. Let doofinder find the best.
+  
+  - **Warning:** don't try to figure out a ````query_name```` on your own. query names may change in the future. You can always count on ````$dfResults->getParameter('query_name')```` to get the ````query_name```` that led to those ````$dfResults````
+  
 
                      
 A few more tips
@@ -216,6 +219,24 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
 $dfResults = $df->query();                  
 ````
 
+#### Filter Parameters format ####
+
+When specifying filters in request parameters, follow this convention:
+
+  - All the filters are passed in an array called "filter" prefixed with the 'prefix' specified in $df constructor (default: "dfParam_")
+  - Each key is a filter name. Each value is filter definition.
+  - Filter definition for terms filter: array with terms 
+  - Filter definition for range filter: array with "from" and/or "to" keys.
+  
+  - Example: ***color (terms filter) must be blue OR red AND price (range filter) must be GREATER than 10.2 ***
+  ````html
+  <input name="dfParam_filter[color][]" value="blue">
+  <input name="dfParam_filter[color][]" value="red">
+  <input name="dfParam_filter[price][from]" value="10.2">
+  ````
+  this constructs the array ````dfParam_filter = array('color'=>array('blue', 'red'), 'price'=>array('from'=>10.2))````
+
+
 ### extra constructor options ###
 
 ````php
@@ -241,7 +262,7 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',  // hashid
                       )); // if no restrictedRequest specified, $_REQUEST is used
 ````                      
 
-### Find your method of taste here ###
+### Find your method of choice here ###
 
 #### DoofinderApi object ####
 
@@ -269,6 +290,7 @@ $df->numPages(); // num of pages
 $df->getRpp(); // set rpp. defaults 10
 $df->getTimeout();
 $df->setApiVersion($apiVersion); // sets api version to use. defaults to '4'
+$df->setQueryName($queryName); // sets 'query_name' parameter
 ````
 
 #### DoofinderResults object ####
@@ -302,30 +324,76 @@ One quick example
 -----------------
 
 ````html
-<form method="get" action="">
-  <input type="text" name="dfParam_query">
-  <input type="hidden" name="dfParam_rpp" value="3">
-  <input type="submit" value="search!">
-</form>
-
 <?php
-include('lib/doofinder_api.php');
-$df = new DoofinderApi('6a96xxxdc173514cab1e0198a123e6e9',true);
-$df_results = $df->query(); // if no df_param_query, no call is done, so no harm in this
+include('lib/doofinder_api.php');  
+$df = new DoofinderApi('6azzz04dc173514cab1e0xxxxf92e6e9',true);
+$dfResults = $df->query(); // if no dfParam_query, 
+                            // fetch all the results, to fetch all possible facets
 ?>
 
-<ul>
-<?php foreach($df_results->getResults() as $result) : ?>
-  <li><?php echo $result['header']?></li>
-<?php endforeach ?>
-</ul>  
+<form method="get" action="">
+  <input type="text" name="dfParam_query" onchange="emptyQueryName()" value="<?php echo $dfResults->getProperty('query')?>">
+  <input type="hidden" name="dfParam_rpp" value="3">
+  <!-- this has to be removed via javascript if we want doofinder to find the best search for us. -->
+  <input type="hidden" id="query_name" name="dfParam_query_name" value="<?php echo $dfResults->getProperty('query_name')?>"> 
+  
+  <input type="submit" value="search!">
+  <br/>
+  Filter by:
+  <ul>
+  <?php foreach($dfResults->getFacets() as $facetName => $facetResults):?>
+  <li>
+    <?php echo $facetName?>
+    <ul>
+    <?php if($facetResults['_type'] == 'terms'): ?>
+      <?php foreach($facetResults['terms'] as $term):?>
+      <li>
+        <input type="checkbox" name="dfParam_filter[<?php echo $facetName ?>][]" <?php echo $term['selected'] ? 'checked': ''?> value="<?php echo $term['term']?>"><?php echo $term['term']?>: <?php echo $term['count']?>
+      </li>
+      <?php endforeach ?>
+    <?php endif ?>
+    <?php if($facetResults['_type'] == 'range'):
+      $range = $facetResults['ranges'][0]?>
+      <li>
+        Range: <?php echo $range['min']?> -- <?php echo $range['max']?><br/>
+        From: <input type="text" name="dfParam_filter[<?php echo $facetName?>][from]" value="<?php echo $range['selected_from']?>">
+        To: <input type="text" name="dfParam_filter[<?php echo $facetName?>][to]" value="<?php echo $range['selected_to']?>">
+      </li>
+    <?php endif?>
+    </ul>
+  </li>
+  <?php endforeach ?>
+  </ul>
+</form>
+
+<h1>Results</h1>
+
+  <ul>
+    <?php foreach($dfResults->getResults() as $result) : ?>
+    <li><?php echo $result['header']?></li>
+    <?php endforeach ?>
+  </ul>  
+
+
+
+
 
 <?php if($df->hasPrev()):?>
 <a href="?<?php echo $df->toQuerystring($df->getPage()-1)?>">Prev</a>
 <?php endif?>
 Number of pages: <?php echo $df->numPages()?>
 <?php if($df->hasNext()):?>
-<a href="?<?php echo $df->toQuerystring($df->get_page()+1)?>">Next</a>
+<a href="?<?php echo $df->toQuerystring($df->getPage()+1)?>">Next</a>
 <?php endif?>
 
+<script>
+/* if the search box changes, a new query is being made 
+ * don't tell doofinder which search type to use 
+ */
+function emptyQueryName(){
+  document.getElementById('query_name').value = '';
+            return true;
+}
+</script>
 ````
+
