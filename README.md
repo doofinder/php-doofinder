@@ -121,6 +121,11 @@ I short:
 A few more tips
 ---------------
 
+## empty queries ##
+
+On 3 version, and empty query made no hit on the search server, and produced 0 results. That's no longer the case. An empty query matchs all documents and that could be a method of iterating through all your searchable items. Of course, if the query is filtered, even if the search term is none, the results are filtered too.
+
+
 ## UTF-8 encoding ##
 
 The results are always in utf-8 encoding. If you're using it on an iso-8859-1 encoded page,
