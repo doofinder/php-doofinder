@@ -228,10 +228,12 @@ When specifying filters in request parameters, follow this convention:
   - Each key is a filter name. Each value is filter definition.
   - Filter definition for terms filter: array with terms 
   - Filter definition for range filter: array with "from" and/or "to" keys.
-  - Example: ***color (terms filter) must be blue OR red AND price (range filter) must be GREATER than 10.2 ***
+  - Example: *color (terms filter) must be blue OR red AND price (range filter) must be GREATER than 10.2 *
   ````html
   <input name="dfParam_filter[color][]" value="blue">
+  
   <input name="dfParam_filter[color][]" value="red">
+  
   <input name="dfParam_filter[price][from]" value="10.2">
   ````
   this constructs the array ````dfParam_filter = array('color'=>array('blue', 'red'), 'price'=>array('from'=>10.2))````
