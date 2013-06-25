@@ -88,10 +88,12 @@ Caution: the "query_name" parameter
 
 When you issue a query to doofinder, the search engine tries different types of search in order to provide the best possible results. This "types of search" are controlled by the ````query_name```` parameter.
 
-However, if you're going to apply filters to a query, that means you're going to make the search again with certain restrictions, therefore you're not interested in let doofinder find the best "type of search" for you again, but you want to do the search exactly the same way you did when first querying, so the results with applied filters are consistent with that.
+However, if you're going to apply filters to a query, that means you're going to make the search again with certain added restrictions, therefore you're not interested in let doofinder find the best "type of search" for you again, but you rather 
+do the search exactly the same way you did when first querying, so the results with applied filters are consistent 
+with that.
 
-````$dfResults->getProperty('query_name')```` gives you the type of query that was used to fetch those results. If you plan to filter
-on those, you should use the same type of query. you can do that with 
+````$dfResults->getProperty('query_name')```` gives you the type of query that was used to fetch those results. 
+If you plan to filteron those, you should use the same  type of query. you can do that with 
 ````php
 <?php
 // make the initial query. no filters and no "query_name" specified
@@ -113,7 +115,7 @@ or with a form parameter
 </form>
 ````
 
-I short:
+In short:
   - You make a query to doofinder either with filters or not. You don't need to specify ````query_name````. Doofinder will find the more suitable ````query_name````.
   - Once you got the results, you can use ````$dfResults->getProperty('query_name')```` to know which ````query_name```` was the one doofinder chose.
   - If you want to make further filtering on those search results, you should instruct doofinder to use the same ````query_name```` you got from the first search results.
