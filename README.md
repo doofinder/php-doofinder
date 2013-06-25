@@ -86,7 +86,9 @@ echo "Max price found: ".$price_facet['ranges'][0]['max']."\n";
 Caution: the "query_name" parameter
 -----------------------------------
 
-In order to get consistent results when filtering, you must always use the same type of query when applying the filters.
+When you issue a query to doofinder, the search engine tries different types of search, in order to provide the best possible results. This "types of search" are controlled by the ````query_name```` parameter.
+
+However, if you're going to apply filters to a query, that means you're going to make the search again with certain restrictions, therefore you're not interested in let doofinder find the best "type of search" for you again, but you want to do the search exactly the same way you did when first querying, so the results with applied filters are consistent with that.
 
 ````$dfResults->getProperty('query_name')```` gives you the type of query that was used to fetch those results. If you plan to filter
 on those, you should use the same type of query. you can do that with 
@@ -121,12 +123,12 @@ I short:
 A few more tips
 ---------------
 
-## empty queries ##
+### empty queries ###
 
 On 3 version, and empty query made no hit on the search server, and produced 0 results. That's no longer the case. An empty query matchs all documents and that could be a method of iterating through all your searchable items. Of course, if the query is filtered, even if the search term is none, the results are filtered too.
 
 
-## UTF-8 encoding ##
+### UTF-8 encoding ###
 
 The results are always in utf-8 encoding. If you're using it on an iso-8859-1 encoded page,
 you can use utf8_decode
@@ -141,7 +143,7 @@ foreach($dfResults->getResults() as $result){
 Of course, you can use any other decoding-encoding library of your choice. The doofinder-php
 library will always produce utf8 data.
 
-## Extra Options When querying ##
+### Extra Options When querying ###
 
 ````php
 <?php
@@ -161,7 +163,7 @@ $dfResults = $df->query('test query',           // query string
                          ));
 ````
 
-### Defaults ###
+#### Defaults ####
 ````php
 <?php
 $df->query('test query') == $df->query('test query',
@@ -173,7 +175,7 @@ $df->query('test query') == $df->query('test query',
                                            ));
 ````
 
-## "toQuerystring" ##
+### "toQuerystring" ###
 
 Pretty useful. Dumps the complete state (filters, page, rpp, query) into a querystring.
 
@@ -195,7 +197,7 @@ you can use it to build links to searh results:
 
 ````
 
-## "fromQuerystring" ##
+### "fromQuerystring" ###
 
 ````php
 <?php
@@ -214,7 +216,7 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
 $dfResults = $df->query();                  
 ````
 
-## extra constructor options ##
+### extra constructor options ###
 
 ````php
 <?php
@@ -228,7 +230,7 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', // hashid
                    
 ````
 
-### Defaults ###
+#### Defaults ####
 ````php
 <?php
 $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',  // hashid
@@ -239,9 +241,9 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',  // hashid
                       )); // if no restrictedRequest specified, $_REQUEST is used
 ````                      
 
-## Find your method of taste here ##
+### Find your method of taste here ###
 
-### DoofinderApi object ###
+#### DoofinderApi object ####
 
 ````php
 <?php
@@ -269,7 +271,7 @@ $df->getTimeout();
 $df->setApiVersion($apiVersion); // sets api version to use. defaults to '4'
 ````
 
-### DoofinderResults object ###
+#### DoofinderResults object ####
 
 ````php
 <?php
