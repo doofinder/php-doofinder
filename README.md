@@ -120,7 +120,6 @@ In short:
   - Once you got the results, you can use ````$dfResults->getProperty('query_name')```` to know which ````query_name```` was the one doofinder chose.
   - If you want to make further filtering on those search results, you should instruct doofinder to use the same ````query_name```` you got from the first search results.
   - Each time you do any new query, don't specify ````query_name````. Let doofinder find the best.
-  
   - **Warning:** don't try to figure out a ````query_name```` on your own. query names may change in the future. You can always count on ````$dfResults->getParameter('query_name')```` to get the ````query_name```` that led to those ````$dfResults````
   
 
@@ -229,7 +228,6 @@ When specifying filters in request parameters, follow this convention:
   - Each key is a filter name. Each value is filter definition.
   - Filter definition for terms filter: array with terms 
   - Filter definition for range filter: array with "from" and/or "to" keys.
-  
   - Example: ***color (terms filter) must be blue OR red AND price (range filter) must be GREATER than 10.2 ***
   ````html
   <input name="dfParam_filter[color][]" value="blue">
