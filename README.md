@@ -18,26 +18,47 @@ Quick & Dirty
 <?php $df = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9'); // specify hashid ?>
 ````
 
-* Do the query, specify the page if you want
-
-````php
-<?php $df_results = $df->query('test query', 1); // 'page' = 1. optional ?>
-````
-
-* With the results object, fetch specific properties, or the results itself as an array
+* If you feel like it, you can specify filters.
 
 ````php
 <?php 
-$df_results->getProperty('results_per_page'); // returns results per page.
-$df_results->getProperty('page'); // returns the page of the results
-$df_results->getProperty('total'); // total number of results
-$df_results->getProperty('query'); // query used
-$df_results->getProperty('hashid');
-$df_results->getProperty('max_score'); // maximun score obtained in the search results
-$df_results->getProperty('doofinder_status'); // special doofinder status. see below
+$df->setFilter('brand', array('nike', 'converse')); // brand must be 'nike' or 'converse' AND ...
+$df->setFilter('color', array('red', 'blue')); // ... color must be 'red' or 'blue' AND ...
+$df->setFilter('price', array('from'=>33.2)); // ... price must be upper than 33.2
+?>
+````
+
+* You can also use more specific methods for that.
+
+````php
+<?php
+$df->addTerm('brand', 'adidas'); // add 'adidas' to the 'brand' filter
+$df->removeTerm('brand', 'nike'); // remove 'nike' from the 'brand' filter
+$df->setRange('price', null, 99.9); // add an upper limit to the price
+?>
+````
+
+* Do the query, specify the page if you want
+
+````php
+<?php $dfResults = $df->query('test query', 1); // 'page' = 1. optional ?>
+````
 
 
-foreach($df_results->getResults() as $result){
+* With the results object, fetch specific properties, facets or the results itself as an array
+
+````php
+<?php 
+$dfResults->getProperty('results_per_page'); // returns results per page.
+$dfResults->getProperty('page'); // returns the page of the results
+$dfResults->getProperty('total'); // total number of results
+$dfResults->getProperty('query'); // query used
+$dfResults->getProperty('hashid');
+$dfResults->getProperty('max_score'); // maximun score obtained in the search results
+$dfResults->getProperty('doofinder_status'); // special doofinder status. see below
+
+
+foreach($dfResults->getResults() as $result){
     echo $result['body']."\n"; // description of the item
     echo $result['dfid']."\n"; // doofinder id. uniquely identifies this item
     echo $result['price']."\n"; // string, may come with currency sign
@@ -49,13 +70,54 @@ foreach($df_results->getResults() as $result){
     echo $result['id']."\n" ; // item's id, as it comes from the xml feed
 }
 
+$category_facet = $dfResults->getFacet('category');
+
+foreach($category_facet['terms'] as $term){
+  echo "Category: ".$term['term']." : ".$term['count']." results found\n"; // Category: Trousers : 5 results found
+}
+
+$price_facet = $dfResults->getFacet('price');
+
+echo "Min price found: ".$price_facet['ranges'][0]['min']."\n"; // Min price found: 33.6
+echo "Max price found: ".$price_facet['ranges'][0]['max']."\n";
+
 ````
 
+Caution: the "query_name" parameter
+-----------------------------------
+
+In order to get consistent results when filtering, you must always use the same type of query when applying the filters.
+
+````$dfResults->getProperty('query_name')```` gives you the type of query that was used to fetch those results. If you plan to filter
+on those, you should use the same type of query. you can do that with 
+````php
+<?php
+// make the initial query. no filters and no "query_name" specified
+$dfResults = $df->query("baby gloves"); 
+// set $df to keep using the same "query_name" it used for the first query
+$df->setQueryName($dfResults->getProperty('query_name'));
+// add a filter
+$df->addTerm('category', 'More than 6 years');
+// do the same query. this time filtered and with a specific query_name
+$df->query("baby gloves");
+````
+or with a form parameter
+
+````html
+<form>
+  <input type="text" name="dfParam_query">
+  <input type="hidden" name="dfParam_query_name" value="text_all">
+  ...
+</form>
+````
+
+I short:
+  - You make a query to doofinder either with filters or not. You don't need to specify ````query_name````. Doofinder will find the more suitable ````query_name````.
+  - Once you got the results, you can use ````$dfResults->getProperty('query_name')```` to know which ````query_name```` was the one doofinder chose.
+  - If you want to make further filtering on those search results, you should instruct doofinder to use the same ````query_name```` you got from the first search results.
+  - Each time you do any new query, don't specify ````query_name````. Let doofinder find the best.
 
                      
-                      
-
-
 A few more tips
 ---------------
 
@@ -66,7 +128,7 @@ you can use utf8_decode
 
 ````php
 <?php
-foreach($df_results->getResults() as $result){
+foreach($dfResults->getResults() as $result){
     echo utf8_decode($result['body'])."\n"; 
 }
 ````
@@ -78,14 +140,19 @@ library will always produce utf8 data.
 
 ````php
 <?php
-$df_results = $df->query('test query',           // query string
+$dfResults = $df->query('test query',           // query string
                          3,                      // page num. 
                          array(
                              'rpp' => 4,         // results per page
                              'timeout' => 8000,  // timeout in milisecs
                              'types' => array(   // types of item 
                                  'product', 
-                                 'question'), 
+                                 'question'
+                             ), 
+                             'filter' => array(                        // filter definitions
+                                 'brand' => array('nike', 'converse'),
+                                 'price' => array('from'=> 33.2, 'to'=> 99)
+                             )
                          ));
 ````
 
@@ -101,42 +168,45 @@ $df->query('test query') == $df->query('test query',
                                            ));
 ````
 
-## "to_querystring" ##
+## "toQuerystring" ##
+
+Pretty useful. Dumps the complete state (filters, page, rpp, query) into a querystring.
 
 ````php
 <?php
-echo $df->to_querystring(3); // the argument is the page number. 
+echo $df->toQuerystring(3); // the argument is the page number. 
                         // if none specified, current page is used
 
 // outputs querystring that represents the object's needed params to fetch results of page 3
-// every param has the (configurable) "df_param_" prefix to avoid conflicts
-// query=df_param_test+query&df_param_rpp=4&df_param_timeout=8000&df_param_page=3
+// every param has the (configurable) "dfParam_" prefix to avoid conflicts
+// query=dfParam_test+query&dfParam_rpp=4&dfParam_timeout=8000&dfParam_page=3
 
 ````
 
 you can use it to build links to searh results:
 
 ````html
-'<a href="results.php?<?php echo $df->to_querystring(4)?>">Next Page</a>'
+'<a href="results.php?<?php echo $df->toQuerystring(4)?>">Next Page</a>'
 
 ````
 
-## "from_querystring" ##
+## "fromQuerystring" ##
 
 ````php
 <?php
 $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9');
-$df->from_querystring(); // get search string, pagenum, rpp, etc from the request
-$df_results = $df->query(); // no need to specify query or page, it's already set through the 'from_querystring' method
+$df->fromQuerystring(); // get search string, pagenum, rpp, etc from the request
+$dfResults = $df->query(); // no need to specify query or page, it's already set through the 'fromQuerystring' method
 ````
 
 Also , the second arg in constructor has the same effect. This code is equivalent to the code above:
+
 ````php
 <?php
 $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
-                   true  // call "from_querystring" when initializing
+                   true  // call "fromQuerystring" when initializing
                    );
-$df->results = $df->query();                  
+$dfResults = $df->query();                  
 ````
 
 ## extra constructor options ##
@@ -146,9 +216,9 @@ $df->results = $df->query();
 $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', // hashid
                    true,                               // get params from request
                    array(
-                     'prefix' => 'sp_df_df_',           // prefix to use with to_querystring
-                     'api_version' => '3.0',           // api version of the search server
-                     'restricted_request' => 'post'    // use only  params from 'post' or 'get' methods. 
+                     'prefix' => 'sp_df_df_',           // prefix to use with toQuerystring
+                     'apiVersion' => '3.0',           // api version of the search server
+                     'restrictedRequest' => 'post'    // use only  params from 'post' or 'get' methods. 
                    ));
                    
 ````
@@ -159,19 +229,52 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', // hashid
 $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',  // hashid
                    false,                               // don't obtain status from request
                    array(
-                      'prefix' => 'df_param_',
-                      'api_version'=> '3.0'
-                      )); // if no restricted_request specified, $_REQUEST is used
+                      'prefix' => 'dfParam_',
+                      'apiVersion'=> '4'
+                      )); // if no restrictedRequest specified, $_REQUEST is used
 ````                      
 
-## some other useful methods ##
+## Find your method of taste here ##
+
+### DoofinderApi object ###
 
 ````php
 <?php
-$df->has_next();     // boolean true if there is a next page of results
-$df->has_prev();     // boolean true if there is a prev page of results
-$df->num_pages();    // total number of pages
-$df->get_page();     // get the actual page number
+$df->query($query, $page, $options); // do the query
+$df->hasNext();     // boolean true if there is a next page of results
+$df->hasPrev();     // boolean true if there is a prev page of results
+$df->numPages();    // total number of pages
+$df->getPage();     // get the actual page number
+$df->setFilter($filterName, $filter); // set a filter
+$df->getFilter($filterName); // get a filter
+$df->getFilters(); // get all filters
+$df->addTerm($filterName, $term); // add a term to a terms type $filterName
+$df->removeTerm($filterName, $term); 
+$df->setRange($filterName, $from, $to); // specify parameters for a range filter
+$df->getFilter($filter_name); // get filter specifications for $filter_name, if any
+$df->getFilters(); // get filter specifications for all defined filters.
+$df->setPrefix($prefix); // sets prefix to use when dumping/recovering from querystring
+$df->toQuerystring($page); // dumps state info to a querystring
+$df->fromQuerystring(); // recover state from a querystring
+$df->nextPage(); // obtain results for the nextpage
+$df->prevPage(); // obtain results for the prev page
+$df->numPages(); // num of pages 
+$df->getRpp(); // set rpp. defaults 10
+$df->getTimeout();
+$df->setApiVersion($apiVersion); // sets api version to use. defaults to '4'
+````
+
+### DoofinderResults object ###
+
+````php
+<?php
+$dfResults->getProperty($propertyName); // get the property $propertyName
+$dfResults->getResults(); // get results
+$dfResults->getFacetsNames(); // array with facet names
+$dfResults->getFacet($facetName); // obtain search results for facet $facetName
+$dfResults->getFacets(); // all facets
+$dfResults->getAppliedFilters(); // filters that have been applied to obtain these results
+$dfResults->isOk(); // checks if all went well
 ````
 
 Account status info
@@ -181,11 +284,11 @@ Regarding your account status, The results object have a ````status```` property
 
 ````
 <?php
-$df_results->status;   // 'success' : everything went fine. results should be available
+$dfResults->status;   // 'success' : everything went fine. results should be available
                        // 'exhausted': the account has reached its query limit. no results provided
                        // 'notfound': no account could be found with the provided hashid. no results provided
 
-$df_results->isOk();   // true if status is 'success'
+$dfResults->isOk();   // true if status is 'success'
 ````
 
 One quick example
@@ -193,8 +296,8 @@ One quick example
 
 ````html
 <form method="get" action="">
-  <input type="text" name="df_param_query">
-  <input type="hidden" name="df_param_rpp" value="3">
+  <input type="text" name="dfParam_query">
+  <input type="hidden" name="dfParam_rpp" value="3">
   <input type="submit" value="search!">
 </form>
 
@@ -210,12 +313,12 @@ $df_results = $df->query(); // if no df_param_query, no call is done, so no harm
 <?php endforeach ?>
 </ul>  
 
-<?php if($df->has_prev()):?>
-<a href="?<?php echo $df->to_querystring($df->get_page()-1)?>">Prev</a>
+<?php if($df->hasPrev()):?>
+<a href="?<?php echo $df->toQuerystring($df->getPage()-1)?>">Prev</a>
 <?php endif?>
-Number of pages: <?php echo $df->num_pages()?>
-<?php if($df->has_next()):?>
-<a href="?<?php echo $df->to_querystring($df->get_page()+1)?>">Next</a>
+Number of pages: <?php echo $df->numPages()?>
+<?php if($df->hasNext()):?>
+<a href="?<?php echo $df->toQuerystring($df->get_page()+1)?>">Next</a>
 <?php endif?>
 
 ````

@@ -24,14 +24,16 @@ class DoofinderApi{
      * Its only method is to query the doofinder search server
      * Returns a DoofinderResults object
      */  
-    const url = 'http://search1.doofinder.com';
+    //    const url = 'http://search1.doofinder.com';
+    const url = 'http://localhost:8881';
+
     const DEFAULT_TIMEOUT = 10000;
     const DEFAULT_RPP = 10;
-    const DEFAULT_PARAMS_PREFIX = 'df_param_';
-    const DEFAULT_API_VERSION = '3.0';
+    const DEFAULT_PARAMS_PREFIX = 'dfParam_';
+    const DEFAULT_API_VERSION = '4';
     private $hashid = null; // hashid of the doofinder account
 
-    private $api_version = null; 
+    private $apiVersion = null; 
     private $results = null;
     private $query = null;
     private $rpp = null; // results per page
@@ -39,37 +41,39 @@ class DoofinderApi{
     private $types = null; // types of index to query. default is all
     private $page = 1;
     private $total = null; // total number of results obtained
-    private $query_string = null;
-    private $max_score = null; 
-    private $params_prefix = null;
-    private $serialization_array = null;
+    private $queryString = null;
+    private $maxScore = null; 
+    private $queryName = null; // the name of the last successfull query made
+    private $filter = null; // filter/s to apply
+    private $paramsPrefix = null;
+    private $serializationArray = null;
 
     /**
      * Constructor. account's hashid and api version set here
      *
      * @param string $hashid the account's hashid
-     * @param boolean $from_params if set, the object is unserialized from GET or POST params
+     * @param boolean $fromParams if set, the object is unserialized from GET or POST params
      * @param array $options. associative array with some options:
-     *                -'prefix' (default: 'df_param_')=> the prefix to use when serializing. 
-     *                -'api_version' (default: '3.0')=> the api of the search server to query
-     *                -'restricted_request'(default: $_REQUEST):  =>restrict request object 
+     *                -'prefix' (default: 'dfParam_')=> the prefix to use when serializing. 
+     *                -'apiVersion' (default: '4')=> the api of the search server to query
+     *                -'restrictedRequest'(default: $_REQUEST):  =>restrict request object 
      *                         to look for params when unserializing. either 'get' or 'post'
-     * @throws DoofinderException if $hashid is not a md5 hash or api is no 3.0 or 1.0
+     * @throws DoofinderException if $hashid is not a md5 hash or api is no 4, 3.0 or 1.0
      */
-    function __construct($hashid, $from_params=false, $options = array()){
-        $this->params_prefix = array_key_exists('prefix', $options) ? 
+    function __construct($hashid, $fromParams=false, $options = array()){
+        $this->paramsPrefix = array_key_exists('prefix', $options) ? 
             $options['prefix'] : self::DEFAULT_PARAMS_PREFIX;
-        $this->api_version = array_key_exists('api_version', $options) ?
-            $options['api_version'] : self::DEFAULT_API_VERSION;
-        $this->serialization_array = $_REQUEST;
-        if(array_key_exists('restricted_request', $options))
+        $this->apiVersion = array_key_exists('apiVersion', $options) ?
+            $options['apiVersion'] : self::DEFAULT_API_VERSION;
+        $this->serializationArray = $_REQUEST;
+        if(array_key_exists('restrictedRequest', $options))
         {
-            switch(strtolower($options['restricted_request'])){
+            switch(strtolower($options['restrictedRequest'])){
                 case 'get':
-                    $this->serialization_array = $_GET;
+                    $this->serializationArray = $_GET;
                     break;
                 case 'post':
-                    $this->serialization_array = $_POST;
+                    $this->serializationArray = $_POST;
                     break;
             }
         }
@@ -78,36 +82,32 @@ class DoofinderApi{
         {
             throw new DoofinderException("Wrong hashid");
         }
-        if(!in_array($this->api_version, array('3.0','1.0')))
+        if(!in_array($this->apiVersion, array('4', '3.0','1.0')))
         {
             throw new DoofinderException('Wrong API');
         }
         $this->hashid = $hashid;
-        if($from_params)
+        if($fromParams)
         {
-            $this->from_querystring();
+            $this->fromQuerystring();
         }
         
     }
     
 
-    private function api_call($params){
+    private function apiCall($params){
         $args = http_build_query($params);
-        // remove the php special encoding of parameters
-        // see http://www.php.net/manual/en/function.http-build-query.php#78603
-        $args = preg_replace('/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', $args); 
-        $url = self::url.'/'.$this->api_version.'/search?'.$args;
-
+        $url = self::url.'/'.$this->apiVersion.'/search?'.$args;
         $session = curl_init($url);
         curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET'); 
         curl_setopt($session, CURLOPT_HEADER, false); // Tell curl not to return headers
         curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Tell curl to return the response
         curl_setopt($session, CURLOPT_HTTPHEADER, array('Expect:')); //Fixes the HTTP/1.1 417 Expectation Failed
         $response = curl_exec($session);
-        $http_code = curl_getinfo($session, CURLINFO_HTTP_CODE);
+        $httpCode = curl_getinfo($session, CURLINFO_HTTP_CODE);
         curl_close($session);
 
-        if (floor($http_code / 100) == 2) {
+        if (floor($httpCode / 100) == 2) {
             return new DoofinderResults($response);
         }
         throw new DoofinderException($response);
@@ -124,11 +124,12 @@ class DoofinderApi{
      *                   - 'timeout' => timeout after which the search server drops the conn. 
      *                                  defaults to 10 seconds
      *                   - 'types' => types of index to search at. default: all.
+     *                   - 'filter' => filter to apply. ['color'=>['red','blue'], 'price'=>['from'=>33]]
      * @return DoofinderResults results
      */
     public function query($query=null, $page=null, $options = array()){
         
-        $query = $query?$query:$this->query_string;
+        $query = $query?$query:$this->queryString;
         $this->page = $page?(int)$page:$this->page ;
 
         $this->rpp = (int)array_key_exists('rpp', $options) ? 
@@ -140,6 +141,9 @@ class DoofinderApi{
         $this->types = array_key_exists('types', $options) ? 
             $options['types'] : ($this->types? $this->types : array());
 
+        // filters
+        $this->filter = array_key_exists('filter', $options) ?
+            $options['filter'] : ($this->filter ? $this->filter: null);
 
         $params = array(
                         'query'=>$query, 
@@ -147,151 +151,274 @@ class DoofinderApi{
                         'timeout'=>$this->timeout, 
                         'hashid'=>$this->hashid,
                         'page'=>$this->page,
-                        'types'=>$this->types
+                        'types'=>$this->types,
+                        'query_name' => $this->queryName,
+                        'filter' => $this->obtainESFilter() // translate $this->filter to ES fromat
                         );
 
-        if(trim($query)== ''){
-            $jsonstring = '{
-                "results":[], 
-                "results_per_page":'.$this->rpp.',
-                "page": 1,
-                "total": 0,
-                "query": "",
-                "hashid": "'.$this->hashid.'"
-                }';
-            return new DooFinderResults($jsonstring);
+        // no query? then match all documents
+        if(!trim($query)){
+            $params['queryName'] = 'match_all';
         }
-        $df_results = $this->api_call($params);
-        $this->page = $df_results->getProperty('page');
-        $this->total = $df_results->getProperty('total');
-        $this->query_string = $df_results->getProperty('query');
-        $this->max_score = $df_results->getProperty('max_score');
-        return $df_results;
+
+        // if filters without query_name, pre-query first to obtain it.
+        if(!$params['query_name'] && $params['filter']){
+            $filter = $this->obtainESFilter();
+            unset($params['filter']);
+            $dfResults = $this->apiCall($params);
+            $params['query_name'] = $dfResults->getProperty('query_name');
+            $params['filter'] = $filter;
+        }
+
+        $dfResults = $this->apiCall($params);
+        $this->page = $dfResults->getProperty('page');
+        $this->total = $dfResults->getProperty('total');
+        $this->queryString = $dfResults->getProperty('query');
+        $this->maxScore = $dfResults->getProperty('max_score');
+        $this->queryName = $dfResults->getProperty('query_name');
+
+        return $dfResults;
     }
 
     /**
-     * has_next
+     * hasNext
      *
      * @return boolean true if there is another page of results
      */
-    public function has_next(){
+    public function hasNext(){
         return $this->page*$this->rpp < $this->total;
     }
 
     /**
-     * has_prev
+     * hasPrev
      *
      * @return true if there is a previous page of results
      */
-    public function has_prev(){
+    public function hasPrev(){
         return ($this->page-1)*$this->rpp > 0;
     }
 
 
     /**
-     * get_page
+     * getPage
      *
      * obtain the current page number
      * @return int the page number
      */
-    public function get_page(){
+    public function getPage(){
         return $this->page;
     }
 
+    /** 
+     * setFilter
+     *
+     * set a filter for the query
+     * @param string filterName the name of the filter to set
+     * @param array filter if simple array, terms filter assumed
+     *                     if 'from', 'to' in keys, range filter assumed
+     */
+    public function setFilter($filterName, $filter){
+        $this->filter[$filterName] = $filter;
+    }
+
     /**
-     * to_querystring
+     * getFilter
+     *
+     * get conditions for certain filter
+     * @param string filterName
+     * @return array filter conditions: - simple array if terms filter
+     *                                  - 'from', 'to'  assoc array if range f.
+     * @return false if no filter definition found
+     */
+    public function getFilter($filterName){
+        if(isset($this->filter[$filterName])){
+            return $this->filter[$filterName];
+        }
+        return false;
+    }
+
+    /**
+     * getFilters
+     *
+     * get all filters and their configs
+     * @return array assoc array filterName => filterConditions
+     */
+    public function getFilters(){
+        return $this->filter;
+    }
+
+
+    /**
+     * addTerm
+     *
+     * add a term to a terms filter
+     * @param string filterName the filter to add the term to
+     * @param string term the term to add
+     */
+    public function addTerm($filterName, $term){
+        if(!isset($this->filter[$filterName]))
+        {
+            $this->filter[$filterName] = array();
+        }
+        $this->filter[$filterName][] = $term;
+    }
+
+    /** 
+     * removeTerm
+     * 
+     * remove a term from a terms filter
+     * @param string filterName the filter to remove the term from
+     * @param string term the term to be removed
+     */
+    public function removeTerm($filterName, $term){
+        if(isset($this->filter[$filterName]) && in_array($term, $this->filter[$filterName]))
+        {
+            function filter_me($value){
+                global $term;
+                return $value != $term;
+            }
+            $this->filter[$filterName] = array_filter($this->filter[$filterName], 'filter_me');
+        }
+    }
+
+    /**
+     * setRange
+     *
+     * set a range filter
+     * @param string filterName the filter to set
+     * @param int from the lower bound value. included
+     * @param int to the upper bound value. included
+     */
+    public function setRange($filterName, $from=null, $to=null){
+        if(!isset($this->filter[$filterName]))
+        {
+            $this->filter[$filterName] = array();
+        }
+        if($from)
+        {
+            $this->filter[$filterName]['from'] = $from;
+        }
+        if($to)
+        {
+            $this->filter[$filterName]['to'] = $from;
+        }
+        if(!$this->filter[$filterName])
+        {
+            unset($this->filter[$filterName]);
+        }
+
+    }
+
+    /**
+     * toQuerystring
      *
      * 'serialize' the object's state to querystring params
      * @param int $page the pagenumber. defaults to the current page
      */
-    public function to_querystring($page=null){
+    public function toQuerystring($page=null){
         $page = $page? $page : $this->page;
         if($page > 1)
         {
-            $to_params[$this->params_prefix.'page'] =  $page;
+            $toParams[$this->paramsPrefix.'page'] =  $page;
         }
         if($this->rpp && $this->rpp!=self::DEFAULT_RPP)
         {
-            $to_params[$this->params_prefix.'rpp'] = $this->rpp;
+            $toParams[$this->paramsPrefix.'rpp'] = $this->rpp;
         }
         if($this->timeout && $this->timeout!=self::DEFAULT_TIMEOUT)
         {
-            $to_params[$this->params_prefix.'timeout']= $this->timeout;
+            $toParams[$this->paramsPrefix.'timeout']= $this->timeout;
         }
         if($this->types && $this->types!=array())
         {
-            $to_params[$this->params_prefix.'types']= $this->types;
+            $toParams[$this->paramsPrefix.'types']= $this->types;
         }
-        $to_params[$this->params_prefix.'query']= $this->query_string;
+        $toParams[$this->paramsPrefix.'query']= $this->queryString;
+
+        if($this->filter)
+        {
+            $toParams[$this->paramsPrefix.'filter'] = $this->filter;
+        }
+        if($this->queryName)
+        {
+            $toParams[$this->paramsPrefix.'query_name'] = $this->queryName;
+        }
         
-        return http_build_query($to_params);
+        return http_build_query($toParams);
         
     }
 
     /**
-     * from_querystring
+     * fromQuerystring
      *
      * obtain object's state from querystring params
      * @param string $params  where to obtain params from:
      *                       - 'GET' $_GET params (default)
      *                       - 'POST' $_POST params
          */
-    public function from_querystring(){
-        $this->query_string = array_key_exists($this->params_prefix.'query', 
-                                               $this->serialization_array)?
-            $this->serialization_array[$this->params_prefix.'query']:null;
-        $this->page = array_key_exists($this->params_prefix.'page', 
-                                       $this->serialization_array)?
-            (int)$this->serialization_array[$this->params_prefix.'page']:1;
-        $this->rpp = array_key_exists($this->params_prefix.'rpp', 
-                                      $this->serialization_array)? 
-            (int) $this->serialization_array[$this->params_prefix.'rpp']: self::DEFAULT_RPP;
-        $this->timeout = array_key_exists($this->params_prefix.'timeout', 
-                                          $this->serialization_array) ? 
-            (int) $this->serialization_array[$this->params_prefix.'timeout'] : 
+    public function fromQuerystring(){
+        $this->queryString = array_key_exists($this->paramsPrefix.'query', 
+                                               $this->serializationArray)?
+            $this->serializationArray[$this->paramsPrefix.'query']:null;
+        $this->page = array_key_exists($this->paramsPrefix.'page', 
+                                       $this->serializationArray)?
+            (int)$this->serializationArray[$this->paramsPrefix.'page']:1;
+        $this->rpp = array_key_exists($this->paramsPrefix.'rpp', 
+                                      $this->serializationArray)? 
+            (int) $this->serializationArray[$this->paramsPrefix.'rpp']: self::DEFAULT_RPP;
+        $this->timeout = array_key_exists($this->paramsPrefix.'timeout', 
+                                          $this->serializationArray) ? 
+            (int) $this->serializationArray[$this->paramsPrefix.'timeout'] : 
             self::DEFAULT_TIMEOUT;
-        $this->types = array_key_exists($this->params_prefix.'types', 
-                                        $this->serialization_array) ? 
-            $this->serialization_array[$this->params_prefix.'types'] : null;
+        $this->types = array_key_exists($this->paramsPrefix.'types', 
+                                        $this->serializationArray) ? 
+            $this->serializationArray[$this->paramsPrefix.'types'] : null;
+        // filtered search
+        $this->filter = array_key_exists($this->paramsPrefix.'filter',
+                                         $this->serializationArray) ?
+            $this->serializationArray[$this->paramsPrefix.'filter'] : null;
+        $this->queryName = array_key_exists($this->paramsPrefix.'query_name',
+                                             $this->serializationArray) ?
+            $this->serializationArray[$this->paramsPrefix.'query_name'] : null;
     }
 
     /**
-     * next_page
+     * nextPage
      *
      * obtain the results for the next page
      * @return DoofinderResults if there are results. 
      * @return null otherwise
      */
-    public function next_page(){
-        if($this->has_next())
+    public function nextPage(){
+        if($this->hasNext())
         {
-            return $this->query($this->query_string, array('page' => $this->page+1 ));
+            return $this->query($this->queryString, array('page' => $this->page+1 ));
         }
         return null;
     }
 
 
     /**
-     * prev_page
+     * prevPage
      *
      * obtain results for the previous page
      * @return DoofinderResults
      * @return null otherwise
      */
-    public function prev_page(){
-        if($this->has_prev())
+    public function prevPage(){
+        if($this->hasPrev())
         {
-            return $this->query($this->query_string, array('page' => $this->page-1 ));
+            return $this->query($this->queryString, array('page' => $this->page-1 ));
         }
         return null;
     }
 
     /**
-     * num_pages
+     * numPages
      *
      * @return integer the number of pages
      */
-    public function num_pages(){
+    public function numPages(){
         return ceil($this->total / $this->rpp);
     }
 
@@ -303,23 +430,111 @@ class DoofinderApi{
     }
 
     /**
-     * set_api_version
+     * setApiVersion
      *
      * sets the api version to use. 
-     * @param string $api_version the api version , '1.0' or '3.0'
+     * @param string $apiVersion the api version , '1.0' or '3.0' or '4'
      */
-    public function setApiVersion($api_version){
-        $this->api_version = $api_version;
+    public function setApiVersion($apiVersion){
+        $this->apiVersion = $apiVersion;
     }
 
     /**
-     * set_prefix
+     * setPrefix
      * 
      * sets the prefix that will be used for serialization to querystring params
      * @param string $prefix the prefix
      */
-    public function set_prefix($prefix){
-        $this->params_prefix = $prefix;
+    public function setPrefix($prefix){
+        $this->paramsPrefix = $prefix;
+    }
+
+    /**
+     * setQueryName
+     *
+     * sets query_name
+     * CAUTION: node will complain if this is wrong
+     */
+    public function setQueryName($queryName){
+        $this->queryName = $queryName;
+    }
+
+    /**
+     * obtainESFilter
+     *
+     * translate filter friendly format:
+     *              array('color'=>array('blue','red'), 'price'=>array('from'=>33, 'to'=>99))
+     * to ES format:
+     *           array('terms'=>array('color'=>array('blue','red')), 'numeric_range'=>array('price'=>array('from'=>33, 'to'=>99)))
+     * 
+     * @return array filter in ES format
+     */
+    private function obtainESFilter(){
+
+        // translate filter to ES syntax
+        $numericRangeFilters = array();
+        $termsFilters = array();
+        $result = array();
+
+        if(!$this->filter)
+        {
+            return null;
+        }
+        foreach($this->filter as $filterName => $filterProperties)
+        {
+            switch($this->getFilterType($filterProperties))
+            {
+            case 'numericrange':
+                if(isset($filterProperties['from']) && !trim($filterProperties['from']))
+                {
+                    unset($filterProperties['from']);
+                }
+                if(isset($filterProperties['to']) && !trim($filterProperties['to']))
+                {
+                    unset($filterProperties['to']);
+                }
+                if(!count($filterProperties))
+                {
+                    break;
+                }
+                $numericRangeFilters[$filterName] = $filterProperties;
+                $numericRangeFilters[$filterName]['include_upper']=true;
+                break;
+            case 'terms':
+                $termsFilters[$filterName] = $filterProperties;                    
+                break;
+            }
+        }
+
+        if($numericRangeFilters)
+        {
+            $result['numeric_range'] = $numericRangeFilters;
+        }
+
+        if($termsFilters)
+        {
+            $result['terms'] = $termsFilters;
+        }
+
+        return count($result) ? $result : null;
+    }
+
+    /** 
+     * getFilterType
+     * obtain the filter type (i.e. 'terms' or 'numeric range' from its conditions)
+     * @param array filter conditions
+     * @return string 'terms' or 'numericrange' false otherwise
+     */
+    private function getFilterType($filter){
+        if(!is_array($filter))
+        {
+            return false;
+        }
+        if(count(array_intersect(array('from', 'to'), array_keys($filter)))>0)
+        {
+            return 'numericrange';
+        }
+        return 'terms';
     }
     
     
@@ -344,16 +559,18 @@ class DoofinderResults{
     
     private $properties = null;
     private $results = null;
+    private $facets = null;
+    private $filter = null;
     public $status = null;
     
     /**
      * Constructor
      *
-     * @param string $json_string stringified json returned by doofinder search server
+     * @param string $jsonString stringified json returned by doofinder search server
      */
-    function __construct($json_string){
-        $raw_results = json_decode($json_string, true);
-        foreach($raw_results as $kkey => $vall){
+    function __construct($jsonString){
+        $rawResults = json_decode($jsonString, true);
+        foreach($rawResults as $kkey => $vall){
             if(!is_array($vall)){
                 $this->properties[$kkey] = $vall;
             }
@@ -362,12 +579,61 @@ class DoofinderResults{
         $this->status = isset($this->properties['doofinder_status'])? 
             $this->properties['doofinder_status'] : self::SUCCESS;
 
-        
+        // results
         $this->results = array();
 
-        if(isset($raw_results['results']) && is_array($raw_results['results']))
+        if(isset($rawResults['results']) && is_array($rawResults['results']))
         {
-            $this->results = $raw_results['results'];
+            $this->results = $rawResults['results'];
+        }
+
+        // build a friendly filter array
+        $this->filter = array();
+        // reorder filter, before assigning it to $this
+        if(isset($rawResults['filter']))
+        {
+            foreach($rawResults['filter'] as $filterType => $filters)
+            {
+                foreach($filters as $filterName => $filterProperties)
+                {
+                    $this->filter[$filterName] = $filterProperties;
+                }
+            }
+        }
+
+        // facets
+        $this->facets = array();
+        if(isset($rawResults['facets']))
+        {
+            $this->facets = $rawResults['facets'];
+
+            // mark "selected" true or false according to filters presence
+            foreach($this->facets as $facetName => $facetProperties){
+                switch($facetProperties['_type']){
+                case 'terms':
+                    foreach($facetProperties['terms'] as $pos => $term){
+                        if(isset($this->filter[$facetName]) && in_array($term['term'], $this->filter[$facetName])){
+                            $this->facets[$facetName]['terms'][$pos]['selected'] = true;
+                        } else {
+                            $this->facets[$facetName]['terms'][$pos]['selected'] = false;
+                        }
+                    }
+                    break;
+                case 'range':
+                    foreach($facetProperties['ranges'] as $pos => $range){
+                        $this->facets[$facetName]['ranges'][$pos]['selected_from'] = false;
+                        $this->facets[$facetName]['ranges'][$pos]['selected_to'] = false;
+                        if(isset($this->filter[$facetName]) && isset($this->filter[$facetName]['from'])){
+                            $this->facets[$facetName]['ranges'][$pos]['selected_from'] = $this->filter[$facetName]['from'];
+                        } 
+                        if(isset($this->filter[$facetName]) && isset($this->filter[$facetName]['to'])){
+                            $this->facets[$facetName]['ranges'][$pos]['selected_to'] = $this->filter[$facetName]['to'];
+                        } 
+
+                    }
+                    break;
+                }
+            }
         }
     }
 
@@ -375,12 +641,12 @@ class DoofinderResults{
      * getProperty
      *
      * get single property from the results 
-     * @param string @property_name: 'results_per_page', 'query', 'max_score', 'page', 'total', 'hashid'
+     * @param string @propertyName: 'results_per_page', 'query', 'max_score', 'page', 'total', 'hashid'
      * @return mixed the value of the property
      */
-    public function getProperty($property_name){
-        return array_key_exists($property_name, $this->properties) ? 
-            $this->properties[$property_name]: null;
+    public function getProperty($propertyName){
+        return array_key_exists($propertyName, $this->properties) ? 
+            $this->properties[$propertyName]: null;
     }
 
     /**
@@ -399,6 +665,100 @@ class DoofinderResults{
     public function getResults(){
         return $this->results;
     }
+
+    /**
+     *
+     * getFacetsNames
+     *
+     * @return array facets names.
+     */
+    public function getFacetsNames(){
+        return array_keys($this->facets);
+    }
+
+    /**
+     * getFacet
+     *
+     * @param string name the facet name whose results are wanted
+     *
+     * @return array facet search data
+     *                - for terms facets
+     *                array(
+     *                    '_type'=> 'terms',  // type of facet 'terms' or 'range'
+     *                    'missing'=> 3, // # of elements with no value for this facet
+     *                    'others'=> 2, // # of terms not present in the search response
+     *                    'total'=> 6, // # number of possible terms for this facet
+     *                    'terms'=> array(
+     *                        array('count'=>6, 'term'=>'Blue', 'selected'=>false), // in the response, there are 6 'blue' terms
+     *                        array('count'=>3, 'term': 'Red', 'selected'=>true), // if 'selected'=>true, that term has been selected as filter
+     *                        ...
+     *                    ) 
+     *                )
+     *                - for range facets
+     *                array(
+     *                    '_type'=> 'range',
+     *                    'ranges'=> array(
+     *                        array(
+     *                              'count'=>6, // in the response, 6 elements within that range.
+     *                              'from':0, 
+     *                              'min': 30
+     *                              'max': 90, 
+     *                              'mean'=>33.2, 
+     *                              'total'=>432, 
+     *                              'total_count'=>6,
+     *                              'selected_from'=> 34.3 // if present. this value has been used as filter. false otherwise
+     *                              'selected_to'=> 99.3 // if present. this value has been used as filter. false otherwise
+     *                        ), 
+     *                        ...
+     *                    )
+     *                )
+     *
+     *                     
+     */
+    public function getFacet($facetName){
+        return $this->facets[$facetName];
+    }
+
+    /**
+     * getFacets
+     * 
+     * get the whole facets associative array:
+     *                array('color'=>array(...), 'brand'=>array(...))
+     * each array is defined as in getFacet() docstring
+     *
+     * @return array facets assoc. array
+     */
+    public function getFacets(){
+        return $this->facets;
+    }
+
+    /**
+     * getAppliedFilters
+     *
+     * get the filters the query has defined
+     *                    array('categories' => array(  // filter name . same as facet name
+     *                             'Sillas de paseo',   // if simple array, it's a terms facet
+     *                             'Sacos sillas de paseo'
+     *                             ),
+     *                           'color' => array(
+     *                              'red', 
+     *                              'blue'
+     *                              ),
+     *                           'price' => array(
+     *                              'include_upper'=>true, // if 'from' , 'to' keys, it's a range facet
+     *                              'from'=>35.19, 
+     *                              'to'=>9999
+     *                              )
+     *                         )
+     *   MEANING OF THE EXAMPLE FILTER:
+     *   "FROM the query results, filter only results that have ('Sillas de paseo' OR 'Sacos sillas de paseo') categories
+     *   AND ('red' OR 'blue') color AND price is BETWEEN 34.3 and 99.3" 
+
+     */
+    public function getAppliedFilters(){
+        return $this->filter;
+    }
+
     /**
      * isOk
      *
