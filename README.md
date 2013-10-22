@@ -41,7 +41,7 @@ $df->setRange('price', null, 99.9); // add an upper limit to the price
 * Do the query, specify the page if you want
 
 ````php
-<?php $dfResults = $df->query('test query', 1); // 'page' = 1. optional ?>
+<?php $dfResults = $df->query('test query', 1, array('transformer'=>'dflayer')); // 'page' = 1. optional . 'transformer' = 'dflayer'. optional. ?>
 ````
 
 
@@ -57,6 +57,7 @@ $dfResults->getProperty('hashid');
 $dfResults->getProperty('max_score'); // maximun score obtained in the search results
 $dfResults->getProperty('doofinder_status'); // special doofinder status. see below
 
+// If you use the 'dflayer' transformer ... 
 
 foreach($dfResults->getResults() as $result){
     echo $result['body']."\n"; // description of the item
@@ -122,8 +123,17 @@ In short:
   - Each time you do any new query, don't specify ````query_name````. Let doofinder find the best.
   - **Warning:** don't try to figure out a ````query_name```` on your own. query names may change in the future. You can always count on ````$dfResults->getParameter('query_name')```` to get the ````query_name```` that led to those ````$dfResults````
   
+The "transformer" parameter
+---------------------------
 
-                     
+Given an indexed item, a _transformer_ makes a transformation on its fields, producing a "normalized" version out of it, just before delivering it to the api client. If no transformation is applied, and the items you get when issuing a search request will have the very same fields they had when they were indexed.
+
+You can control which _transformer_ to use via the `transformer` search option. You can command doofinder to use the "dflayer" transformer like this:
+
+```php
+<?php $dfResults = $df->query('test query', 1, array('transformer'=>'dflayer'));?>
+```
+
 A few more tips
 ---------------
 
@@ -160,7 +170,8 @@ $dfResults = $df->query('test query',           // query string
                                  'product', 
                                  'question'
                              ), 
-                             'filter' => array(                        // filter definitions
+                             'transformer' => 'dflayer', // transformer to use
+                             'filter' => array(         // filter definitions
                                  'brand' => array('nike', 'converse'),
                                  'price' => array('from'=> 33.2, 'to'=> 99)
                              )
