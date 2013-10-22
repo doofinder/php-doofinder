@@ -145,7 +145,8 @@ class DoofinderApi{
         }
 
         // if filters without query_name, pre-query first to obtain it.
-        if(!$params['query_name'] && $params['filter']){
+        if(!$params['query_name'] && array_key_exists('filter', $params) &&
+           $params['filter']){
             $filter = $params['filter'];
             $params['filter'] = null;
             $dfResults = $this->apiCall($params);
