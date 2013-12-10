@@ -41,7 +41,7 @@ class DoofinderApi{
     private $lastQuery = null; // the last successfull query made
     private $total = null; // total number of results obtained
     private $maxScore = null; 
-    private $paramsPrefix = null;
+    private $paramsPrefix = self::DEFAULT_PARAMS_PREFIX;
     private $serializationArray = null;
 
     /**
@@ -57,8 +57,14 @@ class DoofinderApi{
      * @throws DoofinderException if $hashid is not a md5 hash or api is no 4, 3.0 or 1.0
      */
     function __construct($hashid, $fromParams=false, $init_options = array()){
-        $this->paramsPrefix = array_key_exists('prefix', $init_options) ? 
-            $init_options['prefix'] : self::DEFAULT_PARAMS_PREFIX;
+        if(array_key_exists('prefix', $init_options)){
+            if($init_options['prefix'] != ''){
+                $this->paramsPrefix = $init_options['prefix'];
+            } else {
+                throw new DoofinderException("Can't set empty params prefix");
+            }
+        }
+
         $this->apiVersion = array_key_exists('apiVersion', $init_options) ?
             $init_options['apiVersion'] : self::DEFAULT_API_VERSION;
         $this->serializationArray = $_REQUEST;
