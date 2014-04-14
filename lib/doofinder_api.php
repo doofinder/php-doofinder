@@ -138,7 +138,6 @@ class DoofinderApi{
         if($page){
             $this->search_options['page'] = (int)$page;
         }
-
         foreach($options as $optionName => $optionValue){
             $this->search_options[$optionName] = $options[$optionName];
         }
@@ -160,7 +159,6 @@ class DoofinderApi{
             $params['query_name'] = $dfResults->getProperty('query_name');
             $params['filter'] = $filter;
         }
-
         $params['filter'] = $this->obtainESFilter(isset($params['filter'])?$params['filter']:null); 
         $dfResults = $this->apiCall($params);
         $this->page = $dfResults->getProperty('page');
@@ -258,8 +256,10 @@ class DoofinderApi{
         if(!isset($this->search_options['filter'][$filterName]))
         {
             $this->filter[$filterName] = array();
+            $this->search_options['filter'][$filterName] = array();
         }
         $this->filter[$filterName][] = $term;
+        $this->search_options['filter'][$filterName][] = $term;
     }
 
     /** 
