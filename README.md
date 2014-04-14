@@ -257,7 +257,7 @@ When specifying filters in request parameters, follow this convention:
 $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', // hashid
                    true,                               // get params from request
                    array(
-                     'prefix' => 'sp_df_df_',           // prefix to use with toQuerystring
+                     'prefix' => 'sp_df_df_',           // prefix to use with toQuerystring. CAN'T USE EMPTY STRINGS
                      'apiVersion' => '3.0',           // api version of the search server
                      'restrictedRequest' => 'post'    // use only  params from 'post' or 'get' methods. 
                    ));
