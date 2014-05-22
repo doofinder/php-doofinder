@@ -159,7 +159,6 @@ class DoofinderApi{
             $params['query_name'] = $dfResults->getProperty('query_name');
             $params['filter'] = $filter;
         }
-        $params['filter'] = $this->obtainESFilter(isset($params['filter'])?$params['filter']:null); 
         $dfResults = $this->apiCall($params);
         $this->page = $dfResults->getProperty('page');
         $this->total = $dfResults->getProperty('total');
@@ -438,67 +437,6 @@ class DoofinderApi{
      */
     public function setQueryName($queryName){
         $this->queryName = $queryName;
-    }
-
-    /**
-     * obtainESFilter
-     *
-     * translate filter friendly format:
-     *              array('color'=>array('blue','red'), 'price'=>array('from'=>33, 'to'=>99))
-     * to ES format:
-     *           array('terms'=>array('color'=>array('blue','red')), 'numeric_range'=>array('price'=>array('from'=>33, 'to'=>99)))
-     * 
-     * @param array filter friendly format
-     * @return array filter in ES format
-     */
-    private function obtainESFilter($filter){
-
-        // translate filter to ES syntax
-        $numericRangeFilters = array();
-        $termsFilters = array();
-        $result = array();
-
-        if(!$filter)
-        {
-            return null;
-        }
-        foreach($filter as $filterName => $filterProperties)
-        {
-            switch($this->getFilterType($filterProperties))
-            {
-            case 'numericrange':
-                if(isset($filterProperties['from']) && !trim($filterProperties['from']))
-                {
-                    unset($filterProperties['from']);
-                }
-                if(isset($filterProperties['to']) && !trim($filterProperties['to']))
-                {
-                    unset($filterProperties['to']);
-                }
-                if(!count($filterProperties))
-                {
-                    break;
-                }
-                $numericRangeFilters[$filterName] = $filterProperties;
-                $numericRangeFilters[$filterName]['include_upper']=true;
-                break;
-            case 'terms':
-                $termsFilters[$filterName] = $filterProperties;                    
-                break;
-            }
-        }
-
-        if($numericRangeFilters)
-        {
-            $result['numeric_range'] = $numericRangeFilters;
-        }
-
-        if($termsFilters)
-        {
-            $result['terms'] = $termsFilters;
-        }
-
-        return count($result) ? $result : null;
     }
 
     /** 
