@@ -113,6 +113,10 @@ class DoofinderApi{
         if (floor($httpCode / 100) == 2) {
             return new DoofinderResults($response);
         }
+	if ($httpCode == 429){
+	  // Query limit reached
+	  throw new DoofinderException("Requests Limit Reached");
+	  }
         throw new DoofinderException($response);
     }
 
