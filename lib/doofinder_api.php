@@ -113,27 +113,7 @@ class DoofinderApi{
         if (floor($httpCode / 100) == 2) {
             return new DoofinderResults($response);
         }
-	if ($httpCode == 403){
-	  // Access forbidden for that IP.
-	  throw new DoofinderException($response, $httpCode);
-	  }
-	if ($httpCode == 404){
-	  // SearchEngine or Index Not Found
-	  throw new DoofinderException($response, $httpCode);
-	  }
-	if ($httpCode == 413){
-	  // That Query is too long.
-	  throw new DoofinderException("Query too large", $httpCode);
-	  }
-	if ($httpCode == 429){
-	  // Query limit reached
-	  throw new DoofinderException("Requests Limit Reached", $httpCode);
-	  }
-	if ($httpCode == 500){
-	  // General Server Error
-	  throw new DoofinderException($response, $httpCode);
-	  }
-        throw new DoofinderException($httpCode.' '.$response, $httpCode);
+        throw new DoofinderException($httpCode.' - '.$response, $httpCode);
     }
 
     /**
