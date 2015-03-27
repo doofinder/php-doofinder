@@ -17,6 +17,7 @@
  * under the License.
  */
 
+
 class DoofinderApi{
     /*
      * Basic client for an account.
@@ -24,11 +25,14 @@ class DoofinderApi{
      * Its only method is to query the doofinder search server
      * Returns a DoofinderResults object
      */  
+
     const url = 'http://eu1-search.doofinder.com';
     const DEFAULT_TIMEOUT = 10000;
     const DEFAULT_RPP = 10;
     const DEFAULT_PARAMS_PREFIX = 'dfParam_';
     const DEFAULT_API_VERSION = '4';
+
+    private $api_key = ''; // user API_KEY
     private $hashid = null; // hashid of the doofinder account
 
     private $apiVersion = null; 
@@ -57,6 +61,10 @@ class DoofinderApi{
      * @throws DoofinderException if $hashid is not a md5 hash or api is no 4, 3.0 or 1.0
      */
     function __construct($hashid, $fromParams=false, $init_options = array()){
+        
+        $config = require_once("config.php");
+        $this->api_key = $config['API_KEY'];
+        
         if(array_key_exists('prefix', $init_options)){
             if($init_options['prefix'] != ''){
                 $this->paramsPrefix = $init_options['prefix'];
@@ -95,7 +103,15 @@ class DoofinderApi{
         }
         
     }
-    
+
+    private function reqHeaders(){
+        $headers = array();
+        $headers[] = 'Expect:'; //Fixes the HTTP/1.1 417 Expectation Failed
+        $headers[] = "API Token: " . $this->api_key; //API Authorization
+        var_dump($headers);
+        return $headers;
+
+    }
 
     private function apiCall($params){
         $params['hashid'] = $this->hashid;
@@ -105,7 +121,7 @@ class DoofinderApi{
         curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET'); 
         curl_setopt($session, CURLOPT_HEADER, false); // Tell curl not to return headers
         curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Tell curl to return the response
-        curl_setopt($session, CURLOPT_HTTPHEADER, array('Expect:')); //Fixes the HTTP/1.1 417 Expectation Failed
+        curl_setopt($session, CURLOPT_HTTPHEADER, $this->reqHeaders()); // Adding request headers
         $response = curl_exec($session);
         $httpCode = curl_getinfo($session, CURLINFO_HTTP_CODE);
         curl_close($session);
