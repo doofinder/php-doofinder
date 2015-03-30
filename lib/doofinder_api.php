@@ -32,7 +32,7 @@ class DoofinderApi{
     const DEFAULT_PARAMS_PREFIX = 'dfParam_';
     const DEFAULT_API_VERSION = '4';
 
-    private $api_key = ''; // user API_KEY
+    private $api_key = null; // user API_KEY
     private $hashid = null; // hashid of the doofinder account
 
     private $apiVersion = null; 
@@ -60,10 +60,9 @@ class DoofinderApi{
      *                         to look for params when unserializing. either 'get' or 'post'
      * @throws DoofinderException if $hashid is not a md5 hash or api is no 4, 3.0 or 1.0
      */
-    function __construct($hashid, $fromParams=false, $init_options = array()){
+    function __construct($hashid, $api_key, $fromParams=false, $init_options = array()){
         
-        $config = require_once("config.php");
-        $this->api_key = $config['API_KEY'];
+        $this->api_key = $api_key;
         
         if(array_key_exists('prefix', $init_options)){
             if($init_options['prefix'] != ''){
@@ -108,9 +107,7 @@ class DoofinderApi{
         $headers = array();
         $headers[] = 'Expect:'; //Fixes the HTTP/1.1 417 Expectation Failed
         $headers[] = "API Token: " . $this->api_key; //API Authorization
-        var_dump($headers);
         return $headers;
-
     }
 
     private function apiCall($params){
