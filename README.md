@@ -217,7 +217,8 @@ you can use it to build links to searh results:
 
 ````php
 <?php
-$df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9');
+$df = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', 
+                       'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3');
 $df->fromQuerystring(); // get search string, pagenum, rpp, etc from the request
 $dfResults = $df->query(); // no need to specify query or page, it's already set through the 'fromQuerystring' method
 ````
@@ -226,7 +227,8 @@ Also , the second arg in constructor has the same effect. This code is equivalen
 
 ````php
 <?php
-$df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
+$df = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
+                        'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3',
                    true  // call "fromQuerystring" when initializing
                    );
 $dfResults = $df->query();                  
@@ -255,7 +257,8 @@ When specifying filters in request parameters, follow this convention:
 
 ````php
 <?php
-$df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', // hashid
+$df = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', //hashid
+                   'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3', // api_key
                    true,                               // get params from request
                    array(
                      'prefix' => 'sp_df_df_',           // prefix to use with toQuerystring. CAN'T USE EMPTY STRINGS
@@ -268,7 +271,8 @@ $df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', // hashid
 #### Defaults ####
 ````php
 <?php
-$df = DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',  // hashid
+$df = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9' //hashid
+                   'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3',  // api_key
                    false,                               // don't obtain status from request
                    array(
                       'prefix' => 'dfParam_',
