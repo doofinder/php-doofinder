@@ -4,3 +4,7 @@ Version 4.
  - CamelCase convention for everything. "has_next(0" is now "hasNext()"
  - And empty query() prompts a "match all" query
  - Facets/Filtering support
+
+Version 5.
+----------
+ - API Key Authorization. API Key required in client constructor.
