@@ -70,9 +70,9 @@ class DoofinderApi{
             $this->zone = $zone_key_array[0];
             $this->url = "http://" . $this->zone . self::URL_SUFFIX;
         } else {
-            throw new DoofinderException("API Key is no properly setted.");
+            throw new DoofinderException("API Key is no properly set.");
         }
-        
+
         if(array_key_exists('prefix', $init_options)){
             if($init_options['prefix'] != ''){
                 $this->paramsPrefix = $init_options['prefix'];
