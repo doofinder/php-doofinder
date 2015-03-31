@@ -26,7 +26,7 @@ class DoofinderApi{
      * Returns a DoofinderResults object
      */  
 
-    const url = 'http://eu1-search.doofinder.com';
+    const URL_SUFFIX = '-search.doofinder.com';
     const DEFAULT_TIMEOUT = 10000;
     const DEFAULT_RPP = 10;
     const DEFAULT_PARAMS_PREFIX = 'dfParam_';
@@ -35,7 +35,8 @@ class DoofinderApi{
     private $api_key = null; // user API_KEY
     private $hashid = null; // hashid of the doofinder account
 
-    private $apiVersion = null; 
+    private $apiVersion = null;
+    private $url = null; 
     private $results = null;
     private $query = null;
     private $search_options = array();  // assoc. array with doofinder options to be sent as request parameters
@@ -62,7 +63,15 @@ class DoofinderApi{
      */
     function __construct($hashid, $api_key, $fromParams=false, $init_options = array()){
         
-        $this->api_key = $api_key;
+        $zone_key_array = explode('-', $api_key);
+        
+        if(2 === count($zone_key_array)){
+            $this->api_key = $zone_key_array[1];
+            $this->zone = $zone_key_array[0];
+            $this->url = "http://" . $this->zone . self::URL_SUFFIX;
+        } else {
+            throw new DoofinderException("API Key is no properly setted.");
+        }
         
         if(array_key_exists('prefix', $init_options)){
             if($init_options['prefix'] != ''){
@@ -113,7 +122,7 @@ class DoofinderApi{
     private function apiCall($params){
         $params['hashid'] = $this->hashid;
         $args = http_build_query(array_filter($params)); // remove any null value from the array
-        $url = self::url.'/'.$this->apiVersion.'/search?'.$args;
+        $url = $this -> url . '/' . $this->apiVersion . '/search?' . $args;
         $session = curl_init($url);
         curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET'); 
         curl_setopt($session, CURLOPT_HEADER, false); // Tell curl not to return headers
