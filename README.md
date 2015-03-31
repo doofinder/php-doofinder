@@ -16,7 +16,7 @@ Quick & Dirty
 
 ````php
 <?php $df = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', 
-                             '384fd8a73c7ff0859a5891f9f4083b1b9727f9c3'); // specify hashid and API KEY ?>
+                             'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3'); // specify hashid and API KEY ?>
 ````
 
 * If you feel like it, you can specify filters.
