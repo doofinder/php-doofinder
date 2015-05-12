@@ -262,7 +262,7 @@ $df = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', //hashid
                    true,                               // get params from request
                    array(
                      'prefix' => 'sp_df_df_',           // prefix to use with toQuerystring.
-                     'queryParameter' => 'q',         // parameter name to use for the query parameter (default: 'query')
+                     'queryParameter' => 'q',         // parameter name to use for the query parameter . starting version 5.1.0 (default: 'query') 
                      'apiVersion' => '3.0',           // api version of the search server
                      'restrictedRequest' => 'post'    // use only  params from 'post' or 'get' methods. 
                    ));

@@ -7,4 +7,6 @@ Version 4.
 
 Version 5.
 ----------
- - API Key Authorization. API Key required in client constructor.
+ - API Key Authorization. API Key required in client constructor
+ - Allow unprefixed params
+ - Allow custom query parameter name
