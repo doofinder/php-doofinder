@@ -48,6 +48,8 @@ class DoofinderApi{
     private $maxScore = null; 
     private $paramsPrefix = self::DEFAULT_PARAMS_PREFIX;
     private $serializationArray = null;
+    private $queryParameter = 'query'; // the parameter used for querying
+    private $allowedParameters = array('page', 'rpp', 'timeout', 'types', 'filter', 'query_name', 'transformer'); // request parameters that doofinder handle
 
     /**
      * Constructor. account's hashid and api version set here
@@ -56,13 +58,13 @@ class DoofinderApi{
      * @param boolean $fromParams if set, the object is unserialized from GET or POST params
      * @param array $init_options. associative array with some options:
      *                -'prefix' (default: 'dfParam_')=> the prefix to use when serializing. 
+     *                -'queryParameter' (default: 'query') => the parameter used for querying
      *                -'apiVersion' (default: '4')=> the api of the search server to query
      *                -'restrictedRequest'(default: $_REQUEST):  =>restrict request object 
      *                         to look for params when unserializing. either 'get' or 'post'
      * @throws DoofinderException if $hashid is not a md5 hash or api is no 4, 3.0 or 1.0
      */
     function __construct($hashid, $api_key, $fromParams=false, $init_options = array()){
-        
         $zone_key_array = explode('-', $api_key);
         
         if(2 === count($zone_key_array)){
@@ -74,12 +76,19 @@ class DoofinderApi{
         }
 
         if(array_key_exists('prefix', $init_options)){
-            if($init_options['prefix'] != ''){
-                $this->paramsPrefix = $init_options['prefix'];
-            } else {
-                throw new DoofinderException("Can't set empty params prefix");
-            }
+            $this->paramsPrefix = $init_options['prefix'];
+        } 
+
+
+        $this->allowedParameters = array_map(array($this, 'addprefix'), $this->allowedParameters);
+
+
+        if(array_key_exists('queryParameter', $init_options)){
+            $this->queryParameter = $init_options['queryParameter'];
+        } else {
+            $this->queryParameter = $this->paramsPrefix.$this->queryParameter;
         }
+
 
         $this->apiVersion = array_key_exists('apiVersion', $init_options) ?
             $init_options['apiVersion'] : self::DEFAULT_API_VERSION;
@@ -112,6 +121,34 @@ class DoofinderApi{
         
     }
 
+    private  function addprefix($value){
+        return $this->paramsPrefix.$value;
+    }
+
+    /*
+     * translateFilter
+     *
+     * translates a range filter to the new ES format
+     * 'from'=>9, 'to'=>20 to 'gte'=>9, 'lte'=>20
+     *
+     * @param array $filter 
+     * @return array the translated filter
+     */
+    private function translateFilter($filter){
+        $translated = array();
+        foreach($filter as $keey => $value){
+            if($keey == 'from'){
+                $t_key = 'gte';
+            } else if($keey == 'to'){
+                $t_key = 'lte';
+            } else {
+                $t_key = $keey;
+            }
+            $translated[$t_key] = $value;
+        }
+        return $translated;
+    }
+
     private function reqHeaders(){
         $headers = array();
         $headers[] = 'Expect:'; //Fixes the HTTP/1.1 417 Expectation Failed
@@ -121,7 +158,7 @@ class DoofinderApi{
 
     private function apiCall($params){
         $params['hashid'] = $this->hashid;
-        $args = http_build_query(array_filter($params)); // remove any null value from the array
+        $args = http_build_query($this->sanitize($params)); // remove any null value from the array
         $url = $this -> url . '/' . $this->apiVersion . '/search?' . $args;
         $session = curl_init($url);
         curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET'); 
@@ -165,6 +202,11 @@ class DoofinderApi{
         }
 
         $params = $this->search_options;
+
+        // translate filters
+        foreach($params['filter'] as $filterName => $filterValue){
+            $params['filter'][$filterName] = $this->translateFilter($filterValue);
+        }
 
         // no query? then match all documents
         if(!$this->optionExists('query') || !trim($this->search_options['query'])){
@@ -336,8 +378,13 @@ class DoofinderApi{
      * @param int $page the pagenumber. defaults to the current page
      */
     public function toQuerystring($page=null){
+
         foreach($this->search_options as $paramName => $paramValue){
-            $toParams[$this->paramsPrefix.$paramName] = $paramValue;
+            if($paramName == 'query'){
+                $toParams[$this->queryParameter] = $paramValue;
+            } else {
+                $toParams[$this->paramsPrefix.$paramName] = $paramValue;
+            }
         }
         if($page){
             $toParams[$this->paramsPrefix.'page'] = $page;
@@ -356,10 +403,35 @@ class DoofinderApi{
     public function fromQuerystring(){
         $doofinderReqParams = array_filter(array_keys($this->serializationArray), 
                                                       array($this, 'belongsToDoofinder'));
+                
         foreach($doofinderReqParams as $dfReqParam){
-            $this->search_options[substr($dfReqParam, strlen($this->paramsPrefix))] = 
-                $this->serializationArray[$dfReqParam];
+            if($dfReqParam == $this->queryParameter){
+                $keey = 'query';
+            } else {
+                $keey = substr($dfReqParam, strlen($this->paramsPrefix));
+            }
+            $this->search_options[$keey] = $this->serializationArray[$dfReqParam];
         }
+    }
+
+    /** 
+     * sanitize
+     *
+     * Clean array of keys with empty values
+     *
+     * @param array $params array to be cleaned
+     * @return array array with no empty keys
+     */
+    private function sanitize($params){
+        $result = array();
+        foreach($params as $name => $value){
+            if (is_array($value)){
+                $result[$name] = $this->sanitize($value);
+            } else if (trim($value)){
+                $result[$name] = $value;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -371,7 +443,10 @@ class DoofinderApi{
      * @return boolean true or false.
      */
     private function belongsToDoofinder($paramName){
-        return strpos($paramName, $this->paramsPrefix) === 0;
+        if($pos = strpos($paramName, '[')){
+            $paramName = substr($paramName, 0, $pos);
+        }
+        return in_array($paramName, $this->allowedParameters) || $paramName == $this->queryParameter;
     }
 
     /**
@@ -565,11 +640,11 @@ class DoofinderResults{
                     foreach($facetProperties['ranges'] as $pos => $range){
                         $this->facets[$facetName]['ranges'][$pos]['selected_from'] = false;
                         $this->facets[$facetName]['ranges'][$pos]['selected_to'] = false;
-                        if(isset($this->filter[$facetName]) && isset($this->filter[$facetName]['from'])){
-                            $this->facets[$facetName]['ranges'][$pos]['selected_from'] = $this->filter[$facetName]['from'];
+                        if(isset($this->filter[$facetName]) && isset($this->filter[$facetName]['gte'])){
+                            $this->facets[$facetName]['ranges'][$pos]['selected_from'] = $this->filter[$facetName]['gte'];
                         } 
-                        if(isset($this->filter[$facetName]) && isset($this->filter[$facetName]['to'])){
-                            $this->facets[$facetName]['ranges'][$pos]['selected_to'] = $this->filter[$facetName]['to'];
+                        if(isset($this->filter[$facetName]) && isset($this->filter[$facetName]['lte'])){
+                            $this->facets[$facetName]['ranges'][$pos]['selected_to'] = $this->filter[$facetName]['lte'];
                         } 
 
                     }

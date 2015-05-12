@@ -261,7 +261,8 @@ $df = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', //hashid
                    'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3', // api_key
                    true,                               // get params from request
                    array(
-                     'prefix' => 'sp_df_df_',           // prefix to use with toQuerystring. CAN'T USE EMPTY STRINGS
+                     'prefix' => 'sp_df_df_',           // prefix to use with toQuerystring.
+                     'queryParameter' => 'q',         // parameter name to use for the query parameter (default: 'query')
                      'apiVersion' => '3.0',           // api version of the search server
                      'restrictedRequest' => 'post'    // use only  params from 'post' or 'get' methods. 
                    ));
@@ -344,14 +345,15 @@ One quick example
 ````html
 <?php
 include('lib/doofinder_api.php');  
-$df = new DoofinderApi('6azzz04dc173514cab1e0xxxxf92e6e9',true);
-$dfResults = $df->query(); // if no dfParam_query, 
+$df = new DoofinderApi('6azzz04dc173514cab1e0xxxxf92e6e9', 'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3', true);
+$dfResults = $df->query(null, null, array('transformer'=>'dflayer')); // if no dfParam_query, 
                             // fetch all the results, to fetch all possible facets
 ?>
 
 <form method="get" action="">
   <input type="text" name="dfParam_query" onchange="emptyQueryName()" value="<?php echo $dfResults->getProperty('query')?>">
   <input type="hidden" name="dfParam_rpp" value="3">
+  <input type="hidden" name="dfParam_transformer" value="dflayer">
   <!-- this has to be removed via javascript if we want doofinder to find the best search for us. -->
   <input type="hidden" id="query_name" name="dfParam_query_name" value="<?php echo $dfResults->getProperty('query_name')?>"> 
   
