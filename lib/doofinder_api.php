@@ -118,7 +118,7 @@ class DoofinderApi{
         {
             $this->fromQuerystring();
         }
-        
+
     }
 
     private  function addprefix($value){
@@ -131,22 +131,21 @@ class DoofinderApi{
      * translates a range filter to the new ES format
      * 'from'=>9, 'to'=>20 to 'gte'=>9, 'lte'=>20
      *
-     * @param array $filter 
+     * @param array $filter
      * @return array the translated filter
      */
     private function translateFilter($filter){
-        $translated = array();
-        foreach($filter as $keey => $value){
-            if($keey == 'from'){
-                $t_key = 'gte';
-            } else if($keey == 'to'){
-                $t_key = 'lte';
+        $new_filter = array();
+        foreach($filter as $key => $value){
+            if ($key === 'from') {
+                $new_filter['gte'] = $value;
+            } else if ($key === 'to') {
+                $new_filter['lte'] = $value;
             } else {
-                $t_key = $keey;
+                $new_filter[$key] = $value;
             }
-            $translated[$t_key] = $value;
         }
-        return $translated;
+        return $new_filter;
     }
 
     private function reqHeaders(){
@@ -161,7 +160,7 @@ class DoofinderApi{
         $args = http_build_query($this->sanitize($params)); // remove any null value from the array
         $url = $this -> url . '/' . $this->apiVersion . '/search?' . $args;
         $session = curl_init($url);
-        curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET'); 
+        curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($session, CURLOPT_HEADER, false); // Tell curl not to return headers
         curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Tell curl to return the response
         curl_setopt($session, CURLOPT_HTTPHEADER, $this->reqHeaders()); // Adding request headers
