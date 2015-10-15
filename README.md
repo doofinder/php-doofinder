@@ -306,7 +306,7 @@ $df->fromQuerystring(); // recover state from a querystring
 $df->nextPage(); // obtain results for the nextpage
 $df->prevPage(); // obtain results for the prev page
 $df->numPages(); // num of pages 
-$df->getRpp(); // set rpp. defaults 10
+$df->getRpp(); // get rpp value
 $df->getTimeout();
 $df->setApiVersion($apiVersion); // sets api version to use. defaults to '4'
 $df->setQueryName($queryName); // sets 'query_name' parameter
