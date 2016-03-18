@@ -46,6 +46,9 @@ class DoofinderManagementApi{
                          'Expect:'); // Fixes the HTTP/1.1 417 Expectation Failed
 
         $fullUrl = $this->baseManagementUrl.'/'.$entryPoint;
+        if(is_array($params) && sizeof($params) > 0){
+            $fullUrl .= '?'.http_build_query($params);
+        }
         $session = curl_init($fullUrl);
         curl_setopt($session, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($session, CURLOPT_HEADER, false);
@@ -128,5 +131,17 @@ class SearchEngine {
         } else {
             return false;
         }
+    }
+
+    function items($dtype, $scrollId = null) {
+        $params = $scrollId ? array("scroll_id"=>$scrollId) : null;
+        $result = $this->dma->managementApiCall(
+            'GET', $this->hashid.'/items/'.$dtype,
+            $params
+        );
+        return array(
+            'scroll_id' => $result['response']['scroll_id'],
+            'results' => $result['response']['results']
+        );
     }
 }
