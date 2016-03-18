@@ -55,8 +55,12 @@ class DoofinderManagementApi{
 
         handleErrors($httpCode, $response);
 
-        return json_decode($response, true);
+        return array('statusCode' => $httpCode, 'response' => json_decode($response, true));
 
+    }
+
+    function getApiRoot() {
+        return $this->managementApiCall()['response'];
     }
 
     function show() {
