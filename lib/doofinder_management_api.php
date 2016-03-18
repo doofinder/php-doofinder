@@ -18,6 +18,8 @@
  */
 require_once dirname(__FILE__).'/errors.php';
 
+
+
 class DoofinderManagementApi{
 
     const MANAGEMENT_DOMAIN_SUFFIX = '-api.doofinder.com';
@@ -68,7 +70,7 @@ class DoofinderManagementApi{
         $apiRoot = $this->getApiRoot();
         unset($apiRoot['searchengines']);
         foreach($apiRoot as $hashid => $props){
-            $searchEngines[] = new SearchEngine($hashid, $props['name']);
+            $searchEngines[] = new SearchEngine($this, $hashid, $props['name']);
         }
         return $searchEngines;
     }
@@ -89,10 +91,11 @@ class SearchEngine {
 
     public $name = null;
     public $hashid = null;
+    private $dma = null; //DoofinderManagementApi instance
 
-    function __construct($hashid, $name) {
+    function __construct($dma, $hashid, $name) {
         $this->name = $name;
         $this->hashid = $hashid;
-
+        $this->dma = $dma;
     }
 }
