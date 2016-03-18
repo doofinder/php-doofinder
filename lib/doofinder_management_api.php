@@ -35,9 +35,10 @@ class DoofinderManagementApi{
         $this->token = $clusterToken[1];
         $this->baseManagementUrl = $this->clusterRegion."-".self::MANAGEMENT_DOMAIN_SUFFIX.
             "/v".self::MANAGEMENT_VERSION;
+//        $this->baseManagementUrl = 'localhost:8000/api/v1';
     }
 
-    protected function managementApiCall($method='GET', $entryPoint='', $params=null, $data=null){
+    function managementApiCall($method='GET', $entryPoint='', $params=null, $data=null){
         $headers = array('Authorization: Token '.$this->token,
                          'Content-Type: application/json',
                          'Expect:'); // Fixes the HTTP/1.1 417 Expectation Failed
@@ -52,7 +53,7 @@ class DoofinderManagementApi{
         $httpCode = curl_getinfo($session, CURLINFO_HTTP_CODE);
         curl_close($session);
 
-        $this->handleErrors(CURLINFO_HTTP_CODE, $response);
+        handleErrors($httpCode, $response);
 
         return json_decode($response, true);
 
