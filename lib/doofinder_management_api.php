@@ -76,12 +76,13 @@ class DoofinderManagementApi{
     }
 
     function show() {
-        echo $this->baseManagementUrl;
+//        echo $this->baseManagementUrl;
         echo "\n";
-        echo $this->token;
+//        echo $this->token;
         echo "\n";
-        echo $this->baseManagementUrl;
+//        echo $this->baseManagementUrl;
         $a = 'a';
+
     }
 
 
@@ -97,5 +98,14 @@ class SearchEngine {
         $this->name = $name;
         $this->hashid = $hashid;
         $this->dma = $dma;
+    }
+
+    function getDatatypes(){
+        return $this->getTypes();
+    }
+
+    function getTypes() {
+        $result = $this->dma->managementApiCall('GET', $this->hashid.'/types');
+        return $result['response'];
     }
 }
