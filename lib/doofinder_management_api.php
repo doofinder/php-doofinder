@@ -63,6 +63,16 @@ class DoofinderManagementApi{
         return $this->managementApiCall()['response'];
     }
 
+    function getSearchEngines() {
+        $searchEngines = array();
+        $apiRoot = $this->getApiRoot();
+        unset($apiRoot['searchengines']);
+        foreach($apiRoot as $hashid => $props){
+            $searchEngines[] = new SearchEngine($hashid, $props['name']);
+        }
+        return $searchEngines;
+    }
+
     function show() {
         echo $this->baseManagementUrl;
         echo "\n";
@@ -73,5 +83,16 @@ class DoofinderManagementApi{
     }
 
 
+}
 
+class SearchEngine {
+
+    public $name = null;
+    public $hashid = null;
+
+    function __construct($hashid, $name) {
+        $this->name = $name;
+        $this->hashid = $hashid;
+
+    }
 }
