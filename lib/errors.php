@@ -12,25 +12,33 @@ class QuotaExhausted extends Exception{
 class WrongResponse extends Exception{
 }
 
+function readError($response) {
+    $error = json_decode($response, true)['detail'];
+    if(!isset($error)){
+        $error = $response;
+    }
+    return $error;
+}
+
 
 function handleErrors($statusCode, $response){
     switch($statusCode)
     {
     case 403:
-        throw new NotAllowed("The user does not have permissions to perform this operation: $response");
+        throw new NotAllowed("The user does not have permissions to perform this operation: ".readError($response));
     case 401:
-        throw new NotAllowed("The user hasn't provided valid authorization: $response");
+        throw new NotAllowed("The user hasn't provided valid authorization: ".readError($response));
     case 404:
-        throw new BadRequest("Not Found: $response");
+        throw new BadRequest("Not Found: ".readError($response));
     case 409: // trying to post with an already used id
-        throw new BadRequest("Request conflict: $response");
+        throw new BadRequest("Request conflict: ".readError($response));
     case 429:
         throw new QuotaExhausted("The query quota has been reached. No more queries can be requested right now");
     }
     if($statusCode >= 500){
-        throw new WrongResponse("Server error: $response");
+        throw new WrongResponse("Server error: ".readError($response));
     }
     if($statusCode >= 400){
-        throw new BadRequest("The client made a bad request: $response");
+        throw new BadRequest("The client made a bad request: ".readError($response));
     }
 }

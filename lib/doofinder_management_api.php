@@ -37,7 +37,7 @@ class DoofinderManagementApi{
         $this->token = $clusterToken[1];
         $this->baseManagementUrl = $this->clusterRegion."-".self::MANAGEMENT_DOMAIN_SUFFIX.
             "/v".self::MANAGEMENT_VERSION;
-//        $this->baseManagementUrl = 'localhost:8000/api/v1';
+        $this->baseManagementUrl = 'localhost:8000/api/v1';
     }
 
     function managementApiCall($method='GET', $entryPoint='', $params=null, $data=null){
@@ -51,6 +51,9 @@ class DoofinderManagementApi{
         curl_setopt($session, CURLOPT_HEADER, false);
         curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Tell curl to return the response
         curl_setopt($session, CURLOPT_HTTPHEADER, $headers); // Adding request headers
+        if(in_array($method, array('POST', 'PUT'))){
+            curl_setopt($session, CURLOPT_POSTFIELDS, $data);
+        }
         $response = curl_exec($session);
         $httpCode = curl_getinfo($session, CURLINFO_HTTP_CODE);
         curl_close($session);
@@ -106,6 +109,13 @@ class SearchEngine {
 
     function getTypes() {
         $result = $this->dma->managementApiCall('GET', $this->hashid.'/types');
+        return $result['response'];
+    }
+
+    function addType($dtype) {
+        $result = $this->dma->managementApiCall(
+            'POST', $this->hashid.'/types', null, json_encode(array('name'=>$dtype))
+        );
         return $result['response'];
     }
 }
