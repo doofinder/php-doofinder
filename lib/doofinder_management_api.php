@@ -37,7 +37,7 @@ class DoofinderManagementApi{
         $this->token = $clusterToken[1];
         $this->baseManagementUrl = $this->clusterRegion."-".self::MANAGEMENT_DOMAIN_SUFFIX.
             "/v".self::MANAGEMENT_VERSION;
-        $this->baseManagementUrl = 'localhost:8000/api/v1';
+//        $this->baseManagementUrl = 'localhost:8000/api/v1';
     }
 
     function managementApiCall($method='GET', $entryPoint='', $params=null, $data=null){
@@ -117,5 +117,16 @@ class SearchEngine {
             'POST', $this->hashid.'/types', null, json_encode(array('name'=>$dtype))
         );
         return $result['response'];
+    }
+
+    function deleteType($dtype) {
+        $result = $this->dma->managementApiCall(
+            'DELETE', $this->hashid.'/types/'.$dtype
+        );
+        if($result['statusCode'] == 204){
+            return true;
+        } else {
+            return false;
+        }
     }
 }
