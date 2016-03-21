@@ -167,6 +167,13 @@ class SearchEngine {
         };
         return array_map('fetchId', $result['response']);
     }
+
+    function update_item($dType, $itemId, $itemDescription){
+        $result = $this->dma->managementApiCall(
+            'PUT', $this->hashid."/items/$dType/$itemId", null, json_encode($itemDescription)
+        );
+        return $result['statusCode'] == 200;
+    }
 }
 
 function obtainId($url){
