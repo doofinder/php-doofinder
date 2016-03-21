@@ -159,7 +159,13 @@ class SearchEngine {
     }
 
     function add_items($dtype, $items_description){
-
+        $result = $this->dma->managementApiCall(
+            'POST', $this->hashid."/items/$dtype", null, json_encode($items_description)
+        );
+        function fetchId($item){
+            return $item['id'];
+        };
+        return array_map('fetchId', $result['response']);
     }
 }
 
