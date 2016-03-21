@@ -200,7 +200,11 @@ class SearchEngine {
         );
         unset($result['response']['task_name']);
         return $result['response'];
+    }
 
+    function logs(){
+        $result = $this->dma->managementApiCall("GET", $this->hashid."/logs");
+        return $result['response'];
     }
 
 
