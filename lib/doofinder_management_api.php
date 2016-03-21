@@ -185,6 +185,15 @@ class SearchEngine {
         return $result['statusCode'] == 204 ;
     }
 
+    function process(){
+        $result = $this->dma->managementApiCall(
+            'POST', $this->hashid."/tasks/process"
+        );
+        $taskCreated = ($result['statusCode'] == 201);
+        $taskId = $taskCreated ? obtainId($result['response']['link']) : null;
+        return array('task_created'=>$taskCreated, 'task_id'=>$taskId);
+    }
+
 
 }
 
