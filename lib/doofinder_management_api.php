@@ -145,20 +145,20 @@ class SearchEngine {
         );
     }
 
-    function get_item($dtype, $item_id) {
+    function getItem($dtype, $item_id) {
         $result = $this->dma->managementApiCall(
             'GET', $this->hashid."/items/$dtype/$item_id");
         return $result['response'];
     }
 
-    function add_item($dtype, $item_description){
+    function addItem($dtype, $item_description){
         $result = $this->dma->managementApiCall(
             'POST', $this->hashid."/items/$dtype", null, json_encode($item_description)
         );
         return $result['response']['id'];
     }
 
-    function add_items($dtype, $items_description){
+    function addItems($dtype, $items_description){
         $result = $this->dma->managementApiCall(
             'POST', $this->hashid."/items/$dtype", null, json_encode($items_description)
         );
@@ -168,19 +168,21 @@ class SearchEngine {
         return array_map('fetchId', $result['response']);
     }
 
-    function update_item($dType, $itemId, $itemDescription){
+    function updateItem($dType, $itemId, $itemDescription){
         $result = $this->dma->managementApiCall(
             'PUT', $this->hashid."/items/$dType/$itemId", null, json_encode($itemDescription)
         );
         return $result['statusCode'] == 200;
     }
 
-    function update_items($dType, $itemsDescription){
+    function updateItems($dType, $itemsDescription){
         $result = $this->dma->managementApiCall(
             'PUT', $this->hashid."/items/$dType", null, json_encode($itemsDescription)
         );
         return $result['statusCode'] == 200;
     }
+
+
 }
 
 function obtainId($url){
