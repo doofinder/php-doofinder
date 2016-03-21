@@ -81,17 +81,6 @@ class DoofinderManagementApi{
         return $searchEngines;
     }
 
-    function show() {
-//        echo $this->baseManagementUrl;
-        echo "\n";
-//        echo $this->token;
-        echo "\n";
-//        echo $this->baseManagementUrl;
-        $a = 'a';
-
-    }
-
-
 }
 
 class SearchEngine {
@@ -141,22 +130,22 @@ class SearchEngine {
         );
     }
 
-    function getItem($dtype, $item_id) {
+    function getItem($dType, $itemId) {
         $result = $this->dma->managementApiCall(
-            'GET', $this->hashid."/items/$dtype/$item_id");
+            'GET', $this->hashid."/items/$dType/$itemId");
         return $result['response'];
     }
 
-    function addItem($dtype, $item_description){
+    function addItem($dType, $itemDescription){
         $result = $this->dma->managementApiCall(
-            'POST', $this->hashid."/items/$dtype", null, json_encode($item_description)
+            'POST', $this->hashid."/items/$dType", null, json_encode($itemDescription)
         );
         return $result['response']['id'];
     }
 
-    function addItems($dtype, $items_description){
+    function addItems($dType, $itemsDescription){
         $result = $this->dma->managementApiCall(
-            'POST', $this->hashid."/items/$dtype", null, json_encode($items_description)
+            'POST', $this->hashid."/items/$dType", null, json_encode($itemsDescription)
         );
         function fetchId($item){
             return $item['id'];
