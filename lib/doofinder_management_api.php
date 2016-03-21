@@ -150,4 +150,11 @@ class SearchEngine {
             'GET', $this->hashid."/items/$dtype/$item_id");
         return $result['response'];
     }
+
+    function add_item($dtype, $item_description){
+        $result = $this->dma->managementApiCall(
+            'POST', $this->hashid."/items/$dtype", null, json_encode($item_description)
+        );
+        return $result['response'];
+    }
 }
