@@ -155,6 +155,16 @@ class SearchEngine {
         $result = $this->dma->managementApiCall(
             'POST', $this->hashid."/items/$dtype", null, json_encode($item_description)
         );
-        return $result['response'];
+        return $result['response']['id'];
     }
+
+    function add_items($dtype, $items_description){
+
+    }
+}
+
+function obtainId($url){
+    $urlRe = '~/\w{32}/(items/\w+|tasks)/([\w-_]+)/?$~';
+    preg_match($urlRe, $url, $matches);
+    return $matches[2];
 }
