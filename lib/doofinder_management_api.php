@@ -144,4 +144,10 @@ class SearchEngine {
             'results' => $result['response']['results']
         );
     }
+
+    function get_item($dtype, $item_id) {
+        $result = $this->dma->managementApiCall(
+            'GET', $this->hashid."/items/$dtype/$item_id");
+        return $result['response'];
+    }
 }
