@@ -194,6 +194,15 @@ class SearchEngine {
         return array('task_created'=>$taskCreated, 'task_id'=>$taskId);
     }
 
+    function processInfo(){
+        $result = $this->dma->managementApiCall(
+            'GET', $this->hashid."/tasks/process"
+        );
+        unset($result['response']['task_name']);
+        return $result['response'];
+
+    }
+
 
 }
 
