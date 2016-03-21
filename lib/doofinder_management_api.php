@@ -126,11 +126,7 @@ class SearchEngine {
         $result = $this->dma->managementApiCall(
             'DELETE', $this->hashid.'/types/'.$dtype
         );
-        if($result['statusCode'] == 204){
-            return true;
-        } else {
-            return false;
-        }
+        return $result['statusCode'] == 204;
     }
 
     function items($dtype, $scrollId = null) {
@@ -180,6 +176,13 @@ class SearchEngine {
             'PUT', $this->hashid."/items/$dType", null, json_encode($itemsDescription)
         );
         return $result['statusCode'] == 200;
+    }
+
+    function deleteItem($dType, $itemId){
+        $result = $this->dma->managementApiCall(
+            'DELETE', $this->hashid."/items/$dType/$itemId"
+        );
+        return $result['statusCode'] == 204 ;
     }
 
 
