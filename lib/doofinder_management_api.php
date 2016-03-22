@@ -295,6 +295,13 @@ class SearchEngine {
     }
 
     function process(){
+        /**
+         * Ask the server to process the search engine's feeds
+         *
+         * @return array Assoc array with:
+         *               - 'task_created': boolean true if a new task has been created
+         *               - 'task_id': if task created, the id of the task.
+         */
         $result = $this->dma->managementApiCall(
             'POST', $this->hashid."/tasks/process"
         );
@@ -304,6 +311,12 @@ class SearchEngine {
     }
 
     function processInfo(){
+        /**
+         * Obtain info of the last processing task sent to the server
+         *
+         * @return array Assoc array with 'state' and 'message' indicating status of the
+         *               last asked processing task
+         */
         $result = $this->dma->managementApiCall(
             'GET', $this->hashid."/tasks/process"
         );
@@ -311,7 +324,26 @@ class SearchEngine {
         return $result['response'];
     }
 
+    function taskInfo($taskId){
+        /**
+         * Obtain info about how a task is going or its result
+         *
+         * @return array Assoc array with 'state' and 'message' indicating the status
+         *               of the task
+         */
+        $result = $this->dma->managementApiCall(
+            'GET', $this->hashid."/tasks/$taskId"
+        );
+        return $result['response'];
+    }
+
+
     function logs(){
+        /**
+         * Obtain logs of the latest feed processing tasks done
+         *
+         * @return array list of arrays representing the logs
+         */
         $result = $this->dma->managementApiCall("GET", $this->hashid."/logs");
         return $result['response'];
     }
