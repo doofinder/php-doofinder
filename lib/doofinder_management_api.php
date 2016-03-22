@@ -21,6 +21,12 @@ require_once dirname(__FILE__).'/errors.php';
 
 
 class DoofinderManagementApi{
+    /**
+     * Class to manage the connection with the API servers.
+     *
+     * Needs APIKEY in initialization.
+     * Example: $dma = new DoofinderManagementApi('eu1-d531af87f10969f90792a4296e2784b089b8a875')
+     */
 
     const MANAGEMENT_DOMAIN_SUFFIX = '-api.doofinder.com';
     const MANAGEMENT_VERSION = 1;
@@ -41,7 +47,16 @@ class DoofinderManagementApi{
     }
 
     function managementApiCall($method='GET', $entryPoint='', $params=null, $data=null){
-        $headers = array('Authorization: Token '.$this->token,
+        /**
+         * Makes the actual request to the API server and normalize response
+         *
+         * @param string $method The HTTP method to use. 'GET|PUT|POST|DELETE'
+         * @param string $entryPoint The path to use. '/<hashid>/items/product'
+         * @param array $params If any, url request parameters
+         * @param array $data If any, body request parameters
+         * @return array Array with both status code and response .
+         */
+        $headers = array('Authorization: Token '.$this->token, // for Auth
                          'Content-Type: application/json',
                          'Expect:'); // Fixes the HTTP/1.1 417 Expectation Failed
 
@@ -63,15 +78,25 @@ class DoofinderManagementApi{
 
         handleErrors($httpCode, $response);
 
-        return array('statusCode' => $httpCode, 'response' => json_decode($response, true));
+        $return = array('statusCode' => $httpCode);
+        $return['response'] = $decoded = (json_decode($response, true)) ? $decoded : $response;
 
+        return $return;
     }
 
     function getApiRoot() {
+        /**
+         * To get info on all possible api entry points
+         * @return array An assoc. array with the different entry points
+         */
         return $this->managementApiCall()['response'];
     }
 
     function getSearchEngines() {
+        /**
+         * Obtain a list of SearchEngines objects, ready to interact with the API
+         * @return array list of searchEngines objects
+         */
         $searchEngines = array();
         $apiRoot = $this->getApiRoot();
         unset($apiRoot['searchengines']);
@@ -84,10 +109,15 @@ class DoofinderManagementApi{
 }
 
 class SearchEngine {
+    /**
+     * Class with all the capabilities described in the API
+     *
+     * see http://www.doofinder.com/developer/topics/api/management-api
+     */
 
     public $name = null;
     public $hashid = null;
-    private $dma = null; //DoofinderManagementApi instance
+    private $dma = null; // DoofinderManagementApi instance
 
     function __construct($dma, $hashid, $name) {
         $this->name = $name;
@@ -96,32 +126,64 @@ class SearchEngine {
     }
 
     function getDatatypes(){
+        /**
+         * Get a list of searchengine's types
+         *
+         * @return array list of types
+         */
         return $this->getTypes();
     }
 
     function getTypes() {
+        /**
+         * Get a list of searchengine's types
+         *
+         * @return array list of types
+         */
         $result = $this->dma->managementApiCall('GET', $this->hashid.'/types');
         return $result['response'];
     }
 
-    function addType($dtype) {
+    function addType($dType) {
+        /**
+         * Add a type to the searchengine
+         *
+         * @param string $dType the type name
+         * @return new list of searchengine's types
+         */
         $result = $this->dma->managementApiCall(
-            'POST', $this->hashid.'/types', null, json_encode(array('name'=>$dtype))
+            'POST', $this->hashid.'/types', null, json_encode(array('name'=>$dType))
         );
         return $result['response'];
     }
 
-    function deleteType($dtype) {
+    function deleteType($dType) {
+        /**
+         * Delete a type and all its items. HANDLE WITH CARE
+         *
+         * @param string $dType the Type to delete. All items belonging
+         *                          to that type will be removed. mandatory
+         * @return boolean true on success
+         */
         $result = $this->dma->managementApiCall(
-            'DELETE', $this->hashid.'/types/'.$dtype
+            'DELETE', $this->hashid.'/types/'.$dType
         );
         return $result['statusCode'] == 204;
     }
 
-    function items($dtype, $scrollId = null) {
+    function items($dType, $scrollId = null) {
+        /**
+         * Get paginated indexed items belonging to a searchengine's type
+         *
+         * It only paginates forward. Can't go backwards
+         * @param string $dType Type of the items to list
+         * @param string $scrollId identifier of the pagination set
+         * @return array Assoc array with scroll_id and paginated results
+         */
+
         $params = $scrollId ? array("scroll_id"=>$scrollId) : null;
         $result = $this->dma->managementApiCall(
-            'GET', $this->hashid.'/items/'.$dtype,
+            'GET', $this->hashid.'/items/'.$dType,
             $params
         );
         return array(
@@ -131,12 +193,30 @@ class SearchEngine {
     }
 
     function getItem($dType, $itemId) {
+        /**
+         * Get details of a specific item
+         *
+         * @param string $dType Type of the item.
+         * @param string $itemId the id of the item
+         * @return array Assoc array representing the item.
+         */
         $result = $this->dma->managementApiCall(
             'GET', $this->hashid."/items/$dType/$itemId");
         return $result['response'];
     }
 
     function addItem($dType, $itemDescription){
+        /**
+         * Add an item to the search engine
+         *
+         *   - If the 'id' field is present, use that as item's id or overwrite an existing
+         *     item with that id.
+         *   - It the 'id' field is not present, create one.
+         *
+         * @param string $dType type of the. If not provided, first available type is used
+         * @param array $itemDescription Assoc array representation of the item
+         * @return string the id of the item just created
+         */
         $result = $this->dma->managementApiCall(
             'POST', $this->hashid."/items/$dType", null, json_encode($itemDescription)
         );
@@ -144,6 +224,18 @@ class SearchEngine {
     }
 
     function addItems($dType, $itemsDescription){
+        /**
+         * Add items in bulk to the search engine
+         *
+         * For each item:
+         *   - If the 'id' field is present, use that as item's id or overwrite an existing
+         *     item with that id.
+         *   - It the 'id' field is not present, create one.
+         *
+         * @param string $dType type of the. If not provided, first available type is used
+         * @param array $itemsDescription List of Assoc array representation of the item
+         * @return array List of ids of the added items
+         */
         $result = $this->dma->managementApiCall(
             'POST', $this->hashid."/items/$dType", null, json_encode($itemsDescription)
         );
@@ -154,6 +246,18 @@ class SearchEngine {
     }
 
     function updateItem($dType, $itemId, $itemDescription){
+        /**
+         * Update or create an item of the search engine
+         *
+         * In case of conflict between itemDescription's id or $itemId,
+         * the latter is used.
+         *
+         * @param string $dType  type of the Item.
+         * @param string $itemId  Id of the item to be updated/added
+         * @param array $itemDescription Assoc array representating the item.
+         * @return boolean true on success.
+         */
+
         $result = $this->dma->managementApiCall(
             'PUT', $this->hashid."/items/$dType/$itemId", null, json_encode($itemDescription)
         );
@@ -161,6 +265,15 @@ class SearchEngine {
     }
 
     function updateItems($dType, $itemsDescription){
+        /**
+         * Bulk update of several items
+         *
+         * Each item description must contain the 'id' field
+         *
+         * @param string $dType type of the items.
+         * @param array $itemsDescription List of assoc array representing items
+         * @return boolean true on success
+         */
         $result = $this->dma->managementApiCall(
             'PUT', $this->hashid."/items/$dType", null, json_encode($itemsDescription)
         );
@@ -168,6 +281,13 @@ class SearchEngine {
     }
 
     function deleteItem($dType, $itemId){
+        /**
+         * Delete an item
+         *
+         * @param string $dType type of the item
+         * @param string $itemId id of the item
+         * @return boolean true if success, false if failure
+         */
         $result = $this->dma->managementApiCall(
             'DELETE', $this->hashid."/items/$dType/$itemId"
         );
