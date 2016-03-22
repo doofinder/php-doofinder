@@ -4,7 +4,7 @@ doofinder-php
 PHP Client for doofinder
 
 
-For management capabilities check [Doofinder Management API README](README-management)
+For management capabilities check [Doofinder Management API README](README-management.md)
 
 Quick & Dirty
 -------------
