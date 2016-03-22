@@ -79,7 +79,7 @@ class DoofinderManagementApi{
         handleErrors($httpCode, $response);
 
         $return = array('statusCode' => $httpCode);
-        $return['response'] = $decoded = (json_decode($response, true)) ? $decoded : $response;
+        $return['response'] = ($decoded = json_decode($response, true)) ? $decoded : $response;
 
         return $return;
     }
@@ -334,6 +334,7 @@ class SearchEngine {
         $result = $this->dma->managementApiCall(
             'GET', $this->hashid."/tasks/$taskId"
         );
+        unset($result['response']['task_name']);
         return $result['response'];
     }
 
@@ -352,6 +353,12 @@ class SearchEngine {
 }
 
 function obtainId($url){
+    /**
+     * Extracts identificator from an item or task url.
+     *
+     * @param string $url item or task resource locator
+     * @return the item identificator
+     */
     $urlRe = '~/\w{32}/(items/\w+|tasks)/([\w-_]+)/?$~';
     preg_match($urlRe, $url, $matches);
     return $matches[2];
