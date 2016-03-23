@@ -12,6 +12,9 @@ class QuotaExhausted extends Exception{
 class WrongResponse extends Exception{
 }
 
+class ThrottledResponse extends Exception{
+}
+
 function readError($response) {
     $error = json_decode($response, true)['detail'];
     if(!isset($error)){
@@ -33,6 +36,9 @@ function handleErrors($statusCode, $response){
     case 409: // trying to post with an already used id
         throw new BadRequest("Request conflict: ".readError($response));
     case 429:
+        if(stripos($response, 'throttled')){
+            throw new ThrottledResponse(readError($response));
+        }
         throw new QuotaExhausted("The query quota has been reached. No more queries can be requested right now");
     }
     if($statusCode >= 500){
