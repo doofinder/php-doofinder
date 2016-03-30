@@ -171,7 +171,7 @@ class SearchEngine {
         return $result['statusCode'] == 204;
     }
 
-    function items($dType, $scrollId = null) {
+    public function getScrolledItemsPage($dType, $scrollId = null) {
         /**
          * Get paginated indexed items belonging to a searchengine's type
          *
@@ -188,8 +188,13 @@ class SearchEngine {
         );
         return array(
             'scroll_id' => $result['response']['scroll_id'],
-            'results' => $result['response']['results']
+            'results' => $result['response']['results'],
+            'total' => $result['response']['count']
         );
+    }
+
+    function items($dType){
+        return new ItemsRS($this, $dType);
     }
 
     function getItem($dType, $itemId) {
@@ -350,6 +355,55 @@ class SearchEngine {
     }
 
 
+}
+
+class ItemsRS implements Iterator {
+    /**
+     * Helper class to iterate through the search engine's items
+     *
+     */
+    private $searchEngine = null;
+    private $resultsPage = null;
+    private $scrollId = null;
+    private $position = 0;
+    private $total = null;
+
+    function __construct($searchEngine, $dType){
+        $this->dType = $dType;
+        $this->searchEngine = $searchEngine;
+    }
+
+    function rewind() {
+        $apiResults = $this->searchEngine->getScrolledItemsPage($this->dType);
+        $this->total = $apiResults['total'];
+        $this->resultsPage = $apiResults['results'];
+        $this->scrollId = $apiResults['scroll_id'];
+        $this->currentItem = each($this->resultsPage);
+    }
+
+    function valid(){
+        print "\nValid? ".$this->position.", ".$this->total;
+        return $this->position < $this->total;
+    }
+
+    function current(){
+        return $this->currentItem['value'];
+    }
+
+    function key(){
+        return $this->position;
+    }
+
+    function next(){
+        ++$this->position;
+        $this->currentItem = each($this->resultsPage);
+        if(!$this->currentItem and $this->position < $this->total){
+            $this->resultsPage = $this->searchEngine->getScrolledItemsPage(
+                $this->dType, $this->scrollId
+            )['results'];
+            $this->currentItem = each($this->resultsPage);
+        }
+    }
 }
 
 function obtainId($url){
