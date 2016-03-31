@@ -470,16 +470,23 @@ $mySearchEngine->addItems('product', array(
 ````
 
 #### The corner stuff ####
-If you want to go through **every item in your index, and only forwards**, you'll need to use our *listing/scrolling* methods...
+If you want to go through **every item in your index, and only forwards**, you'll need to use the *listing/scrolling* method... **It's not a standard php array, it's an iterator.**
 
 ```php
 <?php
-$scrollId_items = $mySearchEngine.items('product'); // obtain first batch of paginated results of items belonging to 'product' type
-$scollId = $scrollId_items['scroll_id']; // the pagination identificator
-$items = $scrollId_items['results']; // the first batch of paginated results of 'product' type
-$next_batch = $mySearchEngine.items('product', $scrollId); // the second batch
+$items = $mySearchEngine.items('product'); // obtain items iterator
+foreach($items as $item){   // only iterate through all the items.
+    echo $item['title'];
+}
 
 ````
+Yo can't retrieve a specific item by index
+````php
+<?php
+$item = $items[4]; // WRONG!!!!!
+PHP Fatal error: Cannot use object of type ItemsRS as array...
+````
+
 
 ### Tasks management ###
 

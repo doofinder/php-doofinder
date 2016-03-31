@@ -361,6 +361,7 @@ class ItemsRS implements Iterator {
     /**
      * Helper class to iterate through the search engine's items
      *
+     * Implemets Iterator interface so foreach() can work with ItemRS
      */
     private $searchEngine = null;
     private $resultsPage = null;
