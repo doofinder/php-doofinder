@@ -374,12 +374,16 @@ class ItemsRS implements Iterator {
         $this->searchEngine = $searchEngine;
     }
 
-    function rewind() {
+    private function fetchResults(){
         $apiResults = $this->searchEngine->getScrolledItemsPage($this->dType);
         $this->total = $apiResults['total'];
         $this->resultsPage = $apiResults['results'];
         $this->scrollId = $apiResults['scroll_id'];
         $this->currentItem = each($this->resultsPage);
+    }
+
+    function rewind() {
+        $this->fetchResults();
     }
 
     function valid(){
@@ -399,9 +403,7 @@ class ItemsRS implements Iterator {
         ++$this->position;
         $this->currentItem = each($this->resultsPage);
         if(!$this->currentItem and $this->position < $this->total){
-            $this->resultsPage = $this->searchEngine->getScrolledItemsPage(
-                $this->dType, $this->scrollId
-            )['results'];
+            $this->fetchResults();
             $this->currentItem = each($this->resultsPage);
         }
     }
