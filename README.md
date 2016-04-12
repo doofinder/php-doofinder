@@ -420,6 +420,8 @@ Quick & Dirty
 <?php include('lib/doofinder_management_api.php');
 ````
 
+**Warning:** You have to make sure `errors.php` is on the same directory than `doofinder_management_api.php`
+
 * Instantiate the object, use your doofinder's API_KEY.
 
 ````php
