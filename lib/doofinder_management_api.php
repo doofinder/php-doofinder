@@ -178,14 +178,16 @@ class SearchEngine {
          * It only paginates forward. Can't go backwards
          * @param string $dType Type of the items to list
          * @param string $scrollId identifier of the pagination set
-         * @return array Assoc array with scroll_id and paginated results
+         * @return array Assoc array with scroll_id ,paginated results and total results.
          */
 
         $params = $scrollId ? array("scroll_id"=>$scrollId) : null;
+
         $result = $this->dma->managementApiCall(
             'GET', $this->hashid.'/items/'.$dType,
             $params
         );
+
         return array(
             'scroll_id' => $result['response']['scroll_id'],
             'results' => $result['response']['results'],
@@ -375,7 +377,7 @@ class ItemsRS implements Iterator {
     }
 
     private function fetchResults(){
-        $apiResults = $this->searchEngine->getScrolledItemsPage($this->dType);
+        $apiResults = $this->searchEngine->getScrolledItemsPage($this->dType, $this->scrollId);
         $this->total = $apiResults['total'];
         $this->resultsPage = $apiResults['results'];
         $this->scrollId = $apiResults['scroll_id'];
@@ -383,11 +385,11 @@ class ItemsRS implements Iterator {
     }
 
     function rewind() {
+        $this->scrollId = null;
         $this->fetchResults();
     }
 
     function valid(){
-        print "\nValid? ".$this->position.", ".$this->total;
         return $this->position < $this->total;
     }
 
@@ -404,6 +406,7 @@ class ItemsRS implements Iterator {
         $this->currentItem = each($this->resultsPage);
         if(!$this->currentItem and $this->position < $this->total){
             $this->fetchResults();
+            reset($this->resultsPage);
             $this->currentItem = each($this->resultsPage);
         }
     }
