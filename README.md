@@ -476,7 +476,7 @@ If you want to go through **every item in your index, and only forwards**, you'l
 
 ```php
 <?php
-$items = $mySearchEngine.items('product'); // obtain items iterator
+$items = $mySearchEngine->items('product'); // obtain items iterator
 foreach($items as $item){   // only iterate through all the items.
     echo $item['title'];
 }
