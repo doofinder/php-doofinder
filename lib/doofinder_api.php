@@ -173,7 +173,6 @@ class DoofinderApi{
         $httpCode = curl_getinfo($session, CURLINFO_HTTP_CODE);
         curl_close($session);
 
-        var_dump($response);
         if (floor($httpCode / 100) == 2) {
             if($method=='options'){
                 return $response;
