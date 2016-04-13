@@ -109,7 +109,7 @@ class DoofinderApi{
         {
             throw new DoofinderException("Wrong hashid");
         }
-        if(!in_array($this->apiVersion, array('4', '3.0','1.0')))
+        if(!in_array($this->apiVersion, array('5', '4', '3.0','1.0')))
         {
             throw new DoofinderException('Wrong API');
         }
@@ -155,10 +155,15 @@ class DoofinderApi{
         return $headers;
     }
 
-    private function apiCall($params){
+    private function apiCall($params,$method='search'){
         $params['hashid'] = $this->hashid;
         $args = http_build_query($this->sanitize($params)); // remove any null value from the array
-        $url = $this -> url . '/' . $this->apiVersion . '/search?' . $args;
+        switch($method){
+            case 'search': $url = $this -> url . '/' . $this->apiVersion . '/search?' . $args;break;
+            case 'options': $url = $this -> url . '/' . $this->apiVersion . '/options/' . $this->hashid; break;
+            default: $url = $this -> url . '/' . $this->apiVersion . '/search?' . $args; break;
+        }
+        
         $session = curl_init($url);
         curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($session, CURLOPT_HEADER, false); // Tell curl not to return headers
@@ -168,10 +173,18 @@ class DoofinderApi{
         $httpCode = curl_getinfo($session, CURLINFO_HTTP_CODE);
         curl_close($session);
 
+        var_dump($response);
         if (floor($httpCode / 100) == 2) {
+            if($method=='options'){
+                return $response;
+            }
             return new DoofinderResults($response);
         }
         throw new DoofinderException($httpCode.' - '.$response, $httpCode);
+    }
+    
+    public function getOptions(){
+        return $this->apiCall('', 'options');
     }
 
     /**
