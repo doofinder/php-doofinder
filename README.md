@@ -113,6 +113,8 @@ echo "Max price found: ".$price_facet['ranges'][0]['max']."\n";
 
 ````
 
+**Notice** every search request is made through secure protocol
+
 
 To use in an html form
 ----------------------
