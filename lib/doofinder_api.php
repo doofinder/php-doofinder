@@ -70,7 +70,7 @@ class DoofinderApi{
         if(2 === count($zone_key_array)){
             $this->api_key = $zone_key_array[1];
             $this->zone = $zone_key_array[0];
-            $this->url = "http://" . $this->zone . self::URL_SUFFIX;
+            $this->url = "https://" . $this->zone . self::URL_SUFFIX;
         } else {
             throw new DoofinderException("API Key is no properly set.");
         }
@@ -151,18 +151,16 @@ class DoofinderApi{
     private function reqHeaders(){
         $headers = array();
         $headers[] = 'Expect:'; //Fixes the HTTP/1.1 417 Expectation Failed
-        $headers[] = "API Token: " . $this->api_key; //API Authorization
+        $authHeaderName = $this->apiVersion == '4' ? 'API Token: ' : 'authorization: ';
+        $headers[] = $authHeaderName . $this->api_key; //API Authorization
         return $headers;
     }
 
-    private function apiCall($params,$method='search'){
+    private function apiCall($entry_point='search', $params=array()){
         $params['hashid'] = $this->hashid;
         $args = http_build_query($this->sanitize($params)); // remove any null value from the array
-        switch($method){
-            case 'search': $url = $this -> url . '/' . $this->apiVersion . '/search?' . $args;break;
-            case 'options': $url = $this -> url . '/' . $this->apiVersion . '/options/' . $this->hashid; break;
-            default: $url = $this -> url . '/' . $this->apiVersion . '/search?' . $args; break;
-        }
+
+        $url = $this->url.'/'.$this->apiVersion.'/'.$entry_point.'?'.$args;
         
         $session = curl_init($url);
         curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET');
@@ -174,16 +172,13 @@ class DoofinderApi{
         curl_close($session);
 
         if (floor($httpCode / 100) == 2) {
-            if($method=='options'){
-                return $response;
-            }
-            return new DoofinderResults($response);
+            return $response;
         }
         throw new DoofinderException($httpCode.' - '.$response, $httpCode);
     }
     
     public function getOptions(){
-        return $this->apiCall('', 'options');
+        return $this->apiCall('options/'.$this->hashid);
     }
 
     /**
@@ -232,11 +227,11 @@ class DoofinderApi{
         {
             $filter = $params['filter'];
             unset($params['filter']);
-            $dfResults = $this->apiCall($params);
+            $dfResults = $this->apiCall('search', $params);
             $params['query_name'] = $dfResults->getProperty('query_name');
             $params['filter'] = $filter;
         }
-        $dfResults = $this->apiCall($params);
+        $dfResults = new DoofinderResults($this->apiCall('search', $params));
         $this->page = $dfResults->getProperty('page');
         $this->total = $dfResults->getProperty('total');
         $this->search_options['query'] = $dfResults->getProperty('query');
