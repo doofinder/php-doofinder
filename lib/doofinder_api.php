@@ -31,6 +31,7 @@ class DoofinderApi{
     const DEFAULT_RPP = 10;
     const DEFAULT_PARAMS_PREFIX = 'dfParam_';
     const DEFAULT_API_VERSION = '4';
+    const VERSION = '5.2.3';
 
     private $api_key = null; // user API_KEY
     private $hashid = null; // hashid of the doofinder account
