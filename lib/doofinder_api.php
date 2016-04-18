@@ -227,7 +227,7 @@ class DoofinderApi{
         {
             $filter = $params['filter'];
             unset($params['filter']);
-            $dfResults = $this->apiCall('search', $params);
+            $dfResults = new DoofinderResults($this->apiCall('search', $params));
             $params['query_name'] = $dfResults->getProperty('query_name');
             $params['filter'] = $filter;
         }
