@@ -41,9 +41,8 @@ class DoofinderManagementApi{
         $clusterToken = explode('-', $apiKey);
         $this->clusterRegion = $clusterToken[0];
         $this->token = $clusterToken[1];
-        $this->baseManagementUrl = $this->clusterRegion."-".self::MANAGEMENT_DOMAIN_SUFFIX.
-            "/v".self::MANAGEMENT_VERSION;
-//        $this->baseManagementUrl = 'localhost:8000/api/v1';
+        $this->baseManagementUrl = "https://" . $this->clusterRegion . self::MANAGEMENT_DOMAIN_SUFFIX . "/v" . self::MANAGEMENT_VERSION;
+        // $this->baseManagementUrl = 'localhost:8000/api/v1';
     }
 
     function managementApiCall($method='GET', $entryPoint='', $params=null, $data=null){
