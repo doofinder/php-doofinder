@@ -31,7 +31,7 @@ class DoofinderApi{
     const DEFAULT_RPP = 10;
     const DEFAULT_PARAMS_PREFIX = 'dfParam_';
     const DEFAULT_API_VERSION = '4';
-    const VERSION = '5.2.3';
+    const VERSION = '5.2.5';
 
     private $api_key = null; // user API_KEY
     private $hashid = null; // hashid of the doofinder account
@@ -162,7 +162,7 @@ class DoofinderApi{
         $args = http_build_query($this->sanitize($params)); // remove any null value from the array
 
         $url = $this->url.'/'.$this->apiVersion.'/'.$entry_point.'?'.$args;
-        
+
         $session = curl_init($url);
         curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($session, CURLOPT_HEADER, false); // Tell curl not to return headers
@@ -177,7 +177,7 @@ class DoofinderApi{
         }
         throw new DoofinderException($httpCode.' - '.$response, $httpCode);
     }
-    
+
     public function getOptions(){
         return $this->apiCall('options/'.$this->hashid);
     }
