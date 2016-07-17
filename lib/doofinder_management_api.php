@@ -282,6 +282,12 @@ class SearchEngine {
    *               - 'task_created': boolean true if a new task has been created
    *               - 'task_id': if task created, the id of the task.
    */
+
+  function stats($from_date=null, $to_date=null){
+    return new AggregatesIterator($this, $from_date, $to_date);
+  }
+
+
   function process(){
     $result = $this->dma->managementApiCall('POST', "{$this->hashid}/tasks/process");
     $taskCreated = ($result['statusCode'] == 201);
@@ -409,6 +415,45 @@ class ScrollIterator extends ItemsRS {
 
   function rewind(){
     $this->scrollId = null;
+    parent::rewind();
+  }
+}
+
+class AggregatesIterator extends ItemsRS {
+  protected $last_page = 0;
+  protected $searchParams = array();
+
+  function __construct($searchEngine, $from_date=null, $to_date=null){
+    $this->last_page = 0;
+    if($from_date!=null){
+      $this->searchParams['from'] = $from_date->format("Ymd");
+    }
+    if($to_date!=null){
+      $this->searchParams['to'] = $to_date->format("Ymd");
+    }
+    parent::__construct($searchEngine);
+  }
+
+  protected function fetchResultsAndTotal(){
+    $params = $this->last_page > 0 ? array("page"=>$this->last_page + 1) : array();
+    try{
+      $apiResponse = $this->searchEngine->dma->managementApiCall(
+        'GET',
+        "{$this->searchEngine->hashid}/stats",
+        array_merge($params, $this->searchParams)
+      );
+      $this->resultsPage = $apiResponse['response']['aggregates'];
+      $this->total = $apiResponse['response']['count'];
+      $this->last_page++;
+      $this->currentItem = each($this->resultsPage);
+    } catch (NotFound $nfe) {
+      $this->resultsPage = array();
+    }
+    reset($this->resultsPage);
+  }
+
+  function rewind(){
+    $this->last_page = 0;
     parent::rewind();
   }
 }

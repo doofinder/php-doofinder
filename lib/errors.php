@@ -4,6 +4,8 @@ class NotAllowed extends Exception {}
 
 class BadRequest extends Exception {}
 
+class NotFound extends Exception {}
+
 class QuotaExhausted extends Exception {}
 
 class WrongResponse extends Exception {}
@@ -27,7 +29,7 @@ function handleErrors($statusCode, $response){
     case 401:
       throw new NotAllowed("The user hasn't provided valid authorization: ".readError($response));
     case 404:
-      throw new BadRequest("Not Found: ".readError($response));
+      throw new NotFound("Not Found: ".readError($response));
     case 409: // trying to post with an already used id
       throw new BadRequest("Request conflict: ".readError($response));
     case 429:
