@@ -276,18 +276,44 @@ class SearchEngine {
   }
 
   /**
+   * Obtain stats aggregated data for a certain period.
+   *
+   * @param DateTime $from_date. Starting date. Default is 15 days ago
+   * @param DateTime $to_date. Ending date. Default is today
+   *
+   * @return ItemsRS iterator through daily aggregated data.
+   */
+  function stats($from_date=null, $to_date=null){
+    return new AggregatesIterator($this, $from_date, $to_date);
+  }
+
+  /**
+   * Obtain frequency sorted list of therms used for a certain period.
+   *
+   * @param string term: type of term 'clicked', 'searches', 'opportunities'
+   *                     - 'clicked': clicked items
+   *                     - 'searches': complete searches
+   *                     - 'opportunities': searches without results
+   * @param DateTime $from_date. Starting date. Default is 15 days ago
+   * @param DateTime $to_date. Ending date. Default is today
+   *
+   * @return ItemsRS iterator through terms stats.
+   */
+  function top_terms($term, $from_date=null, $to_date=null){
+
+    if(!in_array($term, array('clicked', 'searches', 'opportunities'))){
+      throw new BadRequest("The term {$term} is not allowed");
+    }
+    return new TopTermsIterator($this, $term, $from_date, $to_date);
+  }
+
+  /**
    * Ask the server to process the search engine's feeds
    *
    * @return array Assoc array with:
    *               - 'task_created': boolean true if a new task has been created
    *               - 'task_id': if task created, the id of the task.
    */
-
-  function stats($from_date=null, $to_date=null){
-    return new AggregatesIterator($this, $from_date, $to_date);
-  }
-
-
   function process(){
     $result = $this->dma->managementApiCall('POST', "{$this->hashid}/tasks/process");
     $taskCreated = ($result['statusCode'] == 201);
@@ -429,6 +455,10 @@ class ScrollIterator extends ItemsRS {
 }
 
 class AggregatesIterator extends ItemsRS {
+
+  /**
+   * Class to Iterate through SearchEngine's aggregated stats data for a certain period.
+   */
   protected $last_page = 0;
   protected $searchParams = array();
 
@@ -469,6 +499,45 @@ class AggregatesIterator extends ItemsRS {
   function rewind(){
     $this->last_page = 0;
     parent::rewind();
+  }
+}
+
+class TopTermsIterator extends AggregatesIterator {
+
+  /**
+   * Class to Iterate through SearchEngine's top terms stats data for a certain period.
+   */
+  private $term = null; // type of term: 'clicked', 'searches', 'opportunities'
+
+  /**
+   * Constructor
+   *
+   * @param SearchEngine $searchEngine
+   * @param DateTime $from_date . Starting date of the period. Default: 15 days ago
+   * @param DateTime $to_date. Ending date of the period. Default: today.
+   * @param string term. type of term: 'clicked', 'searches', 'opportunities'
+   */
+  function __construct($searchEngine, $term, $from_date=null, $to_date=null){
+    $this->term = $term;
+    parent::__construct($searchEngine, $from_date, $to_date);
+  }
+
+  protected function fetchResultsAndTotal(){
+    $params = $this->last_page > 0 ? array("page"=>$this->last_page + 1) : array();
+    try{
+      $apiResponse = $this->searchEngine->dma->managementApiCall(
+        'GET',
+        "{$this->searchEngine->hashid}/stats/top_{$this->term}",
+        array_merge($params, $this->searchParams)
+      );
+      $this->resultsPage = $apiResponse['response'][$this->term];
+      $this->total = $apiResponse['response']['count'];
+      $this->last_page++;
+      $this->currentItem = each($this->resultsPage);
+    } catch (NotFound $nfe) {
+      $this->resultsPage = array();
+    }
+    reset($this->resultsPage);
   }
 }
 
