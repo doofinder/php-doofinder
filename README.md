@@ -491,6 +491,26 @@ $item = $items[4]; // WRONG!!!!!
 PHP Fatal error: Cannot use object of type ItemsRS as array...
 ````
 
+### Stats management ###
+````php
+<?php
+date_default_timezone_set('America/Havana'); // some phps may need this
+$from_date = new DateTime("2011-01-07");
+$to_date = new DateTime("2011-02-07");
+/* If not $from_date or $to_date provided, default is last 15 days */
+
+$aggregates = $mySearchEngine->stats($from_date, $to_date);
+
+foreach($aggregateds as $key => $aggregated){
+  echo $aggregated['date']; // date of the aggregated data
+  echo $aggregated['clicked']; // how many clicks in search results
+  echo $aggregated['searches'];// how many complete searches.i.e.: "mp3 player"
+  echo $aggregated['api']; // how many requests made through our API
+  echo $aggregated['parser']; // how many requests 'spent' in parsing feeds (1 per each 100 parsed items)
+  echo $aggregated['queries']; // how many "raw" search request. i.e.: "mp3", "mp3 p", "mp3 pl" ..
+  echo $aggregated['requests']; // total number of requests for that day
+}
+````
 
 ### Tasks management ###
 

@@ -385,11 +385,20 @@ class ItemsRS implements Iterator {
   }
 }
 
+/**
+ * ScrollIterator
+ *
+ * Class to Iterate/Scroll through search engine's indexed items of a certain datatype
+ */
 class ScrollIterator extends ItemsRS {
 
   private $scrollId = null;
   private $dType = null;
 
+  /**
+   * @param SearchEngine $searchEngine
+   * @param string $dType type of item . i.e. 'product'
+   */
   function __construct($searchEngine, $dType){
     $this->dType = $dType;
     parent::__construct($searchEngine);
@@ -423,6 +432,11 @@ class AggregatesIterator extends ItemsRS {
   protected $last_page = 0;
   protected $searchParams = array();
 
+  /**
+   * @param SearchEngine $searchEngine
+   * @param DateTime $from_date . Starting date of the period. Default: 15 days ago
+   * @param DateTime $to_date. Ending date of the period. Default: today.
+   */
   function __construct($searchEngine, $from_date=null, $to_date=null){
     $this->last_page = 0;
     if($from_date!=null){
