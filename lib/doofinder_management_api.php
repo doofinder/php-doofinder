@@ -194,7 +194,7 @@ class SearchEngine {
   }
 
   function items($dType){
-    return new ItemsRS($this, $dType);
+    return new ScrollIterator($this, $dType);
   }
 
   /**
@@ -346,31 +346,33 @@ class SearchEngine {
  * Helper class to iterate through the search engine's items
  *
  * Implemets Iterator interface so foreach() can work with ItemRS
+ * It's supposed to be extended
  */
 class ItemsRS implements Iterator {
 
-  private $searchEngine = null;
-  private $resultsPage = null;
-  private $scrollId = null;
-  private $position = 0;
-  private $total = null;
+  protected $searchEngine = null;
+  protected $resultsPage = null;
+  protected $position = 0;
+  protected  $total = null;
 
-  function __construct($searchEngine, $dType){
-    $this->dType = $dType;
+  function __construct($searchEngine) {
     $this->searchEngine = $searchEngine;
   }
 
-  private function fetchResults(){
-    $apiResults = $this->searchEngine->getScrolledItemsPage($this->dType, $this->scrollId);
-    $this->total = $apiResults['total'];
-    $this->resultsPage = $apiResults['results'];
-    $this->scrollId = $apiResults['scroll_id'];
-    $this->currentItem = each($this->resultsPage);
+  protected function fetchResultsAndTotal(){
+    /**
+     * Function to be implemented in children
+     *
+     **/
+    throw new Exception('Not implemented method');
   }
 
   function rewind(){
-    $this->scrollId = null;
-    $this->fetchResults();
+    $this->position = 0;
+    $this->total = null;
+    $this->resultsPage = null;
+    $this->fetchResultsAndTotal();
+    $this->currentItem = each($this->resultsPage);
   }
 
   function valid(){
@@ -388,12 +390,37 @@ class ItemsRS implements Iterator {
   function next(){
     ++$this->position;
     $this->currentItem = each($this->resultsPage);
-    if (!$this->currentItem && $this->position < $this->total){
-      $this->fetchResults();
-      reset($this->resultsPage);
+    if(!$this->currentItem && $this->position < $this->total){
+      $this->fetchResultsAndTotal();
       $this->currentItem = each($this->resultsPage);
     }
   }
+}
+
+class ScrollIterator extends ItemsRS {
+
+  private $scrollId = null;
+  private $dType = null;
+
+  function __construct($searchEngine, $dType){
+    $this->dType = $dType;
+    parent::__construct($searchEngine);
+  }
+
+  protected function fetchResultsAndTotal(){
+    $apiResults = $this->searchEngine->getScrolledItemsPage($this->dType, $this->scrollId);
+    $this->total = $apiResults['total'];
+    $this->resultsPage = $apiResults['results'];
+    $this->scrollId = $apiResults['scroll_id'];
+    $this->currentItem = each($this->resultsPage);
+    reset($this->resultsPage);
+  }
+
+  function rewind(){
+    $this->scrollId = null;
+    parent::rewind();
+  }
+
 }
 
 /**
