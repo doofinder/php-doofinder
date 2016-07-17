@@ -124,7 +124,7 @@ class SearchEngine {
   public $name = null;
   public $hashid = null;
 
-  private $dma = null; // DoofinderManagementApi instance
+  public $dma = null; // DoofinderManagementApi instance
 
   function __construct($dma, $hashid, $name){
     $this->name = $name;
@@ -173,24 +173,6 @@ class SearchEngine {
   function deleteType($dType){
     $result = $this->dma->managementApiCall('DELETE', "{$this->hashid}/types/{$dType}");
     return $result['statusCode'] == 204;
-  }
-
-  /**
-   * Get paginated indexed items belonging to a searchengine's type
-   *
-   * It only paginates forward. Can't go backwards
-   * @param string $dType Type of the items to list
-   * @param string $scrollId identifier of the pagination set
-   * @return array Assoc array with scroll_id ,paginated results and total results.
-   */
-  public function getScrolledItemsPage($dType, $scrollId = null){
-    $params = $scrollId ? array("scroll_id" => $scrollId) : null;
-    $result = $this->dma->managementApiCall('GET', "{$this->hashid}/items/{$dType}", $params);
-    return array(
-      'scroll_id' => $result['response']['scroll_id'],
-      'results' => $result['response']['results'],
-      'total' => $result['response']['count'],
-    );
   }
 
   function items($dType){
@@ -407,11 +389,20 @@ class ScrollIterator extends ItemsRS {
     parent::__construct($searchEngine);
   }
 
+  /**
+   * Loads net next batch of api results
+   *
+   */
   protected function fetchResultsAndTotal(){
-    $apiResults = $this->searchEngine->getScrolledItemsPage($this->dType, $this->scrollId);
-    $this->total = $apiResults['total'];
-    $this->resultsPage = $apiResults['results'];
-    $this->scrollId = $apiResults['scroll_id'];
+    $params = $this->scrollId ? array("scroll_id" => $this->scrollId) : null;
+    $apiResults = $this->searchEngine->dma->managementApiCall(
+      'GET',
+      "{$this->searchEngine->hashid}/items/{$this->dType}",
+      $params
+    );
+    $this->total = $apiResults['response']['count'];
+    $this->scrollId = $apiResults['response']['scroll_id'];
+    $this->resultsPage = $apiResults['response']['results'];
     $this->currentItem = each($this->resultsPage);
     reset($this->resultsPage);
   }
@@ -420,7 +411,6 @@ class ScrollIterator extends ItemsRS {
     $this->scrollId = null;
     parent::rewind();
   }
-
 }
 
 /**
