@@ -530,6 +530,10 @@ class TopTermsIterator extends AggregatesIterator {
         "{$this->searchEngine->hashid}/stats/top_{$this->term}",
         array_merge($params, $this->searchParams)
       );
+      // still generating?
+      if($apiResponse['statusCode'] == 202){
+          throw new NotProcessedResponse("Your request is still being processed. Please try again later");
+      }
       $this->resultsPage = $apiResponse['response'][$this->term];
       $this->total = $apiResponse['response']['count'];
       $this->last_page++;

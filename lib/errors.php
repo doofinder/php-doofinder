@@ -12,6 +12,8 @@ class WrongResponse extends Exception {}
 
 class ThrottledResponse extends Exception {}
 
+class NotProcessedResponse extends Exception {}
+
 function readError($response) {
   $error = json_decode($response, true);
   $error = $error['detail'];

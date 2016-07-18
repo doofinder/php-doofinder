@@ -510,6 +510,27 @@ foreach($aggregateds as $key => $aggregated){
   echo $aggregated['queries']; // how many "raw" search request. i.e.: "mp3", "mp3 p", "mp3 pl" ..
   echo $aggregated['requests']; // total number of requests for that day
 }
+
+$top_clicked = $mySearchEngine->top_terms('clicked', $from_date, $to_date);
+
+foreach($top_clicked as $key => $clicked){
+  echo $clicked['term']; // title of the clicked item
+  echo $clicked['count']; // # of clicks on that item
+}
+
+$top_searches = $mySearchEngine->top_terms('searches', $from_date, $to_date);
+
+foreach($top_searches as $key => $search){
+  echo $search['term']; // search terms used
+  echo $search['count']; // # of times it's been used
+}
+
+$top_opportunities = $mySearchEngine->top_terms('opportunities', $from_date, $to_date);
+
+foreach($top_opportunities as $key => $opportunity){
+  echo $opportunity['term']; // search terms used (that haven't yielded any result)
+  echo $opportunity['count']; // # of times it's been used
+}
 ````
 
 ### Tasks management ###
