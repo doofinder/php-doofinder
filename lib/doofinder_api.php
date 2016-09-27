@@ -31,7 +31,7 @@ class DoofinderApi{
     const DEFAULT_RPP = 10;
     const DEFAULT_PARAMS_PREFIX = 'dfParam_';
     const DEFAULT_API_VERSION = '4';
-    const VERSION = '5.2.5';
+    const VERSION = '5.2.6';
 
     private $api_key = null; // user API_KEY
     private $hashid = null; // hashid of the doofinder account
@@ -50,7 +50,7 @@ class DoofinderApi{
     private $paramsPrefix = self::DEFAULT_PARAMS_PREFIX;
     private $serializationArray = null;
     private $queryParameter = 'query'; // the parameter used for querying
-    private $allowedParameters = array('page', 'rpp', 'timeout', 'types', 'filter', 'query_name', 'transformer'); // request parameters that doofinder handle
+    private $allowedParameters = array('page', 'rpp', 'timeout', 'types', 'filter', 'query_name', 'transformer', 'sort'); // request parameters that doofinder handle
 
     /**
      * Constructor. account's hashid and api version set here
@@ -378,6 +378,20 @@ class DoofinderApi{
         {
             $this->search_options['filter'][$filterName]['to'] = $from;
         }
+    }
+
+    /**
+     * addSort
+     *
+     * Tells doofinder to sort results, or add a new field to a multiple fields sort
+     * @param string fieldName the field to sort by
+     * @param string direction 'asc' o 'desc'.
+     */
+    public function addSort($sortName, $direction) {
+        if(!$this->optionExists('sort')){
+            $this->search_options['sort'] = array();
+        }
+        array_push($this->search_options['sort'], array($sortName => $direction));
     }
 
     /**
@@ -801,4 +815,3 @@ class DoofinderResults{
 class DoofinderException extends Exception{
 
 }
-

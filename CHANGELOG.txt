@@ -7,6 +7,8 @@ Version 4.
 
 Version 5.
 ----------
+ - 5.2.6
+   - added sort parameter.
  - API Key Authorization. API Key required in client constructor
  - Allow unprefixed params
  - Allow custom query parameter name

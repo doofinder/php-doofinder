@@ -73,6 +73,18 @@ $df->setRange('price', null, 99.9); // add an upper limit to the price
 <?php $dfResults = $df->query('test query', 1, array('transformer'=>'dflayer')); // 'page' = 1. optional . 'transformer' = 'dflayer'. optional. ?>
 ````
 
+* You could also filter or sort the query
+````php
+<?php $dfResults = $df->query('test query', 1,
+    'filter' => array(
+        'brand' => array('nike', 'converse'), // only 'nike' and 'converse' results
+    ),
+    'sort' => array(
+        array('price' => 'asc') // sort by price in ascending order
+    )
+);
+````
+
 
 * With the results object, fetch specific properties, facets or the results itself as an array
 
@@ -205,7 +217,7 @@ $dfResults = $df->query();
 
 ### Filter Parameters format ###
 
-When specifying filters in request parameters, follow this convention:
+When specifying filters in html forms, follow this convention:
 
   - All the filters are passed in an array called "filter" prefixed with the 'prefix' specified in $df constructor (default: "dfParam_")
   - Each key is a filter name. Each value is filter definition.
@@ -223,6 +235,31 @@ When specifying filters in request parameters, follow this convention:
 
   this constructs the array ````dfParam_filter = array('color'=>array('blue', 'red'), 'price'=>array('from'=>10.2))````
 
+### Sort Parameters format ###
+
+When specifying sorts in html forms, follow this convention:
+
+  - As with other params, the parameters must be prefixed with the `prefix` specified in $df constructor (default: "dfParam_")
+
+  - If you sorting for one field in ascending order, you can simply send the "sort" parameter with the name of the field to sort by as value.
+  ````html
+  <input name="dfParam_sort" value="price">
+  ````
+  - If you want to specify the sort direction, you'll have to to send, for the `sort` param, an array, being the key the field to sort on and the value either `asc` or `desc`
+  ````html
+  <input name="dfParam_sort[price]" value="desc".
+  ````
+  - If you want to sort by several fields , just compound the previous definition in an array.
+
+  - Example: *sort in descending order by price and if same price, sort by title in ascending order*
+  ````html
+  <input name="dfParam_sort[0][price]" value="desc">
+  <input name="dfParam_sort[1][title]" value="asc">
+  ```
+
+  this constructs the array ````dfParam_sort = array(array('price'=>'desc'), array('title', 'asc'))````
+
+  - Please read carefully the [sort parameters](http://www.doofinder.com/developer/topics/api/search-api#sort-parameters) section in our search API documentation
 
 
 A few more tips
@@ -262,6 +299,10 @@ $dfResults = $df->query('test query',           // query string
                              'filter' => array(         // filter definitions
                                  'brand' => array('nike', 'converse'),
                                  'price' => array('from'=> 33.2, 'to'=> 99)
+                             ),
+                             'sort' => array(
+                                 array('price' => 'asc'), // sort results by price ...
+                                 array('title' => 'desc') // ... and then by title
                              )
                          ));
 ````
@@ -305,6 +346,7 @@ $df->removeTerm($filterName, $term);
 $df->setRange($filterName, $from, $to); // specify parameters for a range filter
 $df->getFilter($filter_name); // get filter specifications for $filter_name, if any
 $df->getFilters(); // get filter specifications for all defined filters.
+$df->addSort($sortField, $direction); // tells doofinder to sort results.
 $df->setPrefix($prefix); // sets prefix to use when dumping/recovering from querystring
 $df->toQuerystring($page); // dumps state info to a querystring
 $df->fromQuerystring(); // recover state from a querystring
