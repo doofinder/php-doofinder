@@ -67,24 +67,20 @@ $df->setRange('price', null, 99.9); // add an upper limit to the price
 ?>
 ````
 
+* Feeling adventurous? sort!
+
+````php
+<?php
+$df->addSort('price', 'desc'); // sort by price (descending)...
+$df->addSort('title', 'asc');  // ... and then by title (ascending)
+````
+NOTE: for non-numeric fields you'll have to set those fields as "sortable" in doofinder's control panel before you can sort by them.
+
 * Do the query, specify the page if you want
 
 ````php
 <?php $dfResults = $df->query('test query', 1, array('transformer'=>'dflayer')); // 'page' = 1. optional . 'transformer' = 'dflayer'. optional. ?>
 ````
-
-* You could also filter or sort the query
-````php
-<?php $dfResults = $df->query('test query', 1,
-    'filter' => array(
-        'brand' => array('nike', 'converse'), // only 'nike' and 'converse' results
-    ),
-    'sort' => array(
-        array('price' => 'asc') // sort by price in ascending order
-    )
-);
-````
-
 
 * With the results object, fetch specific properties, facets or the results itself as an array
 
