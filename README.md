@@ -375,7 +375,7 @@ One quick example
 
 ````html
 <?php
-include('lib/doofinder_api.php');
+include('path_to_doofinder/vendor/autoload.php');
 $searchClient = new \Doofinder\Api\Search\Client('6azzz04dc173514cab1e0xxxxf92e6e9', 'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3', true);
 $dfResults = $searchClient->query(null, null, array('transformer'=>'dflayer')); // if no dfParam_query,
                             // fetch all the results, to fetch all possible facets
