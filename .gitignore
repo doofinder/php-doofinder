@@ -14,3 +14,4 @@ js-layers/classic/node_modules
 ghostdriver.log
 *.sublime-project
 *.sublime-workspace
+composer.lock
