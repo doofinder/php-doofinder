@@ -3,8 +3,6 @@ doofinder-php
 
 PHP Client for doofinder
 
-Comes in two flavours:
-
   * [Doofinder Search Api PHP Client](#doofinder-search-api-php-client)
     - [Quick & Dirty](#quick--dirty)
     - [To use in an html form](#to-use-in-an-html-form)
@@ -26,6 +24,7 @@ Comes in two flavours:
       * [Types management](#types-management)
       * [Items management](#items-management)
       * [Tasks management](#tasks-management)
+  * [ATTENTION: quirks for version <= 5.3.1](#attention-quirks-for-version-5-3-1)
 
 
 # Doofinder Search API Client
@@ -37,13 +36,13 @@ Quick & Dirty
 * Include the lib
 
 ````php
-<?php include('lib/doofinder_api.php');
+<?php include('path_to_doofinder/vendor/autoload.php');
 ````
 
 * Instantiate the object
 
 ````php
-<?php $df = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
+<?php $searchClient = new \Doofinder\Api\Search\Client('6a9abc4dc17351123b1e0198af92e6e9',
                              'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3'); // specify hashid and API KEY ?>
 ````
 
@@ -51,9 +50,9 @@ Quick & Dirty
 
 ````php
 <?php
-$df->setFilter('brand', array('nike', 'converse')); // brand must be 'nike' or 'converse' AND ...
-$df->setFilter('color', array('red', 'blue')); // ... color must be 'red' or 'blue' AND ...
-$df->setFilter('price', array('from'=>33.2)); // ... price must be upper than 33.2
+$searchClient->setFilter('brand', array('nike', 'converse')); // brand must be 'nike' or 'converse' AND ...
+$searchClient->setFilter('color', array('red', 'blue')); // ... color must be 'red' or 'blue' AND ...
+$searchClient->setFilter('price', array('from'=>33.2)); // ... price must be upper than 33.2
 ?>
 ````
 
@@ -61,9 +60,9 @@ $df->setFilter('price', array('from'=>33.2)); // ... price must be upper than 33
 
 ````php
 <?php
-$df->addTerm('brand', 'adidas'); // add 'adidas' to the 'brand' filter
-$df->removeTerm('brand', 'nike'); // remove 'nike' from the 'brand' filter
-$df->setRange('price', null, 99.9); // add an upper limit to the price
+$searchClient->addTerm('brand', 'adidas'); // add 'adidas' to the 'brand' filter
+$searchClient->removeTerm('brand', 'nike'); // remove 'nike' from the 'brand' filter
+$searchClient->setRange('price', null, 99.9); // add an upper limit to the price
 ?>
 ````
 
@@ -71,15 +70,15 @@ $df->setRange('price', null, 99.9); // add an upper limit to the price
 
 ````php
 <?php
-$df->addSort('price', 'desc'); // sort by price (descending)...
-$df->addSort('title', 'asc');  // ... and then by title (ascending)
+$searchClient->addSort('price', 'desc'); // sort by price (descending)...
+$searchClient->addSort('title', 'asc');  // ... and then by title (ascending)
 ````
 NOTE: for non-numeric fields you'll have to set those fields as "sortable" in doofinder's control panel before you can sort by them.
 
 * Do the query, specify the page if you want
 
 ````php
-<?php $dfResults = $df->query('test query', 1, array('transformer'=>'dflayer')); // 'page' = 1. optional . 'transformer' = 'dflayer'. optional. ?>
+<?php $dfResults = $searchClient->query('test query', 1, array('transformer'=>'dflayer')); // 'page' = 1. optional . 'transformer' = 'dflayer'. optional. ?>
 ````
 
 * With the results object, fetch specific properties, facets or the results itself as an array
@@ -143,13 +142,13 @@ If you plan to filteron those, you should use the same  type of query. you can d
 ````php
 <?php
 // make the initial query. no filters and no "query_name" specified
-$dfResults = $df->query("baby gloves");
+$dfResults = $searchClient->query("baby gloves");
 // set $df to keep using the same "query_name" it used for the first query
-$df->setQueryName($dfResults->getProperty('query_name'));
+$searchClient->setQueryName($dfResults->getProperty('query_name'));
 // add a filter
-$df->addTerm('category', 'More than 6 years');
+$searchClient->addTerm('category', 'More than 6 years');
 // do the same query. this time filtered and with a specific query_name
-$df->query("baby gloves");
+$searchClient->query("baby gloves");
 ````
 or with a form parameter
 
@@ -175,7 +174,7 @@ Pretty useful. Dumps the complete state (filters, page, rpp, query) into a query
 
 ````php
 <?php
-echo $df->toQuerystring(3); // the argument is the page number.
+echo $searchClient->toQuerystring(3); // the argument is the page number.
                         // if none specified, current page is used
 // outputs querystring that represents the object's needed params to fetch results of page 3
 // every param has the (configurable) "dfParam_" prefix to avoid conflicts
@@ -185,7 +184,7 @@ echo $df->toQuerystring(3); // the argument is the page number.
 you can use it to build links to searh results:
 
 ````html
-<a href="results.php?<?php echo $df->toQuerystring(4)?>">Next Page</a>
+<a href="results.php?<?php echo $searchClient->toQuerystring(4)?>">Next Page</a>
 ````
 
 
@@ -193,21 +192,21 @@ you can use it to build links to searh results:
 
 ````php
 <?php
-$df = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
+$searchClient = new \Doofinder\Api\Search\Client('6a9abc4dc17351123b1e0198af92e6e9',
                        'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3');
-$df->fromQuerystring(); // get search string, pagenum, rpp, etc from the request
-$dfResults = $df->query(); // no need to specify query or page, it's already set through the 'fromQuerystring' method
+$searchClient->fromQuerystring(); // get search string, pagenum, rpp, etc from the request
+$dfResults = $searchClient->query(); // no need to specify query or page, it's already set through the 'fromQuerystring' method
 ````
 
 Also , the second arg in constructor has the same effect. This code is equivalent to the code above:
 
 ````php
 <?php
-$df = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
+$searchClient = new \Doofinder\Api\Search\Client('6a9abc4dc17351123b1e0198af92e6e9',
                         'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3',
                    true  // call "fromQuerystring" when initializing
                    );
-$dfResults = $df->query();
+$dfResults = $searchClient->query();
 ````
 
 
@@ -215,7 +214,7 @@ $dfResults = $df->query();
 
 When specifying filters in html forms, follow this convention:
 
-  - All the filters are passed in an array called "filter" prefixed with the 'prefix' specified in $df constructor (default: "dfParam_")
+  - All the filters are passed in an array called "filter" prefixed with the 'prefix' specified in $searchClient constructor (default: "dfParam_")
   - Each key is a filter name. Each value is filter definition.
   - Filter definition for terms filter: array with terms
   - Filter definition for range filter: array with "from" and/or "to" keys.
@@ -235,7 +234,7 @@ When specifying filters in html forms, follow this convention:
 
 When specifying sorts in html forms, follow this convention:
 
-  - As with other params, the parameters must be prefixed with the `prefix` specified in $df constructor (default: "dfParam_")
+  - As with other params, the parameters must be prefixed with the `prefix` specified in $searchClient constructor (default: "dfParam_")
 
   - If you sorting for one field in ascending order, you can simply send the "sort" parameter with the name of the field to sort by as value.
   ````html
@@ -283,7 +282,7 @@ foreach($dfResults->getResults() as $result){
 
 ````php
 <?php
-$dfResults = $df->query('test query',           // query string
+$dfResults = $searchClient->query('test query',           // query string
                          3,                      // page num. (default: 1)
                          array(
                              'rpp' => 4,         // results per page (default 10)
@@ -309,7 +308,7 @@ $dfResults = $df->query('test query',           // query string
 
 ````php
 <?php
-$df = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9', //hashid
+$searchClient = new \Doofinder\Api\Search\Client('6a9abc4dc17351123b1e0198af92e6e9', //hashid
                    'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3', // api_key
                    true,                               // get params from request. default false
                    array(
@@ -329,30 +328,30 @@ API reference
 
 ````php
 <?php
-$df->query($query, $page, $options); // do the query
-$df->hasNext();     // boolean true if there is a next page of results
-$df->hasPrev();     // boolean true if there is a prev page of results
-$df->numPages();    // total number of pages
-$df->getPage();     // get the actual page number
-$df->setFilter($filterName, $filter); // set a filter
-$df->getFilter($filterName); // get a filter
-$df->getFilters(); // get all filters
-$df->addTerm($filterName, $term); // add a term to a terms type $filterName
-$df->removeTerm($filterName, $term);
-$df->setRange($filterName, $from, $to); // specify parameters for a range filter
-$df->getFilter($filter_name); // get filter specifications for $filter_name, if any
-$df->getFilters(); // get filter specifications for all defined filters.
-$df->addSort($sortField, $direction); // tells doofinder to sort results.
-$df->setPrefix($prefix); // sets prefix to use when dumping/recovering from querystring
-$df->toQuerystring($page); // dumps state info to a querystring
-$df->fromQuerystring(); // recover state from a querystring
-$df->nextPage(); // obtain results for the nextpage
-$df->prevPage(); // obtain results for the prev page
-$df->numPages(); // num of pages
-$df->getRpp(); // get rpp value
-$df->getTimeout();
-$df->setApiVersion($apiVersion); // sets api version to use. defaults to '4'
-$df->setQueryName($queryName); // sets 'query_name' parameter
+$searchClient->query($query, $page, $options); // do the query
+$searchClient->hasNext();     // boolean true if there is a next page of results
+$searchClient->hasPrev();     // boolean true if there is a prev page of results
+$searchClient->numPages();    // total number of pages
+$searchClient->getPage();     // get the actual page number
+$searchClient->setFilter($filterName, $filter); // set a filter
+$searchClient->getFilter($filterName); // get a filter
+$searchClient->getFilters(); // get all filters
+$searchClient->addTerm($filterName, $term); // add a term to a terms type $filterName
+$searchClient->removeTerm($filterName, $term);
+$searchClient->setRange($filterName, $from, $to); // specify parameters for a range filter
+$searchClient->getFilter($filter_name); // get filter specifications for $filter_name, if any
+$searchClient->getFilters(); // get filter specifications for all defined filters.
+$searchClient->addSort($sortField, $direction); // tells doofinder to sort results.
+$searchClient->setPrefix($prefix); // sets prefix to use when dumping/recovering from querystring
+$searchClient->toQuerystring($page); // dumps state info to a querystring
+$searchClient->fromQuerystring(); // recover state from a querystring
+$searchClient->nextPage(); // obtain results for the nextpage
+$searchClient->prevPage(); // obtain results for the prev page
+$searchClient->numPages(); // num of pages
+$searchClient->getRpp(); // get rpp value
+$searchClient->getTimeout();
+$searchClient->setApiVersion($apiVersion); // sets api version to use. defaults to '4'
+$searchClient->setQueryName($queryName); // sets 'query_name' parameter
 ````
 
 
@@ -376,9 +375,9 @@ One quick example
 
 ````html
 <?php
-include('lib/doofinder_api.php');
-$df = new DoofinderApi('6azzz04dc173514cab1e0xxxxf92e6e9', 'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3', true);
-$dfResults = $df->query(null, null, array('transformer'=>'dflayer')); // if no dfParam_query,
+include('path_to_doofinder/vendor/autoload.php');
+$searchClient = new \Doofinder\Api\Search\Client('6azzz04dc173514cab1e0xxxxf92e6e9', 'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3', true);
+$dfResults = $searchClient->query(null, null, array('transformer'=>'dflayer')); // if no dfParam_query,
                             // fetch all the results, to fetch all possible facets
 ?>
 
@@ -430,12 +429,12 @@ $dfResults = $df->query(null, null, array('transformer'=>'dflayer')); // if no d
 
 
 
-<?php if($df->hasPrev()):?>
-<a href="?<?php echo $df->toQuerystring($df->getPage()-1)?>">Prev</a>
+<?php if($searchClient->hasPrev()):?>
+<a href="?<?php echo $searchClient->toQuerystring($searchClient->getPage()-1)?>">Prev</a>
 <?php endif?>
-Number of pages: <?php echo $df->numPages()?>
-<?php if($df->hasNext()):?>
-<a href="?<?php echo $df->toQuerystring($df->getPage()+1)?>">Next</a>
+Number of pages: <?php echo $searchClient->numPages()?>
+<?php if($searchClient->hasNext()):?>
+<a href="?<?php echo $searchClient->toQuerystring($searchClient->getPage()+1)?>">Next</a>
 <?php endif?>
 
 <script>
@@ -454,25 +453,23 @@ function emptyQueryName(){
 Quick & Dirty
 -------------
 
-* Include the lib
+* Include the lib (same as with search client)
 
 ````php
-<?php include('lib/doofinder_management_api.php');
+<?php include('path_to_doofinder/vendor/autoload.php');
 ````
-
-**Warning:** You have to make sure `errors.php` is on the same directory than `doofinder_management_api.php`
 
 * Instantiate the object, use your doofinder's API_KEY.
 
 ````php
-<?php $dma = new DoofinderManagementApi("eu1-d531af87f10969f90792a4296e2784b089b8a875");
+<?php $managementClient = new \Doofinder\Api\Management\Client("eu1-d531af87f10969f90792a4296e2784b089b8a875");
 ?>
 ````
 
 * Get a list of search engines
 
 ````php
-<?php $searchEngines = $dma->getSearchEngines();
+<?php $searchEngines = $managementClient->getSearchEngines();
 $mySearchEngine = $searchEngines[0];
 ````
 
@@ -549,21 +546,21 @@ foreach($aggregateds as $key => $aggregated){
   echo $aggregated['requests']; // total number of requests for that day
 }
 
-$top_clicked = $mySearchEngine->top_terms('clicked', $from_date, $to_date);
+$top_clicked = $mySearchEngine->topTerms('clicked', $from_date, $to_date);
 
 foreach($top_clicked as $key => $clicked){
   echo $clicked['term']; // title of the clicked item
   echo $clicked['count']; // # of clicks on that item
 }
 
-$top_searches = $mySearchEngine->top_terms('searches', $from_date, $to_date);
+$top_searches = $mySearchEngine->topTerms('searches', $from_date, $to_date);
 
 foreach($top_searches as $key => $search){
   echo $search['term']; // search terms used
   echo $search['count']; // # of times it's been used
 }
 
-$top_opportunities = $mySearchEngine->top_terms('opportunities', $from_date, $to_date);
+$top_opportunities = $mySearchEngine->topTerms('opportunities', $from_date, $to_date);
 
 foreach($top_opportunities as $key => $opportunity){
   echo $opportunity['term']; // search terms used (that haven't yielded any result)
@@ -584,3 +581,65 @@ $task_info = $mySearchEngine->taskInfo($taskId); // info about a certain task
 $logs = $mySearchEngine->logs(); // logs about recent processes
 
 ````
+
+# ATTENTION: quirks for version <= 5.3.1
+
+If you're using a version prior to 5.3.1, there are some important differences on how to include the library and instantiate objects
+
+## Including the library
+
+  versions <= 5.3.1
+
+  ````php
+  <?php
+  include('path_to_doofinder_directory/lib/doofinder_api.php'); // search API
+  include('path_to_doofinder_directory/lib/doofinder_management_api.php'); // management API
+  ````
+
+  versions > 5.3.1
+
+  ````php
+  <?php include('path_to_doofinder_directory/vendor/autoload.php');
+  ````
+
+## Instantiating objects
+
+### Search API Client
+
+  versions <= 5.3.1
+
+  ````php
+  <?php include('path_to_doofinder_directory/lib/doofinder_api.php');
+  $searchClient = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
+                                     'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3');
+  ````
+
+  versions > 5.3.1
+
+  ````php
+  <?php include('path_to_doofinder_directory/vendor/autoload.php');
+  $searchClient = new \Doofinder\Api\Search\Client('6a9abc4dc17351123b1e0198af92e6e9',
+                                                  'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3');
+  ````                                                   ````
+
+### Management API Client
+
+  versions <= 5.3.1
+
+  ````php
+  <?php include('path_to_doofinder_directory/lib/doofinder_management_api.php');
+  $managementClient = new DoofinderManagementApi("eu1-d531af87f10969f90792a4296e2784b089b8a875");
+  #searchEngines = $managementClient->getSearchEngines();
+  ````
+
+  versions > 5.3.1
+
+  ````php
+  <?php include('path_to_doofinder_directory/vendor/autoload.php');
+  $managementClient = new \Doofinder\Api\Management\Client("eu1-d531af87f10969f90792a4296e2784b089b8a875");
+  $searchEngines = $managementClient->getSearchEngines();
+  ````
+
+## Method name change
+
+  The `top_terms()` method has been renamed to `topTerms()`.

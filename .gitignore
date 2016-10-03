@@ -1,0 +1,17 @@
+*.pyc
+.scrapy
+test.db
+*~
+.DS_Store
+/node_modules
+wordforms_*.txt
+media/*
+node/node_modules
+js-layers/classic/node_modules
+*.diff
+.sass-cache
+/bower_components
+ghostdriver.log
+*.sublime-project
+*.sublime-workspace
+composer.lock
