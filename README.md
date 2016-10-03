@@ -588,56 +588,58 @@ If you're using a version prior to 5.3.1, there are some important differences o
 
 ## Including the library
 
-    In current version, one single line makes eveerythin available
+  versions <= 5.3.1
 
-    ````php
-    <?php include('path_to_doofinder_directory/vendor/autoload.php');
-    ````
+  ````php
+  <?php
+  include('path_to_doofinder_directory/lib/doofinder_api.php'); // search API
+  include('path_to_doofinder_directory/lib/doofinder_management_api.php'); // management API
+  ````
 
-    In earlier versions, you have to separately inluce client and management library
-    ````php
-    <?php
-    include('path_to_doofinder_directory/lib/doofinder_api.php'); // search API
-    include('path_to_doofinder_directory/lib/doofinder_management_api.php'); // management API
-    ````
+  versions > 5.3.1
+
+  ````php
+  <?php include('path_to_doofinder_directory/vendor/autoload.php');
+  ````
 
 ## Instantiating objects
 
 ### Search API Client
 
-    Old version
-    ````php
-    <?php include('path_to_doofinder_directory/lib/doofinder_api.php');
-    $searchClient = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
+  versions <= 5.3.1
+
+  ````php
+  <?php include('path_to_doofinder_directory/lib/doofinder_api.php');
+  $searchClient = new DoofinderApi('6a9abc4dc17351123b1e0198af92e6e9',
                                      'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3');
-    ````
+  ````
 
-    New version
+  versions > 5.3.1
 
-    ````php
-    <?php include('path_to_doofinder_directory/vendor/autoload.php');
-    $searchClient = new \Doofinder\Api\Search\Client('6a9abc4dc17351123b1e0198af92e6e9',
-                                                    'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3');
-    ````                                                   ````
+  ````php
+  <?php include('path_to_doofinder_directory/vendor/autoload.php');
+  $searchClient = new \Doofinder\Api\Search\Client('6a9abc4dc17351123b1e0198af92e6e9',
+                                                  'eu1-384fd8a73c7ff0859a5891f9f4083b1b9727f9c3');
+  ````                                                   ````
 
 ### Management API Client
 
-    Old Version
+  versions <= 5.3.1
 
-    ````php
-    <?php include('path_to_doofinder_directory/lib/doofinder_management_api.php');
-    $managementClient = new DoofinderManagementApi("eu1-d531af87f10969f90792a4296e2784b089b8a875");
-    #searchEngines = $managementClient->getSearchEngines();
-    ````
+  ````php
+  <?php include('path_to_doofinder_directory/lib/doofinder_management_api.php');
+  $managementClient = new DoofinderManagementApi("eu1-d531af87f10969f90792a4296e2784b089b8a875");
+  #searchEngines = $managementClient->getSearchEngines();
+  ````
 
-    New version
+  versions > 5.3.1
 
-    ````php
-    <?php include('path_to_doofinder_directory/vendor/autoload.php');
-    $managementClient = new \Doofinder\Api\Management\Client("eu1-d531af87f10969f90792a4296e2784b089b8a875");
-    $searchEngines = $managementClient->getSearchEngines();
-    ````
+  ````php
+  <?php include('path_to_doofinder_directory/vendor/autoload.php');
+  $managementClient = new \Doofinder\Api\Management\Client("eu1-d531af87f10969f90792a4296e2784b089b8a875");
+  $searchEngines = $managementClient->getSearchEngines();
+  ````
 
 ## Method name change
 
-    The `top_terms()` method has been renamed to `topTerms()`.
+  The `top_terms()` method has been renamed to `topTerms()`.
