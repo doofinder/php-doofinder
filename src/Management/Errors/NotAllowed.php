@@ -2,4 +2,4 @@
 
 namespace Doofinder\Api\Management\Errors;
 
-class NotAllowed extends Exception {}
+class NotAllowed extends \Exception {}

@@ -8,7 +8,7 @@ namespace Doofinder\Api\Management;
  * Implemets Iterator interface so foreach() can work with ItemRS
  * It's supposed to be extended
  */
-class ItemsResultSset implements \Iterator {
+class ItemsResultSet implements \Iterator {
 
   protected $searchEngine = null;
   protected $resultsPage = null;

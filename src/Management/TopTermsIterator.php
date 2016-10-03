@@ -3,6 +3,8 @@
 namespace Doofinder\Api\Management;
 
 use Doofinder\Api\Management\AggregatesIterator;
+use Doofinder\Api\Management\Errors\NotProcessedResponse;
+use Doofinder\Api\Management\Errors\MotFound;
 
 class TopTermsIterator extends AggregatesIterator {
 
@@ -20,6 +22,7 @@ class TopTermsIterator extends AggregatesIterator {
    * @param string term. type of term: 'clicked', 'searches', 'opportunities'
    */
   function __construct($searchEngine, $term, $from_date=null, $to_date=null){
+
     $this->term = $term;
     parent::__construct($searchEngine, $from_date, $to_date);
   }

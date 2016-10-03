@@ -2,7 +2,7 @@
 spl_autoload_register(function ($class) {
 
     $prefix = 'Doofinder\\Api\\';
-    $base_dir = __DIR__ . '../src/';
+    $base_dir = __DIR__ . '/../src/';
 
     // not my namespace
     $len = strlen($prefix);

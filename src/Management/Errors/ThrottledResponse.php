@@ -2,4 +2,4 @@
 
 namespace Doofinder\Api\Management\Errors;
 
-class ThrottledResponse extends Exception {}
+class ThrottledResponse extends \Exception {}

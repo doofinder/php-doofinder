@@ -77,7 +77,6 @@ class Client{
             $this->api_key = $zone_key_array[1];
             $this->zone = $zone_key_array[0];
             $this->url = "https://" . $this->zone . self::URL_SUFFIX;
-            $this->url = "http://localhost:8881/";
         } else {
             throw new Error("API Key is no properly set.");
         }

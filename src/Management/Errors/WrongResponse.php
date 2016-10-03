@@ -2,4 +2,4 @@
 
 namespace Doofinder\Api\Management\Errors;
 
-class WrongResponse extends Exception {}
+class WrongResponse extends \Exception {}

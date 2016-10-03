@@ -192,7 +192,7 @@ class SearchEngine {
    *
    * @return ItemsRS iterator through terms stats.
    */
-  function top_terms($term, $from_date=null, $to_date=null){
+  function topTerms($term, $from_date=null, $to_date=null){
 
     if(!in_array($term, array('clicked', 'searches', 'opportunities'))){
       throw new BadRequest("The term {$term} is not allowed");
