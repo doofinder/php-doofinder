@@ -277,7 +277,7 @@ class Client {
    *                     if 'from', 'to' in keys, range filter assumed
    */
   public function setFilter($filterName, $filter){
-    $this->search_options['filter'][$filterName] = $filter;
+    $this->search_options['filter'][$filterName] = (array) $filter;
   }
 
   /**
@@ -430,17 +430,13 @@ class Client {
   private function updateFilter($filter) {
     $new_filter = array();
 
-    foreach($filter as $key => $value){
-      switch ($key) {
-        case 'from':
-          $new_filter['gte'] = $value;
-          break;
-        case 'to':
-          $new_filter['lte'] = $value;
-          break;
-        default:
-          $new_filter[$key] = $value;
-          break;
+    foreach($filter as $key => $value) {
+      if ($key === 'from') {
+        $new_filter['gte'] = $value;
+      } else if ($key === 'to') {
+        $new_filter['lte'] = $value;
+      } else {
+        $new_filter[$key] = $value;
       }
     }
 
