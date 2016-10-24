@@ -7,6 +7,7 @@
 
 namespace Doofinder\Api\Management;
 
+use Doofinder\Api\Management\Client;
 use Doofinder\Api\Management\Errors\BadRequest;
 use Doofinder\Api\Management\TopTermsIterator;
 use Doofinder\Api\Management\ScrollIterator;
@@ -16,13 +17,12 @@ use Doofinder\Api\Management\AggregatesIterator;
 class SearchEngine {
   public $name = null;
   public $hashid = null;
+  public $client = null;
 
-  public $dma = null; // DoofinderManagementApi instance
-
-  function __construct($dma, $hashid, $name){
+  public function __construct(Client $client, $hashid, $name) {
     $this->name = $name;
     $this->hashid = $hashid;
-    $this->dma = $dma;
+    $this->client = $client;
   }
 
   /**
@@ -30,7 +30,7 @@ class SearchEngine {
    *
    * @return array list of types
    */
-  function getDatatypes(){
+  public function getDatatypes() {
     return $this->getTypes();
   }
 
@@ -39,48 +39,47 @@ class SearchEngine {
    *
    * @return array list of types
    */
-  function getTypes(){
-    $result = $this->dma->managementApiCall('GET', "{$this->hashid}/types");
+  public function getTypes() {
+    $result = $this->client->managementApiCall('GET', "{$this->hashid}/types");
     return $result['response'];
   }
 
   /**
    * Add a type to the searchengine
    *
-   * @param string $dType the type name
+   * @param string $datatype the type name
    * @return new list of searchengine's types
    */
-  function addType($dType){
-    $result = $this->dma->managementApiCall('POST', "{$this->hashid}/types", null,
-                                            json_encode(array('name' => $dType)));
+  public function addType($datatype) {
+    $result = $this->client->managementApiCall('POST', "{$this->hashid}/types", null, json_encode(array('name' => $datatype)));
     return $result['response'];
   }
 
   /**
    * Delete a type and all its items. HANDLE WITH CARE
    *
-   * @param string $dType the Type to delete. All items belonging
+   * @param string $datatype the Type to delete. All items belonging
    *                          to that type will be removed. mandatory
    * @return boolean true on success
    */
-  function deleteType($dType){
-    $result = $this->dma->managementApiCall('DELETE', "{$this->hashid}/types/{$dType}");
+  public function deleteType($datatype) {
+    $result = $this->client->managementApiCall('DELETE', "{$this->hashid}/types/{$datatype}");
     return $result['statusCode'] == 204;
   }
 
-  function items($dType){
-    return new ScrollIterator($this, $dType);
+  public function items($datatype) {
+    return new ScrollIterator($this, $datatype);
   }
 
   /**
    * Get details of a specific item
    *
-   * @param string $dType Type of the item.
+   * @param string $datatype Type of the item.
    * @param string $itemId the id of the item
    * @return array Assoc array representing the item.
    */
-  function getItem($dType, $itemId){
-    $result = $this->dma->managementApiCall('GET', "{$this->hashid}/items/{$dType}/{$itemId}");
+  public function getItem($datatype, $itemId) {
+    $result = $this->client->managementApiCall('GET', "{$this->hashid}/items/{$datatype}/{$itemId}");
     return $result['response'];
   }
 
@@ -91,13 +90,12 @@ class SearchEngine {
    *     item with that id.
    *   - It the 'id' field is not present, create one.
    *
-   * @param string $dType type of the. If not provided, first available type is used
+   * @param string $datatype type of the. If not provided, first available type is used
    * @param array $itemDescription Assoc array representation of the item
    * @return string the id of the item just created
    */
-  function addItem($dType, $itemDescription){
-    $result = $this->dma->managementApiCall('POST', "{$this->hashid}/items/{$dType}", null,
-                                            json_encode($itemDescription));
+  public function addItem($datatype, $itemDescription) {
+    $result = $this->client->managementApiCall('POST', "{$this->hashid}/items/{$datatype}", null, json_encode($itemDescription));
     return $result['response']['id'];
   }
 
@@ -109,15 +107,14 @@ class SearchEngine {
    *     item with that id.
    *   - It the 'id' field is not present, create one.
    *
-   * @param string $dType type of the. If not provided, first available type is used
+   * @param string $datatype type of the. If not provided, first available type is used
    * @param array $itemsDescription List of Assoc array representation of the item
    * @return array List of ids of the added items
    */
-  function addItems($dType, $itemsDescription){
-    $result = $this->dma->managementApiCall('POST', "{$this->hashid}/items/{$dType}", null,
-                                            json_encode($itemsDescription));
+  public function addItems($datatype, $itemsDescription) {
+    $result = $this->client->managementApiCall('POST', "{$this->hashid}/items/{$datatype}", null, json_encode($itemsDescription));
 
-    function fetchId($item){
+    function fetchId($item) {
       return $item['id'];
     };
 
@@ -130,14 +127,13 @@ class SearchEngine {
    * In case of conflict between itemDescription's id or $itemId,
    * the latter is used.
    *
-   * @param string $dType  type of the Item.
+   * @param string $datatype  type of the Item.
    * @param string $itemId  Id of the item to be updated/added
    * @param array $itemDescription Assoc array representating the item.
    * @return boolean true on success.
    */
-  function updateItem($dType, $itemId, $itemDescription){
-    $result = $this->dma->managementApiCall('PUT', "{$this->hashid}/items/{$dType}/{$itemId}", null,
-                                            json_encode($itemDescription));
+  public function updateItem($datatype, $itemId, $itemDescription) {
+    $result = $this->client->managementApiCall('PUT', "{$this->hashid}/items/{$datatype}/{$itemId}", null, json_encode($itemDescription));
     return $result['statusCode'] == 200;
   }
 
@@ -146,25 +142,24 @@ class SearchEngine {
    *
    * Each item description must contain the 'id' field
    *
-   * @param string $dType type of the items.
+   * @param string $datatype type of the items.
    * @param array $itemsDescription List of assoc array representing items
    * @return boolean true on success
    */
-  function updateItems($dType, $itemsDescription){
-    $result = $this->dma->managementApiCall('PUT', "{$this->hashid}/items/{$dType}", null,
-                                            json_encode($itemsDescription));
+  public function updateItems($datatype, $itemsDescription) {
+    $result = $this->client->managementApiCall('PUT', "{$this->hashid}/items/{$datatype}", null, json_encode($itemsDescription));
     return $result['statusCode'] == 200;
   }
 
   /**
    * Delete an item
    *
-   * @param string $dType type of the item
+   * @param string $datatype type of the item
    * @param string $itemId id of the item
    * @return boolean true if success, false if failure
    */
-  function deleteItem($dType, $itemId){
-    $result = $this->dma->managementApiCall('DELETE', "{$this->hashid}/items/{$dType}/{$itemId}");
+  public function deleteItem($datatype, $itemId) {
+    $result = $this->client->managementApiCall('DELETE', "{$this->hashid}/items/{$datatype}/{$itemId}");
     return $result['statusCode'] == 204 ;
   }
 
@@ -176,7 +171,7 @@ class SearchEngine {
    *
    * @return ItemsRS iterator through daily aggregated data.
    */
-  function stats($from_date=null, $to_date=null){
+  public function stats($from_date = null, $to_date = null) {
     return new AggregatesIterator($this, $from_date, $to_date);
   }
 
@@ -192,11 +187,11 @@ class SearchEngine {
    *
    * @return ItemsRS iterator through terms stats.
    */
-  function topTerms($term, $from_date=null, $to_date=null){
-
-    if(!in_array($term, array('clicked', 'searches', 'opportunities'))){
+  public function topTerms($term, $from_date = null, $to_date = null) {
+    if (!in_array($term, array('clicked', 'searches', 'opportunities'))) {
       throw new BadRequest("The term {$term} is not allowed");
     }
+
     return new TopTermsIterator($this, $term, $from_date, $to_date);
   }
 
@@ -207,11 +202,12 @@ class SearchEngine {
    *               - 'task_created': boolean true if a new task has been created
    *               - 'task_id': if task created, the id of the task.
    */
-  function process(){
-    $result = $this->dma->managementApiCall('POST', "{$this->hashid}/tasks/process");
+  public function process() {
+    $result = $this->client->managementApiCall('POST', "{$this->hashid}/tasks/process");
     $taskCreated = ($result['statusCode'] == 201);
     $taskId = $taskCreated ? SearchEngine::obtainId($result['response']['link']) : null;
-    return array('task_created'=>$taskCreated, 'task_id' => $taskId);
+
+    return array('task_created' => $taskCreated, 'task_id' => $taskId);
   }
 
   /**
@@ -220,8 +216,8 @@ class SearchEngine {
    * @return array Assoc array with 'state' and 'message' indicating status of the
    *               last asked processing task
    */
-  function processInfo(){
-    $result = $this->dma->managementApiCall('GET', "{$this->hashid}/tasks/process");
+  public function processInfo() {
+    $result = $this->client->managementApiCall('GET', "{$this->hashid}/tasks/process");
     unset($result['response']['task_name']);
     return $result['response'];
   }
@@ -232,8 +228,8 @@ class SearchEngine {
    * @return array Assoc array with 'state' and 'message' indicating the status
    *               of the task
    */
-  function taskInfo($taskId){
-    $result = $this->dma->managementApiCall('GET', "{$this->hashid}/tasks/{$taskId}");
+  public function taskInfo($taskId) {
+    $result = $this->client->managementApiCall('GET', "{$this->hashid}/tasks/{$taskId}");
     unset($result['response']['task_name']);
     return $result['response'];
   }
@@ -243,8 +239,8 @@ class SearchEngine {
    *
    * @return array list of arrays representing the logs
    */
-  function logs(){
-    $result = $this->dma->managementApiCall("GET", "{$this->hashid}/logs");
+  public function logs() {
+    $result = $this->client->managementApiCall("GET", "{$this->hashid}/logs");
     return $result['response'];
   }
 
@@ -254,8 +250,8 @@ class SearchEngine {
    * @param string $url item or task resource locator
    * @return the item identificator
    */
-    private static function obtainId($url){
-        preg_match('~/\w{32}/(items/\w+|tasks)/([\w-_]+)/?$~', $url, $matches);
-        return $matches[2];
-    }
+  private static function obtainId($url) {
+    preg_match('~/\w{32}/(items/\w+|tasks)/([\w-_]+)/?$~', $url, $matches);
+    return $matches[2];
+  }
 }

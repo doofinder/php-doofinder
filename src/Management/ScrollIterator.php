@@ -2,6 +2,7 @@
 
 namespace Doofinder\Api\Management;
 
+use Doofinder\Api\Management\SearchEngine;
 use \Doofinder\Api\Management\ItemsResultSet;
 
 /**
@@ -12,14 +13,14 @@ use \Doofinder\Api\Management\ItemsResultSet;
 class ScrollIterator extends ItemsResultSet {
 
   private $scrollId = null;
-  private $dType = null;
+  private $datatype = null;
 
   /**
    * @param SearchEngine $searchEngine
-   * @param string $dType type of item . i.e. 'product'
+   * @param string $datatype type of item . i.e. 'product'
    */
-  function __construct($searchEngine, $dType){
-    $this->dType = $dType;
+  public function __construct(SearchEngine $searchEngine, $datatype){
+    $this->datatype = $datatype;
     parent::__construct($searchEngine);
   }
 
@@ -28,20 +29,21 @@ class ScrollIterator extends ItemsResultSet {
    *
    */
   protected function fetchResultsAndTotal(){
-    $params = $this->scrollId ? array("scroll_id" => $this->scrollId) : null;
-    $apiResults = $this->searchEngine->dma->managementApiCall(
+    $apiResults = $this->searchEngine->client->managementApiCall(
       'GET',
-      "{$this->searchEngine->hashid}/items/{$this->dType}",
-      $params
+      "{$this->searchEngine->hashid}/items/{$this->datatype}",
+      ($this->scrollId ? array("scroll_id" => $this->scrollId) : null)
     );
+
     $this->total = $apiResults['response']['count'];
     $this->scrollId = $apiResults['response']['scroll_id'];
     $this->resultsPage = $apiResults['response']['results'];
     $this->currentItem = each($this->resultsPage);
+
     reset($this->resultsPage);
   }
 
-  function rewind(){
+  public function rewind(){
     $this->scrollId = null;
     parent::rewind();
   }

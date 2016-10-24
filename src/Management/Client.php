@@ -38,11 +38,12 @@ class Client
   private $token = null;
   private $baseManagementUrl = null;
 
-  function __construct($apiKey, $local = false){
+  public function __construct($apiKey, $local = false) {
     $this->apiKey = $apiKey;
     $clusterToken = explode('-', $apiKey);
     $this->clusterRegion = $clusterToken[0];
     $this->token = $clusterToken[1];
+
     if ($local === true){
       $this->baseManagementUrl = self::LOCAL_API_ENDPOINT;
     } else {
@@ -59,13 +60,16 @@ class Client
    * @param array $data If any, body request parameters
    * @return array Array with both status code and response .
    */
-  function managementApiCall($method='GET', $entryPoint='', $params=null, $data=null){
-    $headers = array('Authorization: Token '.$this->token, // for Auth
-                     'Content-Type: application/json',
-                     'Expect:'); // Fixes the HTTP/1.1 417 Expectation Failed
+  public function managementApiCall($method = 'GET', $entryPoint = '', $params = null, $data = null) {
+    $headers = array(
+      'Authorization: Token ' . $this->token,
+      'Content-Type: application/json',
+      'Expect:', // Fixes the HTTP/1.1 417 Expectation Failed error
+    );
 
     $url = $this->baseManagementUrl.'/'.$entryPoint;
-    if (is_array($params) && sizeof($params) > 0){
+
+    if (is_array($params) && sizeof($params) > 0) {
       $url .= '?'.http_build_query($params);
     }
 
@@ -75,7 +79,7 @@ class Client
     curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Tell curl to return the response
     curl_setopt($session, CURLOPT_HTTPHEADER, $headers); // Adding request headers
 
-    if (in_array($method, array('POST', 'PUT'))){
+    if (in_array($method, array('POST', 'PUT'))) {
       curl_setopt($session, CURLOPT_POSTFIELDS, $data);
     }
 
@@ -86,20 +90,20 @@ class Client
     $error = Utils::handleErrors($httpCode, $response);
 
     if ($error) {
-        throw $error;
+      throw $error;
     }
 
-    $return = array('statusCode' => $httpCode);
-    $return['response'] = ($decoded = json_decode($response, true)) ? $decoded : $response;
-
-    return $return;
+    return array(
+      'statusCode' => $httpCode,
+      'response' => ($decoded = json_decode($response, true)) ? $decoded : $response,
+    );
   }
 
   /**
    * To get info on all possible api entry points
    * @return array An assoc. array with the different entry points
    */
-  function getApiRoot(){
+  public function getApiRoot() {
     $response = $this->managementApiCall();
     return $response['response'];
   }
@@ -108,16 +112,15 @@ class Client
    * Obtain a list of SearchEngines objects, ready to interact with the API
    * @return array list of searchEngines objects
    */
-  function getSearchEngines(){
+  public function getSearchEngines(){
     $searchEngines = array();
     $apiRoot = $this->getApiRoot();
     unset($apiRoot['searchengines']);
 
-    foreach($apiRoot as $hashid => $props){
+    foreach ($apiRoot as $hashid => $props) {
       $searchEngines[] = new SearchEngine($this, $hashid, $props['name']);
     }
 
     return $searchEngines;
   }
-
 }

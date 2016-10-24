@@ -32,7 +32,7 @@ class Results {
    *
    * @param string $jsonResponse JSON returned by the Doofinder search server
    */
-  function __construct($jsonResponse) {
+  public function __construct($jsonResponse) {
     $response = json_decode($jsonResponse, true);
 
     foreach ($response as $key => $value){

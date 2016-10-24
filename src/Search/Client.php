@@ -78,7 +78,7 @@ class Client {
    *
    * @throws Error if $hashid is not a md5 hash or API version is not valid.
    */
-  function __construct($hashid, $api_key, $fromParams = false, $init_options = array()) {
+  public function __construct($hashid, $api_key, $fromParams = false, $init_options = array()) {
     $zone_key_array = explode('-', $api_key);
 
     if (2 === count($zone_key_array)) {
