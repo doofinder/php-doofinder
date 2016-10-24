@@ -22,6 +22,8 @@
 
 To install the library you can download it from the project's [releases](https://github.com/doofinder/php-doofinder/releases) page or use [Composer](https://packagist.org/packages/doofinder/doofinder).
 
+Requires PHP 5.3 or later. Not tested in previous versions.
+
 ### Download Method
 
 Just include the provided `autoload.php` file and use:
