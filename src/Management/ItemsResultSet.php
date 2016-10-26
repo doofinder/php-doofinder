@@ -2,6 +2,9 @@
 
 namespace Doofinder\Api\Management;
 
+use Doofinder\Api\Management\SearchEngine;
+
+
 /**
  * Helper class to iterate through the search engine's items
  *
@@ -13,21 +16,20 @@ class ItemsResultSet implements \Iterator {
   protected $searchEngine = null;
   protected $resultsPage = null;
   protected $position = 0;
-  protected  $total = null;
+  protected $total = null;
 
-  function __construct($searchEngine) {
+  public function __construct(SearchEngine $searchEngine) {
     $this->searchEngine = $searchEngine;
   }
 
-  protected function fetchResultsAndTotal(){
-    /**
-     * Function to be implemented in children
-     *
-     **/
-    throw new Exception('Not implemented method');
+  /**
+   * To be implemented in children
+   */
+  protected function fetchResultsAndTotal() {
+    throw new Exception('Not implemented.');
   }
 
-  function rewind(){
+  public function rewind() {
     $this->position = 0;
     $this->total = null;
     $this->resultsPage = null;
@@ -35,22 +37,22 @@ class ItemsResultSet implements \Iterator {
     $this->currentItem = each($this->resultsPage);
   }
 
-  function valid(){
+  public function valid() {
     return $this->position < $this->total;
   }
 
-  function current(){
+  public function current() {
     return $this->currentItem['value'];
   }
 
-  function key(){
+  public function key() {
     return $this->position;
   }
 
-  function next(){
+  public function next() {
     ++$this->position;
     $this->currentItem = each($this->resultsPage);
-    if(!$this->currentItem && $this->position < $this->total){
+    if (!$this->currentItem && $this->position < $this->total) {
       $this->fetchResultsAndTotal();
       $this->currentItem = each($this->resultsPage);
     }

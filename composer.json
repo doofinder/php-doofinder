@@ -1,8 +1,8 @@
 {
     "name": "doofinder/doofinder",
     "type": "library",
-    "description": "Doofinder php API Client",
-    "keywords": ["search","api", "doofinder"],
+    "description": "Doofinder PHP API Client",
+    "keywords": ["search", "api", "doofinder"],
     "homepage": "https://github.com/doofinder/php-doofinder",
     "license": "MIT",
     "authors": [

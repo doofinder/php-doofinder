@@ -2,6 +2,7 @@
 
 namespace Doofinder\Api\Management;
 
+use Doofinder\Api\Management\SearchEngine;
 use Doofinder\Api\Management\ItemsResultSet;
 
 class AggregatesIterator extends ItemsResultSet {
@@ -17,25 +18,29 @@ class AggregatesIterator extends ItemsResultSet {
    * @param DateTime $from_date . Starting date of the period. Default: 15 days ago
    * @param DateTime $to_date. Ending date of the period. Default: today.
    */
-  function __construct($searchEngine, $from_date=null, $to_date=null){
+  public function __construct(SearchEngine $searchEngine, $from_date = null, $to_date = null){
     $this->last_page = 0;
-    if($from_date!=null){
+
+    if (!is_null($from_date)) {
       $this->searchParams['from'] = $from_date->format("Ymd");
     }
-    if($to_date!=null){
+    if (!is_null($to_date)) {
       $this->searchParams['to'] = $to_date->format("Ymd");
     }
+
     parent::__construct($searchEngine);
   }
 
-  protected function fetchResultsAndTotal(){
-    $params = $this->last_page > 0 ? array("page"=>$this->last_page + 1) : array();
+  protected function fetchResultsAndTotal() {
+    $params = $this->last_page > 0 ? array("page" => $this->last_page + 1) : array();
+
     try{
-      $apiResponse = $this->searchEngine->dma->managementApiCall(
+      $apiResponse = $this->searchEngine->client->managementApiCall(
         'GET',
         "{$this->searchEngine->hashid}/stats",
         array_merge($params, $this->searchParams)
       );
+
       $this->resultsPage = $apiResponse['response']['aggregates'];
       $this->total = $apiResponse['response']['count'];
       $this->last_page++;
@@ -43,10 +48,11 @@ class AggregatesIterator extends ItemsResultSet {
     } catch (NotFound $nfe) {
       $this->resultsPage = array();
     }
+
     reset($this->resultsPage);
   }
 
-  function rewind(){
+  public function rewind() {
     $this->last_page = 0;
     parent::rewind();
   }
