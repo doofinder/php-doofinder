@@ -114,11 +114,8 @@ class SearchEngine {
   public function addItems($datatype, $itemsDescription) {
     $result = $this->client->managementApiCall('POST', "{$this->hashid}/items/{$datatype}", null, json_encode($itemsDescription));
 
-    function fetchId($item) {
-      return $item['id'];
-    };
 
-    return array_map('fetchId', $result['response']);
+    return array_map(function($it){return $it['id'];}, $result['response']);
   }
 
   /**
