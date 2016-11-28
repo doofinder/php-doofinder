@@ -3,8 +3,7 @@
 namespace Doofinder\Api\Test;
 
 use Doofinder\Api\Management\SearchEngine;
-use Doofinder\Api\Management\ScrollIterator;
-use Doofinder\Api\Management\AggregatesIterator;
+
 
 class SearchEngineTest extends \PHPUnit_Framework_TestCase
 {
@@ -183,6 +182,8 @@ class SearchEngineTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+
+
     public function providerTestStatsReturnsAggregatesIteratorWithDifferentDates()
     {
         return array(
@@ -191,7 +192,129 @@ class SearchEngineTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @param string term
+     * @param \DateTime $from_date
+     * @param \DateTime $to_date
+     *
+     * @dataProvider providerTestTopTermsReturnsTopTermsIteratorWithDifferentDatesAndTerms
+     */
+    public function testTopTermsReturnsTopTermsIteratorWithDifferentDatesAndTerms($term, $from_date, $to_date)
+    {
+        if(is_null($from_date)){
+            $iterator = $this->searchEngine->topTerms($term);
+        } else {
+            $iterator = $this->searchEngine->topTerms($term, $from_date, $to_date);
+        }
+        // returns a aggregatesIterator
+        $this->assertInstanceOf(
+            '\Doofinder\Api\Management\TopTermsIterator', $iterator
+        );
+        // with the right searchEngine
+        $this->assertEquals(
+            $this->searchEngine, $this->exposeAttribute($iterator, 'searchEngine')
+        );
+        // and proper dates
+        if(is_null($from_date)){
+            $expected = array();
+        } else {
+            $expected = array('from'=>$from_date->format("Ymd"), 'to'=>$to_date->format("Ymd"));
+        }
+        $this->assertEquals(
+            $expected, $this->exposeAttribute($iterator, 'searchParams')
+        );
+        // and proter term
+        $this->assertEquals(
+            $term, $this->exposeAttribute($iterator, 'term')
+        );
+    }
 
+
+
+    public function providerTestTopTermsReturnsTopTermsIteratorWithDifferentDatesAndTerms()
+    {
+        return array(
+            array('clicked', null, null), //default
+            array('clicked', new \DateTime("20011-01-07"), new \DateTime("2011-02-07")),
+            array('searches', null, null), //default
+            array('searches', new \DateTime("20011-01-07"), new \DateTime("2011-02-07")),
+            array('opportunities', null, null), //default
+            array('opportunities', new \DateTime("20011-01-07"), new \DateTime("2011-02-07"))
+        );
+    }
+
+    /**
+     * @expectedException \Doofinder\Api\Management\Errors\BadRequest
+     */
+    public function testTopTermsReturnsBadRequestWithWrongTerm()
+    {
+        $this->searchEngine->topTerms('bad_term');
+    }
+
+    public function testProcessApiCall()
+    {
+        $this->client->managementApiCall('POST','testHashid/tasks/process')
+                     ->shouldBeCalledTimes(1)
+                     ->willReturn(
+                         array(
+                             'statusCode' => 201,
+                             'response' => array(
+                                 'link' => '/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/tasks/task_id'
+                             )
+                         )
+                     );
+        $this->assertEquals(
+            $this->searchEngine->process(), array('task_created'=>true, 'task_id'=>'task_id')
+        );
+
+    }
+
+    public function testProcessInfoApiCall()
+    {
+        $this->client->managementApiCall('GET','testHashid/tasks/process')
+                     ->shouldBeCalledTimes(1)
+                     ->willReturn(
+                         array(
+                             'response' => array(
+                                 'state' => 'RUNNING',
+                                 'message' => 'ok'
+                             )
+                         )
+                     );
+        $this->assertEquals(
+            $this->searchEngine->processInfo(), array('state'=>'RUNNING', 'message' => 'ok')
+        );
+    }
+
+    public function testTaskInfoApiCall()
+    {
+        $this->client->managementApiCall('GET','testHashid/tasks/task-long-id')
+                     ->shouldBeCalledTimes(1)
+                     ->willReturn(
+                         array(
+                             'response' => array(
+                                 'state' => 'RUNNING',
+                                 'message' => 'ok'
+                             )
+                         )
+                     );
+        $this->assertEquals(
+            $this->searchEngine->taskInfo('task-long-id'),
+            array('state'=>'RUNNING', 'message' => 'ok')
+        );
+    }
+
+    public function testLogsApiCall()
+    {
+        $this->client->managementApiCall('GET','testHashid/logs')
+                     ->shouldBeCalledTimes(1)
+                     ->willReturn(
+                         array(
+                             'response' => array('a', 'response')
+                         )
+                     );
+        $this->assertEquals($this->searchEngine->logs(), array('a', 'response'));
+    }
 
     /**
      * Expose protected/private attribute of an object.
