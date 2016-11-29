@@ -34,7 +34,6 @@ class ScrollIterator extends ItemsResultSet {
       "{$this->searchEngine->hashid}/items/{$this->datatype}",
       ($this->scrollId ? array("scroll_id" => $this->scrollId) : null)
     );
-
     $this->total = $apiResults['response']['count'];
     $this->scrollId = $apiResults['response']['scroll_id'];
     $this->resultsPage = $apiResults['response']['results'];
