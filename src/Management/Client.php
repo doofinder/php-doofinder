@@ -69,33 +69,49 @@ class Client
 
     $url = $this->baseManagementUrl.'/'.$entryPoint;
 
-    if (is_array($params) && sizeof($params) > 0) {
+    if(is_array($params) && sizeof($params) > 0){
       $url .= '?'.http_build_query($params);
     }
 
-    $session = curl_init($url);
-    curl_setopt($session, CURLOPT_CUSTOMREQUEST, $method);
-    curl_setopt($session, CURLOPT_HEADER, false);
-    curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Tell curl to return the response
-    curl_setopt($session, CURLOPT_HTTPHEADER, $headers); // Adding request headers
-
-    if (in_array($method, array('POST', 'PUT'))) {
-      curl_setopt($session, CURLOPT_POSTFIELDS, $data);
+    if (!in_array($method, array('POST', 'PUT'))){
+      $data = null;
     }
 
-    $response = curl_exec($session);
-    $httpCode = curl_getinfo($session, CURLINFO_HTTP_CODE);
-    curl_close($session);
+    $serverResponse = $this->talkToServer($method, $url, $headers, $data);
 
-    $error = Utils::handleErrors($httpCode, $response);
+
+
+
+    // if (is_array($params) && sizeof($params) > 0) {
+    //   $url .= '?'.http_build_query($params);
+    // }
+
+    // $session = curl_init($url);
+    // curl_setopt($session, CURLOPT_CUSTOMREQUEST, $method);
+    // curl_setopt($session, CURLOPT_HEADER, false);
+    // curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Tell curl to return the response
+    // curl_setopt($session, CURLOPT_HTTPHEADER, $headers); // Adding request headers
+
+    // if (in_array($method, array('POST', 'PUT'))) {
+    //   curl_setopt($session, CURLOPT_POSTFIELDS, $data);
+    // }
+
+    // $response = curl_exec($session);
+    // $statusCode = curl_getinfo($session, CURLINFO_HTTP_CODE);
+    // curl_close($session);
+
+    $statusCode = $serverResponse['statusCode'];
+    $contentResponse = $serverResponse['contentResponse'];
+
+    $error = Utils::handleErrors($statusCode, $contentResponse);
 
     if ($error) {
       throw $error;
     }
 
     return array(
-      'statusCode' => $httpCode,
-      'response' => ($decoded = json_decode($response, true)) ? $decoded : $response,
+      'statusCode' => $statusCode,
+      'response' => ($decoded = json_decode($contentResponse, true)) ? $decoded : $contentResponse
     );
   }
 
@@ -123,4 +139,34 @@ class Client
 
     return $searchEngines;
   }
+
+  protected function talkToServer($method, $url, $headers, $data)
+  {
+
+    $session = curl_init($url);
+    curl_setopt($session, CURLOPT_CUSTOMREQUEST, $method);
+    curl_setopt($session, CURLOPT_HEADER, false);
+    curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Tell curl to return the response
+    curl_setopt($session, CURLOPT_HTTPHEADER, $headers); // Adding request headers
+
+    if (!is_null($data)) {
+      curl_setopt($session, CURLOPT_POSTFIELDS, $data);
+    }
+
+    $contentResponse = curl_exec($session);
+    $statusCode = curl_getinfo($session, CURLINFO_HTTP_CODE);
+
+    curl_close($session);
+
+    return array(
+      'contentResponse' => $contentResponse,
+      'statusCode' => $statusCode
+    );
+
+  }
+
+  private function sayHello(){
+
+  }
+
 }

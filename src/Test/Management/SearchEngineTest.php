@@ -1,6 +1,6 @@
 <?php
 
-namespace Doofinder\Api\Test;
+namespace Doofinder\Api\Test\Management;
 
 use Doofinder\Api\Management\SearchEngine;
 
