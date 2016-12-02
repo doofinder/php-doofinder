@@ -230,6 +230,152 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     $this->client->query('ab');
   }
 
+  public function testNextPage()
+  {
+    $this->curl_exec->expects($this->any())->willReturn(
+      json_encode(array('total'=>44,'page'=>1, 'query'=>'ab'))
+    );
+    $searchParams = array(
+      'filter'=>array('color'=>array('red')),
+      'sort'=>array(array('price'=>'desc')),
+      'query_name'=>'a',
+      'hashid'=>$this->testHashid
+    );
+    $page1QueryUrl = $this->searchUrl.'?query=ab&'.http_build_query($searchParams);
+    $page2QueryUrl = $this->searchUrl.'?query=ab&'.http_build_query($searchParams).'&page=2';
+    $this->curl_init->expects($this->exactly(2))
+                    ->withConsecutive(array($page1QueryUrl), array($page2QueryUrl));
+    $this->client->query('ab', null, $searchParams);
+    $this->client->nextPage();
+  }
+
+  public function testPrevPage()
+  {
+    $this->curl_exec->expects($this->any())->willReturn(
+      json_encode(array('total'=>44,'page'=>2, 'query'=>'ab'))
+    );
+    $searchParams = array(
+      'filter'=>array('color'=>array('red')),
+      'sort'=>array(array('price'=>'desc')),
+      'query_name'=>'a',
+      'hashid'=>$this->testHashid
+    );
+    $page2QueryUrl = $this->searchUrl.'?query=ab&page=2&'.http_build_query($searchParams);
+    $page1QueryUrl = $this->searchUrl.'?query=ab&page=1&'.http_build_query($searchParams);
+    $this->curl_init->expects($this->exactly(2))
+                    ->withConsecutive(array($page2QueryUrl), array($page1QueryUrl));
+    $this->client->query('ab', 2, $searchParams);
+    $this->client->prevPage();
+  }
+
+  public function testToQueryString()
+  {
+    $this->curl_exec->expects($this->any())->willReturn(
+      json_encode(
+        array('total'=>44, 'page'=>1, 'query' =>'ab', 'query_name'=>'baba')
+      )
+    );
+    $searchParams = array(
+      'query_name'=>'baba',
+      'filter'=>array('color'=>array('red')),
+      'sort'=>array(array('price'=>'desc'))
+    );
+    $url = 's';
+    $serialization = 'dfParam_query=ab&dfParam_query_name=baba&dfParam_filter%5Bcolor%5D%5B0%5D=red&dfParam_sort%5B0%5D%5Bprice%5D=desc';
+    $this->client->query('ab', null, $searchParams);  // do the query to populate state
+    $this->assertEquals($serialization, $this->client->toQueryString());
+  }
+
+  public function testToQueryStringWithCustomPrefix()
+  {
+    $this->curl_exec->expects($this->any())->willReturn(
+      json_encode(
+        array('total'=>44, 'page'=>1, 'query' =>'ab', 'query_name'=>'baba')
+      )
+    );
+    $searchParams = array(
+      'query_name'=>'baba',
+      'filter'=>array('color'=>array('red')),
+      'sort'=>array(array('price'=>'desc'))
+    );
+    $url = 's';
+
+    // create client with custom prefix
+    $customPrefixClient = new Client($this->testHashid, 'eu1-testApiToken', false,
+                                     array(
+                                       'prefix' => 'customP'
+                                     ));
+    $customPrefixserialization = 'customPquery=ab&customPquery_name=baba&customPfilter%5Bcolor%5D%5B0%5D=red&customPsort%5B0%5D%5Bprice%5D=desc';
+    $customPrefixClient->query('ab', null, $searchParams);  // do the query to populate state
+    $this->assertEquals($customPrefixserialization, $customPrefixClient->toQueryString());
+  }
+
+  public function testFromQueryString()
+  {
+    $this->curl_exec->expects($this->any())->willReturn(
+      json_encode(
+        array('total'=>44, 'page'=>1, 'query' =>'ab', 'query_name'=>'baba')
+      )
+    );
+    // to fool fromQueryString
+    $_REQUEST = array(
+      'dfParam_query'=>'ab',
+      'dfParam_query_name'=>'baba',
+      'dfParam_filter'=> array('color'=>array('red')),
+      'dfParam_sort'=>array(array('price'=>'desc'))
+    );
+    $queryUrl = $this->searchUrl.'?query=ab&query_name=baba&filter%5Bcolor%5D%5B0%5D=red&sort%5B0%5D%5Bprice%5D=desc&hashid='.$this->testHashid;
+    $this->curl_init->expects($this->once())->with($queryUrl);
+    // unserialize client
+    $client = new Client($this->testHashid, 'eu1-testApiToken');
+    $client->fromQueryString();
+    $client->query();  // do the query
+  }
+
+  public function testFromQueryStringWithCustomPrefix()
+  {
+    $this->curl_exec->expects($this->any())->willReturn(
+      json_encode(
+        array('total'=>44, 'page'=>1, 'query' =>'ab', 'query_name'=>'baba')
+      )
+    );
+    // to fool fromQueryString
+    $_REQUEST = array(
+      'customPquery'=>'ab',
+      'customPquery_name'=>'baba',
+      'customPfilter'=> array('color'=>array('red')),
+      'customPsort'=>array(array('price'=>'desc'))
+    );
+    $queryUrl = $this->searchUrl.'?query=ab&query_name=baba&filter%5Bcolor%5D%5B0%5D=red&sort%5B0%5D%5Bprice%5D=desc&hashid='.$this->testHashid;
+    $this->curl_init->expects($this->once())->with($queryUrl);
+    // unserialize client
+    $client = new Client($this->testHashid, 'eu1-testApiToken', false, array('prefix'=>'customP'));
+    $client->fromQueryString();
+    $client->query();  // do the query
+  }
+
+  public function testConstructorFromQueryStringWithCustomPrefix(){
+    $this->curl_exec->expects($this->any())->willReturn(
+      json_encode(
+        array('total'=>44, 'page'=>1, 'query' =>'ab', 'query_name'=>'baba')
+      )
+    );
+    // to fool fromQueryString
+    $_REQUEST = array(
+      'customPquery'=>'ab',
+      'customPquery_name'=>'baba',
+      'customPfilter'=> array('color'=>array('red')),
+      'customPsort'=>array(array('price'=>'desc'))
+    );
+    $queryUrl = $this->searchUrl.'?query=ab&query_name=baba&filter%5Bcolor%5D%5B0%5D=red&sort%5B0%5D%5Bprice%5D=desc&hashid='.$this->testHashid;
+    $this->curl_init->expects($this->once())->with($queryUrl);
+    // unserialize client in constructor
+    $client = new Client($this->testHashid, 'eu1-testApiToken', true, array('prefix'=>'customP'));
+
+    $client->query();  // do the query
+  }
+
+
 
 
 }

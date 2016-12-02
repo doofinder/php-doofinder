@@ -141,8 +141,7 @@ However, if you're going to apply filters to a query, that means you're going to
 ```php
 // make the initial query. no filters and no "query_name" specified
 $results = $client->query("baby gloves");
-// set $df to keep using the same "query_name" it used for the first query
-$client->setQueryName($results->getProperty('query_name'));
+// "query_name" is automatically set to be the same it used for the first query
 // add a filter
 $client->addTerm('category', 'More than 6 years');
 // do the same query. this time filtered and with a specific query_name
@@ -354,7 +353,6 @@ $client->numPages();                        // Num of pages
 $client->getRpp();                          // Get the number of results per page
 $client->getTimeout();
 $client->setApiVersion($apiVersion);        // Sets API version to use (default: 5)
-$client->setQueryName($queryName);          // Sets the 'query_name' parameter
 ```
 
 #### `\Doofinder\Api\Search\Results`

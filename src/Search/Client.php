@@ -563,16 +563,6 @@ class Client {
   }
 
   /**
-   * setQueryName
-   *
-   * sets query_name
-   * CAUTION: node will complain if this is wrong
-   */
-  public function setQueryName($queryName) {
-    $this->queryName = $queryName;
-  }
-
-  /**
    * getFilterType
    * obtain the filter type (i.e. 'terms' or 'numeric range' from its conditions)
    * @param array filter conditions
