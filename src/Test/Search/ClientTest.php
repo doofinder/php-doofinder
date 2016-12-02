@@ -157,7 +157,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     $counter = 0;
     $this->curl_exec->expects($this->exactly(4))->willReturnCallback(function() use(&$counter) {
         $counter++;
-        echo $counter;
         switch($counter){
           case 1:
             // first request. has next page
