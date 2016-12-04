@@ -78,28 +78,6 @@ class Client
     }
 
     $serverResponse = $this->talkToServer($method, $url, $headers, $data);
-
-
-
-
-    // if (is_array($params) && sizeof($params) > 0) {
-    //   $url .= '?'.http_build_query($params);
-    // }
-
-    // $session = curl_init($url);
-    // curl_setopt($session, CURLOPT_CUSTOMREQUEST, $method);
-    // curl_setopt($session, CURLOPT_HEADER, false);
-    // curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Tell curl to return the response
-    // curl_setopt($session, CURLOPT_HTTPHEADER, $headers); // Adding request headers
-
-    // if (in_array($method, array('POST', 'PUT'))) {
-    //   curl_setopt($session, CURLOPT_POSTFIELDS, $data);
-    // }
-
-    // $response = curl_exec($session);
-    // $statusCode = curl_getinfo($session, CURLINFO_HTTP_CODE);
-    // curl_close($session);
-
     $statusCode = $serverResponse['statusCode'];
     $contentResponse = $serverResponse['contentResponse'];
 
@@ -162,10 +140,6 @@ class Client
       'contentResponse' => $contentResponse,
       'statusCode' => $statusCode
     );
-
-  }
-
-  private function sayHello(){
 
   }
 
