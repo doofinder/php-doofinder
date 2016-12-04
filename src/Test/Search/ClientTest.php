@@ -159,27 +159,27 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $counter++;
         switch($counter){
           case 1:
-            // first request. has next page
+            // first request (page 2). has next page
             return json_encode(array('total'=>44, 'page'=>2));
           case 2:
-            // second request. doesn't have next page
+            // second request. (last page) doesn't have next page
             return json_encode(array('total'=>44, 'page'=>44));
           case 3:
-            // third request. have prev
+            // third request. have prev (page 2)
             return json_encode(array('total'=>44, 'page'=>2));
           case 4:
-            // fourth request. does not have prev
+            // fourth request. does not have prev (first page)
             return json_encode(array('total'=>44, 'page'=>1));
         }
       });
 
-    $this->client->query('ab');// first request
+    $this->client->query('ab');// page 2
     $this->assertTrue($this->client->hasNext());
-    $this->client->query('ab');// second request
+    $this->client->query('ab');// last page
     $this->assertFalse($this->client->hasNext());
-    $this->client->query('ab');// third request
+    $this->client->query('ab');// page 2
     $this->assertTrue($this->client->hasPrev());
-    $this->client->query('ab');// fourth request
+    $this->client->query('ab');// first page
     $this->assertFalse($this->client->hasPrev());
   }
 
@@ -240,7 +240,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
       'query_name'=>'a',
       'hashid'=>$this->testHashid
     );
+    //->query('ab') url
     $page1QueryUrl = $this->searchUrl.'?query=ab&'.http_build_query($searchParams);
+    // ->nextPage() url
     $page2QueryUrl = $this->searchUrl.'?query=ab&'.http_build_query($searchParams).'&page=2';
     $this->curl_init->expects($this->exactly(2))
                     ->withConsecutive(array($page1QueryUrl), array($page2QueryUrl));
@@ -259,7 +261,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
       'query_name'=>'a',
       'hashid'=>$this->testHashid
     );
+    //->query('ab', 2) url
     $page2QueryUrl = $this->searchUrl.'?query=ab&page=2&'.http_build_query($searchParams);
+    //->->prevPage() url
     $page1QueryUrl = $this->searchUrl.'?query=ab&page=1&'.http_build_query($searchParams);
     $this->curl_init->expects($this->exactly(2))
                     ->withConsecutive(array($page2QueryUrl), array($page1QueryUrl));
@@ -279,7 +283,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
       'filter'=>array('color'=>array('red')),
       'sort'=>array(array('price'=>'desc'))
     );
-    $url = 's';
     $serialization = 'dfParam_query=ab&dfParam_query_name=baba&dfParam_filter%5Bcolor%5D%5B0%5D=red&dfParam_sort%5B0%5D%5Bprice%5D=desc';
     $this->client->query('ab', null, $searchParams);  // do the query to populate state
     $this->assertEquals($serialization, $this->client->toQueryString());
@@ -297,13 +300,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
       'filter'=>array('color'=>array('red')),
       'sort'=>array(array('price'=>'desc'))
     );
-    $url = 's';
-
     // create client with custom prefix
-    $customPrefixClient = new Client($this->testHashid, 'eu1-testApiToken', false,
-                                     array(
-                                       'prefix' => 'customP'
-                                     ));
+    $customPrefixClient = new Client(
+      $this->testHashid, 'eu1-testApiToken', false, array('prefix' => 'customP')
+    );
     $customPrefixserialization = 'customPquery=ab&customPquery_name=baba&customPfilter%5Bcolor%5D%5B0%5D=red&customPsort%5B0%5D%5Bprice%5D=desc';
     $customPrefixClient->query('ab', null, $searchParams);  // do the query to populate state
     $this->assertEquals($customPrefixserialization, $customPrefixClient->toQueryString());
@@ -345,11 +345,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
       'customPfilter'=> array('color'=>array('red')),
       'customPsort'=>array(array('price'=>'desc'))
     );
+    // query that should be done with params from $_REQUEST
     $queryUrl = $this->searchUrl.'?query=ab&query_name=baba&filter%5Bcolor%5D%5B0%5D=red&sort%5B0%5D%5Bprice%5D=desc&hashid='.$this->testHashid;
     $this->curl_init->expects($this->once())->with($queryUrl);
-    // unserialize client
+    // have to create new one here so it can see $_REQUEST
     $client = new Client($this->testHashid, 'eu1-testApiToken', false, array('prefix'=>'customP'));
-    $client->fromQueryString();
+    $client->fromQueryString(); // unserialize client
     $client->query();  // do the query
   }
 
