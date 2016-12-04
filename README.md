@@ -580,3 +580,17 @@ $taskInfo = $mySearchEngine->taskInfo($taskResult['task_id']);
 // Get log info about the last processes
 $logs = $mySearchEngine->logs();
 ```
+
+## Run Tests
+
+To run tests.
+
+  - Make sure you have (phpunit) [https://phpunit.de/] (version 4.8) and (php-mock-phpunit)[https://github.com/php-mock/php-mock-phpunit] (version 1.1.*). If you have composer you can run
+  ````shell
+  $ composer.phar install
+  ````
+
+  - Run the tests!!
+  ````shell
+  $ phpunit
+  ````
