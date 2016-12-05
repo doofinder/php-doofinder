@@ -34,3 +34,5 @@ Version 5.
    - Added phpunit tests
    - Added phpunit tests
    - some small refactoring
+- v5.5.1
+   - added deleteItems method

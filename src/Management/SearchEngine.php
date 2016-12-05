@@ -160,6 +160,22 @@ class SearchEngine {
   }
 
   /**
+   * Delete items in bulk (up to 100)
+   *
+   * @param  string $datatype type of the items
+   * @param  array list of item ids to be deleted
+   * @return array assoc array with both items which could be deleted and couldn't
+   *         array('errors'=>array(), 'success'=>array('AX01', 'AX02', 'AXFD')
+   */
+  public function deleteItems($datatype, $itemsIds) {
+    $objects = array_map(function($id){return array('id'=>$id);}, $itemsIds);
+    $result = $this->client->managementApiCall(
+      'DELETE', "{$this->hashid}/items/{$datatype}", null, json_encode($objects)
+    );
+    return $result['response'];
+  }
+
+  /**
    * Obtain stats aggregated data for a certain period.
    *
    * @param DateTime $from_date. Starting date. Default is 15 days ago

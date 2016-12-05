@@ -489,7 +489,7 @@ $mySearchEngine->deleteItem('product', 'newid');
 $mySearchEngine->updateItem('product', '888493', array('title'=>'modifiled title'));
 ```
 
-##### Bulk Add/Update
+##### Bulk Add/Update/Delete
 
 ```php
 $mySearchEngine->updateItems('product', array(
@@ -501,6 +501,8 @@ $mySearchEngine->addItems('product', array(
   array('title' => 'first item', 'id' => 'newid1'),
   array('title' => 'second item'),
 ));
+
+$mySearchEngine->deleteItems('product', array('id1', 'id2'));
 ```
 
 ##### Iterating Items

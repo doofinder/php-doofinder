@@ -73,10 +73,9 @@ class Client
       $url .= '?'.http_build_query($params);
     }
 
-    if (!in_array($method, array('POST', 'PUT'))){
+    if (!in_array($method, array('POST', 'PUT', 'DELETE'))){
       $data = null;
     }
-
     $serverResponse = $this->talkToServer($method, $url, $headers, $data);
     $statusCode = $serverResponse['statusCode'];
     $contentResponse = $serverResponse['contentResponse'];
@@ -120,7 +119,6 @@ class Client
 
   protected function talkToServer($method, $url, $headers, $data)
   {
-
     $session = curl_init($url);
     curl_setopt($session, CURLOPT_CUSTOMREQUEST, $method);
     curl_setopt($session, CURLOPT_HEADER, false);
