@@ -2,6 +2,6 @@ language: php
 php:
   - '5.5'
 install:
-  - composer install --prefer-source --no-interaction --dev
+  - composer install
 script:
   - vendor/bin/phpunit
