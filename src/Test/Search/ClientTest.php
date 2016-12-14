@@ -2,7 +2,7 @@
 
 namespace Doofinder\Api\Test;
 
-use phpmock\phpunit\PHPMock;
+use \phpmock\phpunit\PHPMock;
 
 
 use Doofinder\Api\Search\Client;
