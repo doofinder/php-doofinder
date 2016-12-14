@@ -1,5 +1,6 @@
 language: php
 php:
   - '5.5'
-before_script:
-  - composer install
+install:
+  - composer require php-mock/php-mock-phpunit
+  - composer install --prefer-source --no-interaction --dev
