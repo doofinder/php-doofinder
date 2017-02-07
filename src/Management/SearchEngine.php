@@ -64,7 +64,7 @@ class SearchEngine {
    */
   public function deleteType($datatype) {
     $result = $this->client->managementApiCall('DELETE', "{$this->hashid}/types/{$datatype}");
-    return $result['statusCode'] == 204;
+    return $result['statusCode'] == 202;
   }
 
   public function items($datatype) {

@@ -19,8 +19,12 @@ class Utils {
         return new NotAllowed("The user hasn't provided valid authorization: ".Utils::readError($response));
       case 404:
         return new NotFound("Not Found: ".Utils::readError($response));
-      case 409: // trying to post with an already used id
-        return new BadRequest("Request conflict: ".Utils::readError($response));
+      case 409:
+        if (preg_match('/indexing.*progress/i', $response) == 1) { // trying to index while indexing in progress
+          return new IndexingInProgress(Utils::readError($response));
+        } else {
+          return new BadRequest("Request conflict: ".Utils::readError($response)); // trying to post with an already used id
+        }
       case 429:
         if (stripos($response, 'throttled')) {
           return new ThrottledResponse(Utils::readError($response));
