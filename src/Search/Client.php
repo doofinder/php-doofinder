@@ -32,12 +32,10 @@ use Doofinder\Api\Search\Error;
  * Basic client to perform requests to Doofinder search servers.
  */
 class Client {
-  const URL_SUFFIX = '-search.doofinder.com';
   const DEFAULT_TIMEOUT = 10000;
   const DEFAULT_RPP = 10;
   const DEFAULT_PARAMS_PREFIX = 'dfParam_';
   const DEFAULT_API_VERSION = '5';
-  const VERSION = '5.4.3';
 
   private $api_key = null; // Authentication
   private $hashid = null;  // ID of the Search Engine
@@ -84,7 +82,6 @@ class Client {
     if (2 === count($zone_key_array)) {
       $this->api_key = $zone_key_array[1];
       $this->zone = $zone_key_array[0];
-      $this->url = "https://" . $this->zone . self::URL_SUFFIX;
     } else {
       throw new Error("API Key is no properly set.");
     }
@@ -133,6 +130,14 @@ class Client {
     }
   }
 
+  private function getSearchUrl($entryPoint = 'search', $params = array()) {
+    return sprintf("https://%s-search.doofinder.com/%s/%s?%s",
+                   $this->zone,
+                   $this->apiVersion,
+                   $entryPoint,
+                   http_build_query($this->sanitize($params)));
+  }
+
   private function addPrefix($value) {
     return $this->paramsPrefix.$value;
   }
@@ -146,13 +151,10 @@ class Client {
     return $headers;
   }
 
-  private function apiCall($entry_point = 'search', $params = array()){
+  private function apiCall($entryPoint = 'search', $params = array()){
     $params['hashid'] = $this->hashid;
 
-    $session = curl_init(sprintf("%s/%s/%s?%s", $this->url,
-                                                $this->apiVersion,
-                                                $entry_point,
-                                                http_build_query($this->sanitize($params))));
+    $session = curl_init($this->getSearchUrl($entryPoint, $params));
 
     // Configure cURL to return response but not headers
     curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET');
