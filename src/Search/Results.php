@@ -125,46 +125,86 @@ class Results {
   }
 
   /**
-   * getFacet
+   * getLegacyFacet
    *
    * @param string name the facet name whose results are wanted
    *
-   * @return array facet search data
+   * @return array facet search data raw from the search server
+   *
    *                - for terms facets
    *                array(
-   *                    '_type'=> 'terms',  // type of facet 'terms' or 'range'
-   *                    'missing'=> 3, // # of elements with no value for this facet
-   *                    'others'=> 2, // # of terms not present in the search response
-   *                    'total'=> 6, // # number of possible terms for this facet
+   *                    "doc_count" => 1819, // # number of possible terms for this facet
    *                    'terms'=> array(
-   *                        array('count'=>6, 'term'=>'Blue', 'selected'=>false), // in the response, there are 6 'blue' terms
-   *                        array('count'=>3, 'term': 'Red', 'selected'=>true), // if 'selected'=>true, that term has been selected as filter
-   *                        ...
+   *                        "buckets" => array(
+   *                            array(
+   *                              "key"=>"France",
+   *                              "doc_count"=> 1653,
+   *                              "selected" => true // only if this term is selected by user.
+   *                            ),
+   *                            array("key"=>"Spain", "doc_count"=> 332)
+   *                        ),
+   *                        ....
    *                    )
-   *                )
+   *
    *                - for range facets
    *                array(
-   *                    '_type'=> 'range',
-   *                    'ranges'=> array(
-   *                        array(
-   *                              'count'=>6, // in the response, 6 elements within that range.
-   *                              'from':0,
-   *                              'min': 30
-   *                              'max': 90,
-   *                              'mean'=>33.2,
-   *                              'total'=>432,
-   *                              'total_count'=>6,
-   *                              'selected_from'=> 34.3 // if present. this value has been used as filter. false otherwise
-   *                              'selected_to'=> 99.3 // if present. this value has been used as filter. false otherwise
-   *                        ),
-   *                        ...
-   *                    )
-   *                )
+   *                    "doc_count" => 4482,
+   *                    'range'=> array(
+   *                        "buckets" => array(
+   *                            array(
+   *                              "key"=>"0.0-",
+   *                              "from"=> 0, "from_as_string"=> "0,0","doc_count"=> 165,
+   *                              "stats" => array(
+   *                                "count" => 165,
+   *                                "min" => 0,
+   *                                "max" => 23.2,
+   *                                'selected_from'=> 34.3 // if present,
+   *                                                       // this value has been used as filter.
+   *                                                       // false otherwise
+   *                                'selected_to'=> 99.3 // if present.
+   *                                                     // this value has been used as filter.
+   *                                                     // false otherwise
+   *                                ...
+   *                              )
+   *                            )
+   *                          )
+   *                        )
    *
    *
    */
-  public function getFacet($facetName){
+  public function getLegacyFacet($facetName){
     return $this->facets[$facetName];
+  }
+
+  public function getFacet($facetName){
+    $facetProperties = $this->facets[$facetName];
+    switch(true) {
+      case isset($facetProperties['terms']):
+        return array(
+          "count" => $facetProperties['doc_count'],
+          'terms' => array_map(
+            function($el) {
+              return array(
+                'term' => $el['key'],
+                'count' => $el['doc_count'],
+                'selected' => isset($el['selected'])
+              );
+            },
+            $facetProperties['terms']['buckets'])
+        );
+      case isset($facetProperties['range']):
+        $stats = $facetProperties['range']['buckets'][0];
+        return array(
+          'count' => $stats['count'],
+          'from' => $stats['min'],
+          'to' => $stats['max'],
+          'selected_from' => isset($stats['selected_from']),
+          'selected_to' => isset($stats['selected_to'])
+        );
+      default:
+        break;
+    }
+
   }
 
   /**
