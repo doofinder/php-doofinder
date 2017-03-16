@@ -119,9 +119,9 @@ foreach($category_facet['terms'] as $term) {
 
 $price_facet = $results->getFacet('price');
 
-echo "Min price found: ".$price_facet['ranges'][0]['min']."\n";
+echo "Min price found: ".$price_facet['from']."\n";
 // Min price found: 33.6
-echo "Max price found: ".$price_facet['ranges'][0]['max']."\n";
+echo "Max price found: ".$price_facet['to']."\n";
 ```
 
 __Notice:__

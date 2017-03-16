@@ -2,7 +2,7 @@
 
 ##v5.6.1
   * Breaking changes
-    - getFacet method simplified
+    - getFacet method return array simplified
     - former 'getFacet' method is now called 'getLegacyFacet'
 
 ##v5.5.1
