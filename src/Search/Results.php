@@ -176,6 +176,34 @@ class Results {
     return $this->facets[$facetName];
   }
 
+  /**
+   * getFacet
+   *
+   * @param string name the facet whose results are wanted
+   *
+   * @return array facet inforation
+   *
+   *                - for term facets
+   *                array(
+   *                  'count' => 232,
+   *                  'terms' => array(
+   *                    array(
+   *                      'term' => 'France',
+   *                      'count' => 23,
+   *                      'selected' => false // if previously selected as a filter
+   *                    ),
+   *                    array('term' => 'Spain', 'count' => 2, 'selected' => true),
+   *                    ...
+   *                  )
+   *                - for range facets
+   *                array(
+   *                  'count' => 232,
+   *                  'from' => 23.2,
+   *                  'to' => 443.1,
+   *                  'selected_from' => 44, // if se;ected as filter. false otherwise
+   *                  'selected_to' => 401 // if selected as filter
+   *                )
+   */
   public function getFacet($facetName){
     $facetProperties = $this->facets[$facetName];
     switch(true) {
@@ -193,13 +221,13 @@ class Results {
             $facetProperties['terms']['buckets'])
         );
       case isset($facetProperties['range']):
-        $stats = $facetProperties['range']['buckets'][0];
+        $bucket = $facetProperties['range']['buckets'][0];
         return array(
-          'count' => $stats['count'],
-          'from' => $stats['min'],
-          'to' => $stats['max'],
-          'selected_from' => isset($stats['selected_from']),
-          'selected_to' => isset($stats['selected_to'])
+          'count' => $bucket['stats']['count'],
+          'from' => $bucket['stats']['min'],
+          'to' => $bucket['stats']['max'],
+          'selected_from' => isset($bucket['selected_from']) ? $bucket['selected_from'] : false,
+          'selected_to' => isset($bucket['selected_to']) ? $bucket['selected_to'] : false
         );
       default:
         break;
