@@ -1,7 +1,7 @@
 Version 5.
 ----------
 
-v5.6.1
+v5.6.0
 ======
   * Breaking changes
     - getFacet method return array simplified
