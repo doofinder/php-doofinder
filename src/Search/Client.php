@@ -56,7 +56,7 @@ class Client {
   private $queryParameter = 'query';
   private $allowedParameters = array('page', 'rpp', 'timeout', 'types',
                                      'filter', 'query_name', 'transformer',
-                                     'sort'); // Valid parameters
+                                     'sort', 'exclude'); // Valid parameters
 
   /**
    * Constructor.
@@ -190,6 +190,7 @@ class Client {
    *                       defaults to 10 seconds
    *        - 'types' => types of index to search at. default: all.
    *        - 'filter' => filter to apply. ['color'=>['red','blue'], 'price'=>['from'=>33]]
+   *        - 'exclude' => exclude ['color' => ['yellow']]
    *        - any other param will be sent as a request parameter
    * @return DoofinderResults results
    */
@@ -213,6 +214,14 @@ class Client {
     {
       foreach($params['filter'] as $filterName => $filterValue){
         $params['filter'][$filterName] = $this->updateFilter($filterValue);
+      }
+    }
+    
+    // translate excludes
+    if(!empty($params['exclude']))
+    {
+      foreach($params['exclude'] as $excludeName => $excludeValue){
+        $params['exclude'][$excludeName] = $this->updateFilter($excludeValue);
       }
     }
 
@@ -270,6 +279,49 @@ class Client {
     return $this->page;
   }
 
+  /**
+   * setExclude
+   *
+   * set a exclude for the query
+   * @param string excludeName the name of the exclude to set
+   * @param array exclude if simple array, terms exclude assumed
+   *                     if 'from', 'to' in keys, range exclude assumed
+   */
+  public function setExclude($excludeName, $exclude){
+    $this->search_options['exclude'][$excludeName] = (array) $exclude;
+  }
+
+  /**
+   * getExclude
+   *
+   * get conditions for certain exclude
+   * @param string excludeName
+   * @return array exclude conditions: - simple array if terms exclude
+   *                                  - 'from', 'to'  assoc array if range f.
+   * @return false if no exclude definition found
+   */
+  public function getExclude($excludeName){
+    if (isset($this->search_options['exclude'][$excludeName])) {
+      return $this->search_options['exclude'][$excludeName];
+    }
+
+    return false;
+  }
+
+  /**
+   * getExclude
+   *
+   * get all excludes and their configs
+   * @return array assoc array excludeName => excludeConditions
+   */
+  public function getExcludes() {
+    if (isset($this->search_options['exclude'])) {
+      return $this->search_options['exclude'];
+    }
+
+    return array();
+  }
+  
   /**
    * setFilter
    *
@@ -459,6 +511,8 @@ class Client {
         $result[$name] = $this->sanitize($value);
       } else if (trim($value)) {
         $result[$name] = $value;
+      }else if($value === 0) {
+        $result[$name] = $value;  
       }
     }
 
