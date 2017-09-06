@@ -210,7 +210,7 @@ class Client {
     $params = $this->search_options;
 
     // translate filters
-    if(!empty($params['filter']))
+    if (!empty($params['filter']))
     {
       foreach($params['filter'] as $filterName => $filterValue){
         $params['filter'][$filterName] = $this->updateFilter($filterValue);
@@ -218,7 +218,7 @@ class Client {
     }
     
     // translate excludes
-    if(!empty($params['exclude']))
+    if (!empty($params['exclude']))
     {
       foreach($params['exclude'] as $excludeName => $excludeValue){
         $params['exclude'][$excludeName] = $this->updateFilter($excludeValue);
@@ -226,7 +226,7 @@ class Client {
     }
 
     // no query? then match all documents
-    if(!$this->optionExists('query') || !trim($this->search_options['query'])){
+    if (!$this->optionExists('query') || !trim($this->search_options['query'])){
       $params['query_name'] = 'match_all';
     }
 
@@ -239,6 +239,7 @@ class Client {
       $params['query_name'] = $dfResults->getProperty('query_name');
       $params['filter'] = $filter;
     }
+    
     $dfResults = new Results($this->apiCall('search', $params));
     $this->page = $dfResults->getProperty('page');
     $this->total = $dfResults->getProperty('total');
@@ -511,7 +512,7 @@ class Client {
         $result[$name] = $this->sanitize($value);
       } else if (trim($value)) {
         $result[$name] = $value;
-      }else if($value === 0) {
+      } else if($value === 0) {
         $result[$name] = $value;  
       }
     }
