@@ -142,7 +142,7 @@ class Client {
     return $this->paramsPrefix.$value;
   }
 
-  private function getRequestHeaders(){
+  private function getRequestHeaders() {
     $headers = array();
     $headers[] = 'Expect:'; // Fixes HTTP/1.1 "417 Expectation Failed" Error
     if ($this->authenticationHeader !== false) {
@@ -151,7 +151,7 @@ class Client {
     return $headers;
   }
 
-  private function apiCall($entryPoint = 'search', $params = array()){
+  private function apiCall($entryPoint = 'search', $params = array()) {
     $params['hashid'] = $this->hashid;
 
     $session = curl_init($this->getSearchUrl($entryPoint, $params));
@@ -210,36 +210,33 @@ class Client {
     $params = $this->search_options;
 
     // translate filters
-    if (!empty($params['filter']))
-    {
-      foreach($params['filter'] as $filterName => $filterValue){
+    if (!empty($params['filter'])) {
+      foreach ($params['filter'] as $filterName => $filterValue) {
         $params['filter'][$filterName] = $this->updateFilter($filterValue);
       }
     }
-    
+
     // translate excludes
-    if (!empty($params['exclude']))
-    {
-      foreach($params['exclude'] as $excludeName => $excludeValue){
+    if (!empty($params['exclude'])) {
+      foreach ($params['exclude'] as $excludeName => $excludeValue) {
         $params['exclude'][$excludeName] = $this->updateFilter($excludeValue);
       }
     }
 
     // no query? then match all documents
-    if (!$this->optionExists('query') || !trim($this->search_options['query'])){
+    if (!$this->optionExists('query') || !trim($this->search_options['query'])) {
       $params['query_name'] = 'match_all';
     }
 
     // if filters without query_name, pre-query first to obtain it.
-    if (empty($params['query_name']) && !empty($params['filter']))
-    {
+    if (empty($params['query_name']) && !empty($params['filter'])) {
       $filter = $params['filter'];
       unset($params['filter']);
       $dfResults = new Results($this->apiCall('search', $params));
       $params['query_name'] = $dfResults->getProperty('query_name');
       $params['filter'] = $filter;
     }
-    
+
     $dfResults = new Results($this->apiCall('search', $params));
     $this->page = $dfResults->getProperty('page');
     $this->total = $dfResults->getProperty('total');
@@ -256,7 +253,7 @@ class Client {
    *
    * @return boolean true if there is another page of results
    */
-  public function hasNext(){
+  public function hasNext() {
     return $this->page * $this->getRpp() < $this->total;
   }
 
@@ -265,7 +262,7 @@ class Client {
    *
    * @return true if there is a previous page of results
    */
-  public function hasPrev(){
+  public function hasPrev() {
     return ($this->page - 1) * $this->getRpp() > 0;
   }
 
@@ -276,7 +273,7 @@ class Client {
    * obtain the current page number
    * @return int the page number
    */
-  public function getPage(){
+  public function getPage() {
     return $this->page;
   }
 
@@ -288,7 +285,7 @@ class Client {
    * @param array exclude if simple array, terms exclude assumed
    *                     if 'from', 'to' in keys, range exclude assumed
    */
-  public function setExclude($excludeName, $exclude){
+  public function setExclude($excludeName, $exclude) {
     $this->search_options['exclude'][$excludeName] = (array) $exclude;
   }
 
@@ -301,7 +298,7 @@ class Client {
    *                                  - 'from', 'to'  assoc array if range f.
    * @return false if no exclude definition found
    */
-  public function getExclude($excludeName){
+  public function getExclude($excludeName) {
     if (isset($this->search_options['exclude'][$excludeName])) {
       return $this->search_options['exclude'][$excludeName];
     }
@@ -322,7 +319,7 @@ class Client {
 
     return array();
   }
-  
+
   /**
    * setFilter
    *
@@ -331,7 +328,7 @@ class Client {
    * @param array filter if simple array, terms filter assumed
    *                     if 'from', 'to' in keys, range filter assumed
    */
-  public function setFilter($filterName, $filter){
+  public function setFilter($filterName, $filter) {
     $this->search_options['filter'][$filterName] = (array) $filter;
   }
 
@@ -344,7 +341,7 @@ class Client {
    *                                  - 'from', 'to'  assoc array if range f.
    * @return false if no filter definition found
    */
-  public function getFilter($filterName){
+  public function getFilter($filterName) {
     if (isset($this->search_options['filter'][$filterName])) {
       return $this->search_options['filter'][$filterName];
     }
@@ -402,12 +399,10 @@ class Client {
    * @param int to the upper bound value. included
    */
   public function setRange($filterName, $from = null, $to = null) {
-    if (!is_null($from))
-    {
+    if (!is_null($from)) {
       $this->search_options['filter'][$filterName]['from'] = $from;
     }
-    if (!is_null($to))
-    {
+    if (!is_null($to)) {
       $this->search_options['filter'][$filterName]['to'] = $to;
     }
   }
@@ -429,7 +424,7 @@ class Client {
    * 'serialize' the object's state to querystring params
    * @param int $page the pagenumber. defaults to the current page
    */
-  public function toQuerystring($page = null){
+  public function toQuerystring($page = null) {
     $toParams = array();
 
     foreach ($this->search_options as $paramName => $paramValue) {
@@ -455,7 +450,7 @@ class Client {
    *                       - 'GET' $_GET params (default)
    *                       - 'POST' $_POST params
    */
-  public function fromQuerystring(){
+  public function fromQuerystring() {
     $filteredParams = array_filter(array_keys($this->serializationArray),
                                    array($this, 'belongsToDoofinder'));
 
@@ -485,7 +480,7 @@ class Client {
   private function updateFilter($filter) {
     $new_filter = array();
 
-    foreach($filter as $key => $value) {
+    foreach ($filter as $key => $value) {
       if ($key === 'from') {
         $new_filter['gte'] = $value;
       } else if ($key === 'to') {
@@ -512,8 +507,8 @@ class Client {
         $result[$name] = $this->sanitize($value);
       } else if (trim($value)) {
         $result[$name] = $value;
-      } else if($value === 0) {
-        $result[$name] = $value;  
+      } else if ($value === 0) {
+        $result[$name] = $value;
       }
     }
 
@@ -528,7 +523,7 @@ class Client {
    * @param string $paramName name of the param
    * @return boolean true or false.
    */
-  private function belongsToDoofinder($paramName){
+  private function belongsToDoofinder($paramName) {
     if ($pos = strpos($paramName, '[')) {
       $paramName = substr($paramName, 0, $pos);
     }

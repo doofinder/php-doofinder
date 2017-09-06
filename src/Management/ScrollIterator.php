@@ -19,7 +19,7 @@ class ScrollIterator extends ItemsResultSet {
    * @param SearchEngine $searchEngine
    * @param string $datatype type of item . i.e. 'product'
    */
-  public function __construct(SearchEngine $searchEngine, $datatype){
+  public function __construct(SearchEngine $searchEngine, $datatype) {
     $this->datatype = $datatype;
     parent::__construct($searchEngine);
   }
@@ -28,21 +28,17 @@ class ScrollIterator extends ItemsResultSet {
    * Loads net next batch of api results
    *
    */
-  protected function fetchResultsAndTotal(){
-    $apiResults = $this->searchEngine->client->managementApiCall(
-      'GET',
-      "{$this->searchEngine->hashid}/items/{$this->datatype}",
-      ($this->scrollId ? array("scroll_id" => $this->scrollId) : null)
-    );
+  protected function fetchResultsAndTotal() {
+    $params = ($this->scrollId ? array("scroll_id" => $this->scrollId) : null);
+    $apiResults = $this->searchEngine->itemsApiCall("GET", $this->datatype, null, $params);
     $this->total = $apiResults['response']['count'];
     $this->scrollId = $apiResults['response']['scroll_id'];
     $this->resultsPage = $apiResults['response']['results'];
     $this->currentItem = each($this->resultsPage);
-
     reset($this->resultsPage);
   }
 
-  public function rewind(){
+  public function rewind() {
     $this->scrollId = null;
     parent::rewind();
   }
