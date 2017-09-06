@@ -35,7 +35,7 @@ class Results {
   public function __construct($jsonResponse) {
     $response = json_decode($jsonResponse, true);
 
-    foreach ($response as $key => $value){
+    foreach ($response as $key => $value) {
       if (!is_array($value)) {
         $this->properties[$key] = $value;
       }
@@ -55,8 +55,8 @@ class Results {
 
     // Build a "friendly" filters array
     if (isset($response['filter'])) {
-      foreach($response['filter'] as $filterType => $filters) {
-        foreach($filters as $filterName => $filterProperties) {
+      foreach ($response['filter'] as $filterType => $filters) {
+        foreach ($filters as $filterName => $filterProperties) {
           $this->filter[$filterName] = $filterProperties;
         }
       }
@@ -71,13 +71,13 @@ class Results {
     foreach ($this->facets as $name => $properties) {
       switch (true) {
         case isset($properties['terms']):
-          foreach($properties['terms']['buckets'] as $idx => $bucket) {
+          foreach ($properties['terms']['buckets'] as $idx => $bucket) {
             $this->facets[$name]['terms']['buckets'][$idx]['selected'] = isset($this->filter[$name]) &&
               in_array($bucket['key'], $this->filter[$name]);
           }
           break;
         case isset($properties['range']):
-          foreach(array_keys($properties['range']['buckets']) as $idx) {
+          foreach (array_keys($properties['range']['buckets']) as $idx) {
             $this->facets[$name]['range']['buckets'][$idx]['selected_from'] = isset($this->filter[$name]['gte']) ? $this->filter[$name]['gte'] : false;
             $this->facets[$name]['range']['buckets'][$idx]['selected_to'] = isset($this->filter[$name]['lte']) ? $this->filter[$name]['lte'] : false;
           }
@@ -110,7 +110,7 @@ class Results {
    *                           'type' => ...,
    *                           'id' => ..)
    */
-  public function getResults(){
+  public function getResults() {
     return $this->results;
   }
 
@@ -120,7 +120,7 @@ class Results {
    *
    * @return array facets names.
    */
-  public function getFacetsNames(){
+  public function getFacetsNames() {
     return array_keys($this->facets);
   }
 
@@ -172,7 +172,7 @@ class Results {
    *
    *
    */
-  public function getLegacyFacet($facetName){
+  public function getLegacyFacet($facetName) {
     return $this->facets[$facetName];
   }
 
@@ -204,7 +204,7 @@ class Results {
    *                  'selected_to' => 401 // if selected as filter
    *                )
    */
-  public function getFacet($facetName){
+  public function getFacet($facetName) {
     $facetProperties = $this->facets[$facetName];
     switch(true) {
       case isset($facetProperties['terms']):
@@ -244,7 +244,7 @@ class Results {
    *
    * @return array facets assoc. array
    */
-  public function getFacets(){
+  public function getFacets() {
     return $this->facets;
   }
 
@@ -271,7 +271,7 @@ class Results {
    *   AND ('red' OR 'blue') color AND price is BETWEEN 34.3 and 99.3"
 
    */
-  public function getAppliedFilters(){
+  public function getAppliedFilters() {
     return $this->filter;
   }
 

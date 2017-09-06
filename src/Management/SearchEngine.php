@@ -26,6 +26,19 @@ class SearchEngine {
   }
 
   /**
+   * Build URL for Types entry point.
+   * @param  String $datatype Name of the type. Optional.
+   * @return String           Entry point location.
+   */
+  public function getTypesEndpoint($datatype = null) {
+    $endpoint = "{$this->hashid}/types";
+    if (!is_null($datatype)) {
+      $endpoint = "$endpoint/$datatype";
+    }
+    return $endpoint;
+  }
+
+  /**
    * Get a list of searchengine's types
    *
    * @return array list of types
@@ -35,12 +48,28 @@ class SearchEngine {
   }
 
   /**
+   * [typesApiCall description]
+   * @param  string $method   [description]
+   * @param  [type] $datatype [description]
+   * @param  [type] $params   [description]
+   * @param  [type] $data     [description]
+   * @return [type]           [description]
+   */
+  public function typesApiCall($method = "GET", $datatype = null, $params = null, $data = null) {
+    $url = $this->getTypesEndpoint($datatype);
+    if (!is_null($data)) {
+      $data = json_encode($data);
+    }
+    return $this->client->managementApiCall($method, $url, $params, $data);
+  }
+
+  /**
    * Get a list of searchengine's types
    *
    * @return array list of types
    */
   public function getTypes() {
-    $result = $this->client->managementApiCall('GET', "{$this->hashid}/types");
+    $result = $this->typesApiCall();
     return $result['response'];
   }
 
@@ -51,7 +80,7 @@ class SearchEngine {
    * @return new list of searchengine's types
    */
   public function addType($datatype) {
-    $result = $this->client->managementApiCall('POST', "{$this->hashid}/types", null, json_encode(array('name' => $datatype)));
+    $result = $this->typesApiCall("POST", null, null, array("name" => $datatype));
     return $result['response'];
   }
 
@@ -63,8 +92,30 @@ class SearchEngine {
    * @return boolean true on success
    */
   public function deleteType($datatype) {
-    $result = $this->client->managementApiCall('DELETE', "{$this->hashid}/types/{$datatype}");
+    $result = $this->typesApiCall("DELETE", $datatype);
     return $result['statusCode'] == 202;
+  }
+
+  /**
+   * Build URL for Items entry point.
+   * @param  String $datatype Name of the type. Required.
+   * @param  String $itemId   Id of an item. Optional.
+   * @return String           Entry point location.
+   */
+  public function getItemsEndpoint($datatype, $itemId = null) {
+    $endpoint = "{$this->hashid}/items/$datatype";
+    if (!is_null($itemId)) {
+      $endpoint = "$endpoint/$itemId";
+    }
+    return $endpoint;
+  }
+
+  public function itemsApiCall($method = "GET", $datatype, $itemId = null, $params = null, $data = null) {
+    $url = $this->getItemsEndpoint($datatype, $itemId);
+    if (!is_null($data)) {
+      $data = json_encode($data);
+    }
+    return $this->client->managementApiCall($method, $url, $params, $data);
   }
 
   public function items($datatype) {
@@ -79,7 +130,7 @@ class SearchEngine {
    * @return array Assoc array representing the item.
    */
   public function getItem($datatype, $itemId) {
-    $result = $this->client->managementApiCall('GET', "{$this->hashid}/items/{$datatype}/{$itemId}");
+    $result = $this->itemsApiCall("GET", $datatype, $itemId);
     return $result['response'];
   }
 
@@ -91,11 +142,11 @@ class SearchEngine {
    *   - It the 'id' field is not present, create one.
    *
    * @param string $datatype type of the. If not provided, first available type is used
-   * @param array $itemDescription Assoc array representation of the item
+   * @param array $itemData Assoc array representation of the item
    * @return string the id of the item just created
    */
-  public function addItem($datatype, $itemDescription) {
-    $result = $this->client->managementApiCall('POST', "{$this->hashid}/items/{$datatype}", null, json_encode($itemDescription));
+  public function addItem($datatype, $itemData) {
+    $result = $this->itemsApiCall("POST", $datatype, null, null, $itemData);
     return $result['response']['id'];
   }
 
@@ -108,13 +159,17 @@ class SearchEngine {
    *   - It the 'id' field is not present, create one.
    *
    * @param string $datatype type of the. If not provided, first available type is used
-   * @param array $itemsDescription List of Assoc array representation of the item
+   * @param array $itemDataList List of Assoc array representation of the item
    * @return array List of ids of the added items
    */
-  public function addItems($datatype, $itemsDescription) {
-    $result = $this->client->managementApiCall('POST', "{$this->hashid}/items/{$datatype}", null, json_encode($itemsDescription));
-
-    return array_map(function($it){return $it['id'];}, $result['response']);
+  public function addItems($datatype, $itemDataList) {
+    $result = $this->itemsApiCall("POST", $datatype, null, null, $itemDataList);
+    return array_map(
+      function($it){
+        return $it['id'];
+      },
+      $result['response']
+    );
   }
 
   /**
@@ -125,11 +180,11 @@ class SearchEngine {
    *
    * @param string $datatype  type of the Item.
    * @param string $itemId  Id of the item to be updated/added
-   * @param array $itemDescription Assoc array representating the item.
+   * @param array $itemData Assoc array representating the item.
    * @return boolean true on success.
    */
-  public function updateItem($datatype, $itemId, $itemDescription) {
-    $result = $this->client->managementApiCall('PUT', "{$this->hashid}/items/{$datatype}/{$itemId}", null, json_encode($itemDescription));
+  public function updateItem($datatype, $itemId, $itemData) {
+    $result = $this->itemsApiCall("PUT", $datatype, $itemId, null, $itemData);
     return $result['statusCode'] == 200;
   }
 
@@ -139,11 +194,11 @@ class SearchEngine {
    * Each item description must contain the 'id' field
    *
    * @param string $datatype type of the items.
-   * @param array $itemsDescription List of assoc array representing items
+   * @param array $itemDataList List of assoc array representing items
    * @return boolean true on success
    */
-  public function updateItems($datatype, $itemsDescription) {
-    $result = $this->client->managementApiCall('PUT', "{$this->hashid}/items/{$datatype}", null, json_encode($itemsDescription));
+  public function updateItems($datatype, $itemDataList) {
+    $result = $this->itemsApiCall("PUT", $datatype, null, null, $itemDataList);
     return $result['statusCode'] == 200;
   }
 
@@ -155,7 +210,7 @@ class SearchEngine {
    * @return boolean true if success, false if failure
    */
   public function deleteItem($datatype, $itemId) {
-    $result = $this->client->managementApiCall('DELETE', "{$this->hashid}/items/{$datatype}/{$itemId}");
+    $result = $this->itemsApiCall("DELETE", $datatype, $itemId);
     return $result['statusCode'] == 204 ;
   }
 
@@ -167,11 +222,14 @@ class SearchEngine {
    * @return array assoc array with both items which could be deleted and couldn't
    *         array('errors'=>array(), 'success'=>array('AX01', 'AX02', 'AXFD')
    */
-  public function deleteItems($datatype, $itemsIds) {
-    $objects = array_map(function($id){return array('id'=>$id);}, $itemsIds);
-    $result = $this->client->managementApiCall(
-      'DELETE', "{$this->hashid}/items/{$datatype}", null, json_encode($objects)
+  public function deleteItems($datatype, $itemIdList) {
+    $data = array_map(
+      function($id){
+        return array('id'=>$id);
+      },
+      $itemIdList
     );
+    $result = $this->itemsApiCall("DELETE", $datatype, null, null, $data);
     return $result['response'];
   }
 

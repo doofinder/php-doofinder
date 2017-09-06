@@ -18,7 +18,7 @@ class AggregatesIterator extends ItemsResultSet {
    * @param DateTime $from_date . Starting date of the period. Default: 15 days ago
    * @param DateTime $to_date. Ending date of the period. Default: today.
    */
-  public function __construct(SearchEngine $searchEngine, $from_date = null, $to_date = null){
+  public function __construct(SearchEngine $searchEngine, $from_date = null, $to_date = null) {
     $this->last_page = 0;
 
     if (!is_null($from_date)) {
@@ -34,7 +34,7 @@ class AggregatesIterator extends ItemsResultSet {
   protected function fetchResultsAndTotal() {
     $params = $this->last_page > 0 ? array("page" => $this->last_page + 1) : array();
 
-    try{
+    try {
       $apiResponse = $this->searchEngine->client->managementApiCall(
         'GET',
         "{$this->searchEngine->hashid}/stats",

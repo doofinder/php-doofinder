@@ -44,7 +44,7 @@ class Client
     $this->clusterRegion = $clusterToken[0];
     $this->token = $clusterToken[1];
 
-    if ($local === true){
+    if ($local === true) {
       $this->baseManagementUrl = self::LOCAL_API_ENDPOINT;
     } else {
       $this->baseManagementUrl = sprintf(self::REMOTE_API_ENDPOINT, $this->clusterRegion);
@@ -69,11 +69,11 @@ class Client
 
     $url = $this->baseManagementUrl.'/'.$entryPoint;
 
-    if(is_array($params) && sizeof($params) > 0){
+    if (is_array($params) && sizeof($params) > 0) {
       $url .= '?'.http_build_query($params);
     }
 
-    if (!in_array($method, array('POST', 'PUT', 'DELETE'))){
+    if (!in_array($method, array('POST', 'PUT', 'DELETE'))) {
       $data = null;
     }
     $serverResponse = $this->talkToServer($method, $url, $headers, $data);
@@ -105,7 +105,7 @@ class Client
    * Obtain a list of SearchEngines objects, ready to interact with the API
    * @return array list of searchEngines objects
    */
-  public function getSearchEngines(){
+  public function getSearchEngines() {
     $searchEngines = array();
     $apiRoot = $this->getApiRoot();
     unset($apiRoot['searchengines']);
