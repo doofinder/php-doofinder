@@ -1,6 +1,11 @@
 Version 5.
 ----------
 
+v5.6.1
+======
+  * New features
+    - added support for exclusion filters (thanks to @sPooKee).
+
 v5.6.0
 ======
   * Breaking changes
