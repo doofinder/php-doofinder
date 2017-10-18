@@ -1,6 +1,10 @@
 Version 5.
 ----------
 
+v5.6.2
+======
+  - Fixed bug reading error response details.
+
 v5.6.1
 ======
   * New features

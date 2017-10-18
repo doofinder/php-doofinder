@@ -46,10 +46,10 @@ class Utils {
 
   private static function readError($response) {
     $error = json_decode($response, true);
-    $error = $error['detail'];
-
-    if (!isset($error)) {
+    if (is_null($error) || !isset($error['detail'])) {
       $error = $response;
+    } else {
+      $error = $error['detail'];
     }
 
     return $error;
