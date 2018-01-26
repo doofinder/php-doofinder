@@ -70,7 +70,7 @@ class Client
     $url = $this->baseManagementUrl.'/'.$entryPoint;
 
     if(is_array($params) && sizeof($params) > 0){
-      $url .= '?'.http_build_query($params);
+        $url .= '?'.http_build_query($params, '', '&');
     }
 
     if (!in_array($method, array('POST', 'PUT', 'DELETE'))){

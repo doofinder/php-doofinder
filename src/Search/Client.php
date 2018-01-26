@@ -135,7 +135,7 @@ class Client {
                    $this->zone,
                    $this->apiVersion,
                    $entryPoint,
-                   http_build_query($this->sanitize($params)));
+                   http_build_query($this->sanitize($params), '', '&'));
   }
 
   private function addPrefix($value) {
@@ -444,7 +444,7 @@ class Client {
       $toParams[$this->paramsPrefix.'page'] = $page;
     }
 
-    return http_build_query($toParams);
+    return http_build_query($toParams, '', '&');
   }
 
   /**
