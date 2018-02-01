@@ -21,6 +21,7 @@ namespace Doofinder\Api\Management;
 
 use Doofinder\Api\Management\SearchEngine;
 use Doofinder\Api\Management\Errors\Utils;
+use Doofinder\Api\Management\Errors\InvalidApiKey;
 
 /**
  * Class to manage the connection with the API servers.
@@ -41,6 +42,9 @@ class Client
   public function __construct($apiKey, $local = false) {
     $this->apiKey = $apiKey;
     $clusterToken = explode('-', $apiKey);
+    if(count($clusterToken) != 2){
+        throw new InvalidApiKey("Invalid API Key provided");
+    }
     $this->clusterRegion = $clusterToken[0];
     $this->token = $clusterToken[1];
 
