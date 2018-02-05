@@ -1,6 +1,18 @@
 Version 5.
 ----------
 
+v5.7.1
+======
+  - Restore redirection in the response
+
+v5.7.0
+======
+  - Throw exception when api key is not correctly set
+
+v5.6.3
+======
+  - force http_buid_query to use & separator
+
 v5.6.2
 ======
   - Fixed bug reading error response details.
