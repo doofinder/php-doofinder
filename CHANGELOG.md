@@ -1,6 +1,10 @@
 Version 5.
 ----------
 
+v5.7.2
+======
+  - Added version to composer.json
+
 v5.7.1
 ======
   - Restore redirection in the response
