@@ -53,6 +53,11 @@ class Results {
       $this->results = $response['results'];
     }
 
+    // Redirections
+    if (isset($response['redirection'])) {
+      $this->properties['redirection'] = $response['redirection'];
+    }
+
     // Build a "friendly" filters array
     if (isset($response['filter'])) {
       foreach($response['filter'] as $filterType => $filters) {
