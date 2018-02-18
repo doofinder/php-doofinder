@@ -216,7 +216,7 @@ class Client {
         $params['filter'][$filterName] = $this->updateFilter($filterValue);
       }
     }
-    
+
     // translate excludes
     if (!empty($params['exclude']))
     {
@@ -239,7 +239,7 @@ class Client {
       $params['query_name'] = $dfResults->getProperty('query_name');
       $params['filter'] = $filter;
     }
-    
+
     $dfResults = new Results($this->apiCall('search', $params));
     $this->page = $dfResults->getProperty('page');
     $this->total = $dfResults->getProperty('total');
@@ -322,7 +322,7 @@ class Client {
 
     return array();
   }
-  
+
   /**
    * setFilter
    *
@@ -513,7 +513,7 @@ class Client {
       } else if (trim($value)) {
         $result[$name] = $value;
       } else if($value === 0) {
-        $result[$name] = $value;  
+        $result[$name] = $value;
       }
     }
 
@@ -635,4 +635,71 @@ class Client {
     }
     return false;
   }
+
+  /**
+   * initSession
+   * Starts a session in doofinder search server
+   * @param string $sessionId some unique session identificator.
+   * @return boolean True if it was successfully registered.
+   */
+  public function initSession($sessionId){
+    $response = $this->apiCall('stats/init', array('session_id'=>$sessionId));
+    return $response == '"OK"';
+  }
+
+  /**
+   * registerClick
+   * Register a click
+   * @param string id id of the product whose link is being clicked
+   * @param string datatype
+   * @param string query query used to get to those results
+   * @return boolean true if it was successfully registered.
+   */
+  public function registerClick($id, $datatype, $query){
+    $response = $this->apiCall('stats/click', array('id'=>$id, 'datatype'=>$datatype, 'query'=>$query));
+    return $response == '"OK"';
+  }
+
+  /**
+   * registerCheckout
+   * register a checkout
+   * @param string $sessionId the unique session identifier
+   * @return boolean true if it was successfully registered.
+   */
+  public function registerCheckout($sessionId){
+    return $this->apiCall('stats/checkout', array('session_id'=>$sessionId)) == '"OK"';
+  }
+
+  /**
+   * registerBannerDisplay
+   *
+   * @param string $bannerId the id of the banner
+   * @return boolean true if it was successfully registered.
+   */
+  public function registerBannerDisplay($bannerId){
+    return $this->apiCall('stats/banner_display', array('banner_id'=>$bannerId)) == '"OK"';
+  }
+
+  /**
+   * registerBannerClick
+   *
+   * @param string $bannerId the id of the banner
+   * @return boolean true if it was successfully registered.
+   */
+  public function registerBannerClick($bannerId){
+    return $this->apiCall('stats/banner_click', array('banner_id'=>$bannerId)) == '"OK"';
+  }
+
+  /**
+   * registerRedirection
+   *
+   * @param string $redirectionId the id of the redirection
+   * @param string $query the query that led to this redirection
+   * @param string $link  the url the redirection points to.
+   * @return boolean true if it was successfully registered.
+   */
+  public function registerRedirection($redirectionId, $query, $link){
+    return $this->apiCall('stats/redirect', array('redirection_id'=>$redirectionId, 'query'=>$query, 'link'=>$link)) == '"OK"';
+  }
+
 }
