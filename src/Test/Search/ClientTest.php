@@ -17,6 +17,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     $this->testHashid = 'ffffffffffffffffffffffffffffffff';
     $this->searchUrl = "https://eu1-search.doofinder.com/5/search";
     $this->optionsUrl = "https://eu1-search.doofinder.com/5/options";
+    $this->statsUrl = "https://eu1-search.doofinder.com/5/stats";
     $nameSpace = 'Doofinder\API\Search';
     $this->curl_init = $this->getFunctionMock($nameSpace, "curl_init");
     $this->curl_setopt = $this->getFunctionMock($nameSpace, "curl_setopt");
@@ -375,7 +376,47 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     $client->query();  // do the query
   }
 
+  public function testInitSession(){
+    $this->curl_exec->expects($this->any())->willReturn(json_encode('OK'));
+    $initSessionRegex = '%'.$this->statsUrl.'/init\?session_id=\w{32}&hashid='.$this->testHashid.'$%';
+    $this->curl_init->expects($this->once())->with($this->matchesRegularExpression($initSessionRegex))->willReturn(334);
+    $this->assertTrue($this->client->initSession());
+  }
 
+  public function testRegisterClick(){
+    $this->curl_exec->expects($this->any())->willReturn(json_encode('OK'));
+    $registerClickUrl = $this->statsUrl.'/click?id=test_id&datatype=product&query=ab&hashid='.$this->testHashid;
+    $this->curl_init->expects($this->once())->with($registerClickUrl)->willReturn(334);
+    $this->assertTrue($this->client->registerClick('test_id', 'product', 'ab'));
+  }
+
+  public function testRegisterCheckout(){
+    $this->curl_exec->expects($this->any())->willReturn(json_encode('OK'));
+    $checkoutUrlRegex = '%'.$this->statsUrl.'/checkout\?session_id=\w{32}&hashid='.$this->testHashid.'$%';
+    $this->curl_init->expects($this->once())->with($this->matchesRegularExpression($checkoutUrlRegex))->willReturn(334);
+    $this->assertTrue($this->client->registerCheckout());
+  }
+
+   public function testRegisterBannerDisplay(){
+    $this->curl_exec->expects($this->any())->willReturn(json_encode('OK'));
+    $bannerDisplayUrl = $this->statsUrl.'/banner_display?banner_id=test_id&hashid='.$this->testHashid;
+    $this->curl_init->expects($this->once())->with($bannerDisplayUrl)->willReturn(334);
+    $this->assertTrue($this->client->registerBannerDisplay('test_id'));
+  }
+
+  public function testRegisterBannerClick(){
+    $this->curl_exec->expects($this->any())->willReturn(json_encode('OK'));
+    $bannerClickUrl = $this->statsUrl.'/banner_click?banner_id=test_id&hashid='.$this->testHashid;
+    $this->curl_init->expects($this->once())->with($bannerClickUrl)->willReturn(334);
+    $this->assertTrue($this->client->registerBannerClick('test_id'));
+  }
+
+  public function testRegisterRedirection(){
+    $this->curl_exec->expects($this->any())->willReturn(json_encode('OK'));
+    $registerRedirectionUrl = $this->statsUrl.'/redirect?redirection_id=test_id&query=ab&link=bc&hashid='.$this->testHashid;
+    $this->curl_init->expects($this->once())->with($registerRedirectionUrl)->willReturn(334);
+    $this->assertTrue($this->client->registerRedirection('test_id', 'ab', 'bc'));
+  }
 
 
 }
