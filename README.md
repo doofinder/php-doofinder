@@ -356,36 +356,36 @@ $client = new \Doofinder\Api\Search\Client(
 
 In order to take the most of Doofinder stats, you can **register** in Doofinder certain events so you can have stats and metrics:
 
-   * **The 'init' event** (`$client->initSession()`) : You'll have to init a session for every user session, so you can get proper checkout metrics (number of buyings per user session. Remember, this method is to be used **once** during the user session. You should call this method the first time the user uses the search capabilities, but only the first time.
-   * **The 'checkout' event** (`$client->registerCheckout()`): Every time a user does a checkout as a result of the search terms, you should trigger this method. *NOTE:* make sure `$client->initSession()` is being called before in the user session.
-   * **The 'click' event** (`$client->registerClick($id, $datatype, $query)`) every time a click is done on a search result, you should register it, providing:
-     - `id` of the search result
-     - `datatype` (i.e. 'product', 'article') of the search result
-     - `query` the query that led to those results
-  * **The 'banner_display' event** (`$client->registerBannerDisplay($bannerId)`) every time a banner from you have configured in Doofinder is displayed. You'll know this because you'll have access to the "banner" property of your results.
-  * **The 'banner_click' event** (`$client->registerBannerClick($bannerId)`) every time a user clicks on a search results banner, you should use this method to register that click.
-  * **The 'redirect' event***`$client->registerRedirection($redirectionId, $query, $link)` every time a user follows one redirection provided by your search results you should register it.
+- **The `init` event** (`$client->initSession()`) : You'll have to init a session for every user session, so you can get proper checkout metrics (number of buyings per user session. Remember, this method is to be used **once** during a user session. You should call this method the first time the user uses the search capabilities, but only the first time.
+- **The `checkout` event** (`$client->registerCheckout()`): Every time a user does a checkout as a result of the search terms, you should trigger this method. *NOTE:* make sure `$client->initSession()` has been called before in the user session.
+- **The `click` event** (`$client->registerClick($id, $datatype, $query)`) every time a click is done on a search result, you should register it, providing:
+    - `id`: Database ID of the item clicked.
+    - `datatype`: Data type of the item in Doofinder (i.e. 'product', 'article').
+    - `query`: The search terms that led to the current set of results.
+- **The `banner_display` event** (`$client->registerBannerDisplay($bannerId)`) every time a banner from you have configured in Doofinder is displayed. You'll know this because you'll have access to the "banner" property of your results.
+- **The `banner_click` event** (`$client->registerBannerClick($bannerId)`) every time a user clicks on a search results banner, you should use this method to register that click.
+- **The `redirect` event***`$client->registerRedirection($redirectionId, $query, $link)` every time a user follows one redirection provided by your search results you should register it.
 
 ### The special 'banner' and 'redirect' results properties
 
-  In the Doofinder control center you can create:
+In the Doofinder control center you can create:
 
-   * *Banners*: Clickable image banners to be displayed for certain search terms.
-   * *Redirections*: The page the user should be redirected to for certain search terms.
+- **Banners**: Clickable image banners to be displayed for certain search terms.
+- **Redirections**: The page the user should be redirected to for certain search terms.
 
-   If present in the response, you can get both properties along with their info by simply accesing them with `getProperty`:
-   
-   ```php
-   $results = $client->query("This search term produces banner in search results");
-   $banner = $results->getProperty('banner'); // if no banner, this is null
-   if($banner){
-       echo "<div><a href="'.$banner['link'].'"><img src="'.$banner['image'].'"></a></div>";
-   }
-   $redirect = $results->getProperty('redirect');// if no redirect, this is null
-   if($redirect){
-       header("location: ".$redirect['url']);
-   }
-   ```
+If present in the response, you can get both properties along with their info by simply accesing them with `getProperty`:
+
+```php
+$results = $client->query("This search term produces banner in search results");
+$banner = $results->getProperty('banner'); // if no banner, this is null
+if($banner){
+   echo "<div><a href="'.$banner['link'].'"><img src="'.$banner['image'].'"></a></div>";
+}
+$redirect = $results->getProperty('redirect');// if no redirect, this is null
+if($redirect){
+   header("location: ".$redirect['url']);
+}
+```
 
 ### API reference
 
