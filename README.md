@@ -97,15 +97,25 @@ $results->getProperty('hashid');
 $results->getProperty('max_score');         // maximum score obtained in the search results
 $results->getProperty('doofinder_status');  // special Doofinder status, see below
 
-// If you use the 'dflayer' transformer ...
+// special properties: banner and redirect (if defined in your control center)
+$banner = $results->getProperty('banner'); // array with 'id', 'link', 'image' and 'blank' properties
+$redirect = $results->getProperty('redirect'); // array with 'id' and 'url' properties
+
+// register banner display to doofinder metrics
+if($banner){
+  $client->registerBannerDisplay($banner['id']);
+}
+
+
+// If you use the 'basic' transformer ...
 foreach($results->getResults() as $result){
-  echo $result['body']."\n";        // description of the item
+  echo $result['description']."\n";        // description of the item
   echo $result['dfid']."\n";        // doofinder id. uniquely identifies this item
   echo $result['price']."\n";       // string, may come with currency sign
   echo $result['sale_price']."\n";  // may or may not be present
-  echo $result['header']."\n";      // title of the item
-  echo $result['href']."\n" ;       // url of the item's page
-  echo $result['image']."\n" ;      // url of the item's image
+  echo $result['title']."\n";      // title of the item
+  echo $result['link']."\n" ;       // url of the item's page
+  echo $result['image_link']."\n" ;      // url of the item's image
   echo $result['type']."\n" ;       // item's type. "product" at the moment
   echo $result['id']."\n" ;         // item's id, as it comes from the xml feed
 }
@@ -325,6 +335,25 @@ $client = new \Doofinder\Api\Search\Client(
   )
 );
 ```
+
+### The special 'banner' and 'redirect' results properties
+
+  In doofinder control center you can specify:
+   * *banners*: Clickable image banners to be shown when certain search terms are input
+   * *redirects*: When certain search terms are input, there's a page redirection associated to the search results
+
+   If present, you can get both properties along with their info by simply accesing them with `getProperty`:
+   ```php
+   $results = $client->query("This search term produces banner in search results");
+   $banner = $results->getProperty('banner'); // if no banner, this is null
+   if($banner){
+       echo "<div><a href="'.$banner['link'].'"><img src="'.$banner['image'].'"></a></div>";
+   }
+   $redirect = $results->getProperty('redirect');// if no redirect, this is null
+   if($redirect){
+       header("location: ".$redirect['url']);
+   }
+   ```
 
 ### API reference
 
