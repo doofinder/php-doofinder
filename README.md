@@ -326,34 +326,55 @@ $client = new \Doofinder\Api\Search\Client(
 );
 ```
 
+### The doofinder metrics
+
+In order to take the most of doofinder stats, you can **register** in doofinder certain events so you can have stats and metrics:
+
+   * **The 'init' event** (`$client->initSession()`) : You'll have to init a session for every user session, so you can get proper checkout metrics (number of buyings per user session. Remember, this method is to be used **once** during the user session. You should call this method the first time the user uses the search capabilities, but only the first time.
+   * **The 'checkout' event** (`$client->registerCheckout()`): Every time a user does a checkout as a result of the search terms, you should trigger this method. *NOTE:* make sure `$client->initSession()` is being called before in the user session.
+   * **The 'click' event** (`$client->registerClick($id, $datatype, $query)`) every time a click is done on a search result, you should register it, providing:
+     - `id` of the search result
+     - `datatype` (i.e. 'product', 'article') of the search result
+     - `query` the query that led to those results
+  * **The 'banner_display' event** (`$client->registerBannerDisplay($bannerId)`) every time a banner from you have configured in doofinder is displayed. You'll know this because you'll have access to the "banner" property of your results.
+  * **The 'banner_click' event** (`$client->registerBannerClick($bannerId)`) every time a user clicks on a search results banner, you should use this method to register that click.
+  * **The 'redirect' event***`$client->registerRedirection($redirectionId, $query, $link)` every time a user follows one redirection provided by your search results you should register it.
+
 ### API reference
 
 #### `\Doofinder\Api\Search\Client`
 
 ```php
-$client->query($query, $page, $options);    // Perform search
-$client->hasNext();                         // Boolean, true if there is a next page of results
-$client->hasPrev();                         // Boolean, true if there is a prev page of results
-$client->numPages();                        // Total number of pages
-$client->getPage();                         // Get the actual page number
-$client->setFilter($filterName, $filter);   // Set a filter
-$client->getFilter($filterName);            // Get a filter by name
-$client->getFilters();                      // Get all filters
-$client->addTerm($filterName, $term);       // Add a term to a terms type $filterName
+$client->query($query, $page, $options);                     // Perform search
+$client->hasNext();                                          // Boolean, true if there is a next page of results
+$client->hasPrev();                                          // Boolean, true if there is a prev page of results
+$client->numPages();                                         // Total number of pages
+$client->getPage();                                          // Get the actual page number
+$client->setFilter($filterName, $filter);                    // Set a filter
+$client->getFilter($filterName);                             // Get a filter by name
+$client->getFilters();                                       // Get all filters
+$client->addTerm($filterName, $term);                        // Add a term to a terms type $filterName
 $client->removeTerm($filterName, $term);
-$client->setRange($filterName, $from, $to); // Specify parameters for a range filter
-$client->getFilter($filter_name);           // Get filter specifications for $filter_name, if any
-$client->getFilters();                      // Get filter specifications for all defined filters
-$client->addSort($sortField, $direction);   // Tells doofinder to sort results
-$client->setPrefix($prefix);                // Sets prefix for dumping/recovering from querystring
-$client->toQuerystring($page);              // Dumps state info to a querystring
-$client->fromQuerystring();                 // Recover state from a querystring
-$client->nextPage();                        // Obtain results for the nextpage
-$client->prevPage();                        // Obtain results for the prev page
-$client->numPages();                        // Num of pages
-$client->getRpp();                          // Get the number of results per page
+$client->setRange($filterName, $from, $to);                  // Specify parameters for a range filter
+$client->getFilter($filter_name);                            // Get filter specifications for $filter_name, if any
+$client->getFilters();                                       // Get filter specifications for all defined filters
+$client->addSort($sortField, $direction);                    // Tells doofinder to sort results
+$client->setPrefix($prefix);                                 // Sets prefix for dumping/recovering from querystring
+$client->toQuerystring($page);                               // Dumps state info to a querystring
+$client->fromQuerystring();                                  // Recover state from a querystring
+$client->nextPage();                                         // Obtain results for the nextpage
+$client->prevPage();                                         // Obtain results for the prev page
+$client->numPages();                                         // Num of pages
+$client->getRpp();                                           // Get the number of results per page
 $client->getTimeout();
-$client->setApiVersion($apiVersion);        // Sets API version to use (default: 5)
+$client->setApiVersion($apiVersion);                         // Sets API version to use (default: 5)
+$client->initSession();                                      // Initializes session for the search client
+$client->registerClick($id, $datatype, $query);              // Register a click in doofinder metrics
+$client->registerCheckout();                                 // Register a checkout in doofinder metrics
+$client->registerBannerDisplay($bannerId);                   // Register a banner display in doofinder metrics
+$client->registerBannerClick($bannerId);                     // Register a banner click in doofinder metrics
+$client->registerRedirection($redirectionId, $query, $link); // Register a redirection in doofinder metrics
+
 ```
 
 #### `\Doofinder\Api\Search\Results`
