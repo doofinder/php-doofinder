@@ -58,6 +58,11 @@ class Results {
       $this->properties['redirection'] = $response['redirection'];
     }
 
+    // Banner
+    if(isset($response['banner'])) {
+      $this->properties['banner'] = $response['banner'];
+    }
+
     // Build a "friendly" filters array
     if (isset($response['filter'])) {
       foreach($response['filter'] as $filterType => $filters) {
