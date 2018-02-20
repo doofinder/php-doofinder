@@ -3,19 +3,34 @@
 
 <!-- MarkdownTOC depth=3 -->
 
-- [Installation](#installation)
-  - [Download Method](#download-method)
-  - [Using Composer](#using-composer)
-- [Search Client](#search-client)
-  - [Quick & Dirty](#quick--dirty)
-  - [Searching from HTML Forms](#searching-from-html-forms)
-  - [Tips](#tips)
-  - [Extra Search Options](#extra-search-options)
-  - [Extra Constructor Options](#extra-constructor-options)
-  - [API reference](#api-reference)
-  - [One quick example](#one-quick-example)
-- [Management API](#management-api)
-  - [Quick & Dirty](#quick--dirty-1)
+- Installation
+    - Download Method
+    - Using Composer
+- Search Client
+    - Quick & Dirty
+    - Searching from HTML Forms
+        - Be careful with the `query_name` parameter
+        - `toQuerystring()`
+        - `fromQuerystring()`
+        - Filter Parameters
+        - Sort Parameters
+    - Tips
+        - Empty queries
+        - UTF-8 encoding
+    - Extra Search Options
+    - Extra Constructor Options
+    - The special 'banner' and 'redirect' results properties
+    - API reference
+        - `\Doofinder\Api\Search\Client`
+        - `\Doofinder\Api\Search\Results`
+    - One quick example
+- Management API
+    - Quick & Dirty
+        - Types Management
+        - Items Management
+        - Stats
+        - Tasks management
+- Run Tests
 
 <!-- /MarkdownTOC -->
 
@@ -97,15 +112,25 @@ $results->getProperty('hashid');
 $results->getProperty('max_score');         // maximum score obtained in the search results
 $results->getProperty('doofinder_status');  // special Doofinder status, see below
 
-// If you use the 'dflayer' transformer ...
+// special properties: banner and redirect (if defined in your control center)
+$banner = $results->getProperty('banner'); // array with 'id', 'link', 'image' and 'blank' keys
+$redirect = $results->getProperty('redirect'); // array with 'id' and 'url' keys
+
+// register banner display to doofinder metrics
+if($banner){
+  $client->registerBannerDisplay($banner['id']);
+}
+
+
+// If you use the 'basic' transformer ...
 foreach($results->getResults() as $result){
-  echo $result['body']."\n";        // description of the item
+  echo $result['description']."\n";        // description of the item
   echo $result['dfid']."\n";        // doofinder id. uniquely identifies this item
   echo $result['price']."\n";       // string, may come with currency sign
   echo $result['sale_price']."\n";  // may or may not be present
-  echo $result['header']."\n";      // title of the item
-  echo $result['href']."\n" ;       // url of the item's page
-  echo $result['image']."\n" ;      // url of the item's image
+  echo $result['title']."\n";      // title of the item
+  echo $result['link']."\n" ;       // url of the item's page
+  echo $result['image_link']."\n" ;      // url of the item's image
   echo $result['type']."\n" ;       // item's type. "product" at the moment
   echo $result['id']."\n" ;         // item's id, as it comes from the xml feed
 }
@@ -325,6 +350,27 @@ $client = new \Doofinder\Api\Search\Client(
   )
 );
 ```
+
+### The special 'banner' and 'redirect' results properties
+
+  In the Doofinder control center you can create:
+
+   * *Banners*: Clickable image banners to be displayed for certain search terms.
+   * *Redirections*: The page the user should be redirected to for certain search terms.
+
+   If present in the response, you can get both properties along with their info by simply accesing them with `getProperty`:
+   
+   ```php
+   $results = $client->query("This search term produces banner in search results");
+   $banner = $results->getProperty('banner'); // if no banner, this is null
+   if($banner){
+       echo "<div><a href="'.$banner['link'].'"><img src="'.$banner['image'].'"></a></div>";
+   }
+   $redirect = $results->getProperty('redirect');// if no redirect, this is null
+   if($redirect){
+       header("location: ".$redirect['url']);
+   }
+   ```
 
 ### API reference
 

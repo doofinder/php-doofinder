@@ -53,6 +53,16 @@ class ResultsTest extends \PHPUnit_Framework_TestCase
         'filter' => array(
           'range' => array('price'=>array('gte'=>22)),
           'terms' => array('color' => array('red'))
+        ),
+        'redirection' => array(
+            'url' => 'http://www.apple.com',
+            'id' => 1
+        ),
+        'banner' => array(
+            'link' => 'http://www.apple.com',
+            'image' => 'http://someimage.com/img.jpg',
+            'id' => 1,
+            'blank' => false
         )
       )
     );
@@ -109,6 +119,21 @@ class ResultsTest extends \PHPUnit_Framework_TestCase
   {
     $this->assertEquals(
       array('color'=>array('red'), 'price'=>array('gte'=>22)), $this->results->getAppliedFilters()
+    );
+  }
+
+  public function testBannerProperty()
+  {
+    $this->assertEquals(
+      array('link'=> 'http://www.apple.com', 'image'=>'http://someimage.com/img.jpg', 'id'=>1, 'blank'=>false),
+      $this->results->getProperty('banner')
+    );
+  }
+
+  public function testRedirectionProperty()
+  {
+    $this->assertEquals(
+      array('url'=> 'http://www.apple.com', 'id'=>1), $this->results->getProperty('redirection')
     );
   }
 
