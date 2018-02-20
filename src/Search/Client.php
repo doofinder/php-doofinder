@@ -41,7 +41,8 @@ class Client {
   private $hashid = null;  // ID of the Search Engine
 
   private $apiVersion = null;
-  private $url = null;
+  private $baseAddress = null; // to override default api address
+  private $extraHeaders = array(); // to add custom headers
   private $results = null;
   private $query = null;
   private $search_options = array(); // Assoc. array of request parameters
@@ -57,6 +58,7 @@ class Client {
   private $allowedParameters = array('page', 'rpp', 'timeout', 'types',
                                      'filter', 'query_name', 'transformer',
                                      'sort', 'exclude'); // Valid parameters
+  private $sessionId = null; // for stats stuff
 
   /**
    * Constructor.
@@ -131,11 +133,8 @@ class Client {
   }
 
   private function getSearchUrl($entryPoint = 'search', $params = array()) {
-    return sprintf("https://%s-search.doofinder.com/%s/%s?%s",
-                   $this->zone,
-                   $this->apiVersion,
-                   $entryPoint,
-                   http_build_query($this->sanitize($params), '', '&'));
+    $baseAddress = $this->baseAddress ? $this->baseAddress : sprintf("https://%s-search.doofinder.com/%s", $this->zone, $this->apiVersion);
+    return sprintf("%s/%s?%s", $baseAddress, $entryPoint, http_build_query($this->sanitize($params), '', '&'));
   }
 
   private function addPrefix($value) {
@@ -147,6 +146,9 @@ class Client {
     $headers[] = 'Expect:'; // Fixes HTTP/1.1 "417 Expectation Failed" Error
     if ($this->authenticationHeader !== false) {
       $headers[] = sprintf("%s: %s", $this->authenticationHeader, $this->api_key);
+    }
+    foreach($this->extraHeaders as $name => $value){
+      $headers[] = sprintf("%s: %s", $name, $value);
     }
     return $headers;
   }
@@ -635,4 +637,113 @@ class Client {
     }
     return false;
   }
+
+  /**
+   * generateHash
+   * generate pseudo random md5 hash
+   * @param boolean $refresh if true, regenerates hash
+   * @return string 32 char hash
+   */
+  private function getHash($refresh = false){
+    if(!$this->sessionId || $refresh){
+      $time = time();
+      $rand = rand();
+      $this->sessionId = md5("$time$rand");
+    }
+    return $this->sessionId;
+  }
+
+  /**
+   * cleanSession
+   */
+  public function cleanSession(){
+    $this->sessionId = null;
+  }
+
+  /**
+   * initSession
+   * Starts a session in doofinder search server
+   * @return boolean True if it was successfully registered.
+   */
+  public function initSession(){
+    return $this->apiCall('stats/init', array('session_id'=>$this->getHash())) == '"OK"';
+    return $response == '"OK"';
+  }
+
+  /**
+   * registerClick
+   * Register a click
+   * @param string id id of the product whose link is being clicked
+   * @param string datatype
+   * @param string query query used to get to those results
+   * @return boolean true if it was successfully registered.
+   */
+  public function registerClick($id, $datatype, $query){
+    $response = $this->apiCall('stats/click', array('id'=>$id, 'datatype'=>$datatype, 'query'=>$query));
+    return $response == '"OK"';
+  }
+
+  /**
+   * registerCheckout
+   * register a checkout
+   * @return boolean true if it was successfully registered.
+   */
+  public function registerCheckout(){
+    return $this->apiCall('stats/checkout', array('session_id'=>$this->getHash())) == '"OK"';
+  }
+
+  /**
+   * registerBannerDisplay
+   *
+   * @param string $bannerId the id of the banner
+   * @return boolean true if it was successfully registered.
+   */
+  public function registerBannerDisplay($bannerId){
+    return $this->apiCall('stats/banner_display', array('banner_id'=>$bannerId)) == '"OK"';
+  }
+
+  /**
+   * registerBannerClick
+   *
+   * @param string $bannerId the id of the banner
+   * @return boolean true if it was successfully registered.
+   */
+  public function registerBannerClick($bannerId){
+    return $this->apiCall('stats/banner_click', array('banner_id'=>$bannerId)) == '"OK"';
+  }
+
+  /**
+   * registerRedirection
+   *
+   * @param string $redirectionId the id of the redirection
+   * @param string $query the query that led to this redirection
+   * @param string $link  the url the redirection points to.
+   * @return boolean true if it was successfully registered.
+   */
+  public function registerRedirection($redirectionId, $query, $link){
+    return $this->apiCall('stats/redirect', array('redirection_id'=>$redirectionId, 'query'=>$query, 'link'=>$link)) == '"OK"';
+  }
+
+  /**
+   * setBaseAddress
+   *
+   * overrides default search api address for debug purposes
+   * @param string $baseAddress
+   * @return void
+   */
+  public function setBaseAddress($baseAddress){
+    $this->baseAddress = $baseAddress;
+  }
+
+  /**
+   * setExtraHeaders
+   *
+   * adds extra headers to be sent in every request
+   * @param array $extraHeaders
+   * @return void
+   */
+  public function setExtraHeaders($extraHeaders){
+    $this->extraHeaders = $extraHeaders;
+  }
+
 }
