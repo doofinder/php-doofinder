@@ -216,7 +216,7 @@ class Client {
         $params['filter'][$filterName] = $this->updateFilter($filterValue);
       }
     }
-    
+
     // translate excludes
     if (!empty($params['exclude']))
     {
@@ -239,7 +239,7 @@ class Client {
       $params['query_name'] = $dfResults->getProperty('query_name');
       $params['filter'] = $filter;
     }
-    
+
     $dfResults = new Results($this->apiCall('search', $params));
     $this->page = $dfResults->getProperty('page');
     $this->total = $dfResults->getProperty('total');
@@ -322,7 +322,7 @@ class Client {
 
     return array();
   }
-  
+
   /**
    * setFilter
    *
@@ -513,7 +513,7 @@ class Client {
       } else if (trim($value)) {
         $result[$name] = $value;
       } else if($value === 0) {
-        $result[$name] = $value;  
+        $result[$name] = $value;
       }
     }
 
