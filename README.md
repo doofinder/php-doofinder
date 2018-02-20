@@ -1,36 +1,39 @@
 [![Build Status](https://api.travis-ci.org/doofinder/php-doofinder.svg?branch=master)](https://travis-ci.org/doofinder/php-doofinder)
 # Official PHP Client for doofinder
 
-<!-- MarkdownTOC depth=3 -->
+<!-- MarkdownTOC depth="4" autolink="true" bracket="round" -->
 
-- Installation
-    - Download Method
-    - Using Composer
-- Search Client
-    - Quick & Dirty
-    - Searching from HTML Forms
-        - Be careful with the `query_name` parameter
-        - `toQuerystring()`
-        - `fromQuerystring()`
-        - Filter Parameters
-        - Sort Parameters
-    - Tips
-        - Empty queries
-        - UTF-8 encoding
-    - Extra Search Options
-    - Extra Constructor Options
-    - The special 'banner' and 'redirect' results properties
-    - API reference
-        - `\Doofinder\Api\Search\Client`
-        - `\Doofinder\Api\Search\Results`
-    - One quick example
-- Management API
-    - Quick & Dirty
-        - Types Management
-        - Items Management
-        - Stats
-        - Tasks management
-- Run Tests
+- [Installation](#installation)
+    - [Download Method](#download-method)
+    - [Using Composer](#using-composer)
+- [Search Client](#search-client)
+    - [Quick & Dirty](#quick--dirty)
+    - [Searching from HTML Forms](#searching-from-html-forms)
+        - [Be careful with the `query_name` parameter](#be-careful-with-the-queryname-parameter)
+        - [`toQuerystring()`](#toquerystring)
+        - [`fromQuerystring()`](#fromquerystring)
+        - [Filter Parameters](#filter-parameters)
+        - [Sort Parameters](#sort-parameters)
+    - [Tips](#tips)
+        - [Empty queries](#empty-queries)
+        - [UTF-8 encoding](#utf-8-encoding)
+    - [Extra Search Options](#extra-search-options)
+    - [Extra Constructor Options](#extra-constructor-options)
+    - [The special 'banner' and 'redirect' results properties](#the-special-banner-and-redirect-results-properties)
+    - [API reference](#api-reference)
+        - [`\Doofinder\Api\Search\Client`](#%5Cdoofinder%5Capi%5Csearch%5Cclient)
+        - [`\Doofinder\Api\Search\Results`](#%5Cdoofinder%5Capi%5Csearch%5Cresults)
+    - [One quick example](#one-quick-example)
+- [Management API](#management-api)
+    - [Quick & Dirty](#quick--dirty-1)
+        - [Types Management](#types-management)
+        - [Items Management](#items-management)
+            - [Single Item](#single-item)
+            - [Bulk Add/Update/Delete](#bulk-addupdatedelete)
+            - [Iterating Items](#iterating-items)
+        - [Stats](#stats)
+        - [Tasks management](#tasks-management)
+- [Run Tests](#run-tests)
 
 <!-- /MarkdownTOC -->
 
