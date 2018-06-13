@@ -2,11 +2,12 @@
 
 namespace Doofinder\Api\Management\Errors;
 
+use Doofinder\Api\Management\Errors\BadRequest;
 use Doofinder\Api\Management\Errors\NotAllowed;
 use Doofinder\Api\Management\Errors\NotFound;
-use Doofinder\Api\Management\Errors\BadRequest;
-use Doofinder\Api\Management\Errors\ThrottledResponse;
 use Doofinder\Api\Management\Errors\QuotaExhausted;
+use Doofinder\Api\Management\Errors\ThrottledResponse;
+use Doofinder\Api\Management\Errors\TypeAlreadyExists;
 use Doofinder\Api\Management\Errors\WrongResponse;
 
 
@@ -20,8 +21,11 @@ class Utils {
       case 404:
         return new NotFound("Not Found: ".Utils::readError($response));
       case 409:
-        if (preg_match('/indexing.*progress/i', $response) == 1) { // trying to index while indexing in progress
+        if (preg_match('/indexing.*progress/i', $response) == 1) {
+          // The search engine is locked
           return new IndexingInProgress(Utils::readError($response));
+        } else if (preg_match('/type.*already created/i', $response) == 1) {
+          return new TypeAlreadyExists(Utils::readError($response));
         } else {
           return new BadRequest("Request conflict: ".Utils::readError($response)); // trying to post with an already used id
         }
