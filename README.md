@@ -573,17 +573,25 @@ $item = $mySearchEngine->getItem('product', '888493');
 $added_item = $mySearchEngine->addItem('product', array('id'=> 'newid', 'title'=>'a title'));
 // Remove item
 $mySearchEngine->deleteItem('product', 'newid');
-// Update the '888493' item belonging to the 'product' type.
-$mySearchEngine->updateItem('product', '888493', array('title'=>'modifiled title'));
+// Completely Update the '888493' item belonging to the 'product' type, overwriting the item
+$mySearchEngine->updateItem('product', '888493', array('title'=>'modifiled title', 'body' => 'extra' ));
+// Partially Update the '888493' item, leaving unspecified fields untouched
+$mySearchEngine->updateItem('product', '88493', array('extra' => 'extra_value'), true);
 ```
 
 ##### Bulk Add/Update/Delete
 
 ```php
+// update items overwriting them completely
 $mySearchEngine->updateItems('product', array(
   array('title' => 'first item', 'id' => 'id1'),
   array('title' => 'second item', 'id' => 'id2'),
 ));
+// partially update items leaving unspecified fields untouched
+$mySearchEngine->updateItems('product', array(
+  array('extra' => 'new value', 'id' => 'id1'),
+  array('extra_field' => 'second item', 'id' => 'id2'),
+), true);
 
 $mySearchEngine->addItems('product', array(
   array('title' => 'first item', 'id' => 'newid1'),

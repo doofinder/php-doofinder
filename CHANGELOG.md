@@ -1,6 +1,10 @@
 Version 5.
 ----------
 
+v5.8.0
+======
+  - Added supponrt for partial updates
+
 v5.7.2
 ======
   - Added version to composer.json

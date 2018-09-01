@@ -77,7 +77,7 @@ class Client
         $url .= '?'.http_build_query($params, '', '&');
     }
 
-    if (!in_array($method, array('POST', 'PUT', 'DELETE'))){
+    if (!in_array($method, array('POST', 'PUT', 'PATCH', 'DELETE'))){
       $data = null;
     }
     $serverResponse = $this->talkToServer($method, $url, $headers, $data);

@@ -91,4 +91,23 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
   }
 
+  public function testManagementApiCallPATCHMethodAndData(){
+    $expectedUrl = 'https://xx1-api.doofinder.com/v1/testHashid/items/idx';
+    // with DATA, PATCH
+    $this->client->expects($this->once())
+               ->method('talkToServer')
+               ->with(
+                 $this->equalTo('PATCH'),
+                 $this->equalTo($expectedUrl),
+                 $this->equalTo(array("Authorization: Token testApiKey",
+                                      'Content-Type: application/json',
+                                      'Expect:')),
+                 array('custom'=>'data')
+               )
+                 ->willReturn(array('statusCode'=>200, 'contentResponse'=>''));
+
+    $this->client->managementApiCall('PATCH', 'testHashid/items/idx', null, array('custom'=>'data'));
+
+  }
+
 }
