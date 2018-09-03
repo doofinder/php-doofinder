@@ -126,10 +126,12 @@ class SearchEngine {
    * @param string $datatype  type of the Item.
    * @param string $itemId  Id of the item to be updated/added
    * @param array $itemDescription Assoc array representating the item.
+   * @param boolean $partial whether or not do a partial update
    * @return boolean true on success.
    */
-  public function updateItem($datatype, $itemId, $itemDescription) {
-    $result = $this->client->managementApiCall('PUT', "{$this->hashid}/items/{$datatype}/{$itemId}", null, json_encode($itemDescription));
+  public function updateItem($datatype, $itemId, $itemDescription, $partial = false) {
+    $method = $partial ? 'PATCH' : 'PUT';
+    $result = $this->client->managementApiCall($method, "{$this->hashid}/items/{$datatype}/{$itemId}", null, json_encode($itemDescription));
     return $result['statusCode'] == 200;
   }
 
@@ -140,10 +142,12 @@ class SearchEngine {
    *
    * @param string $datatype type of the items.
    * @param array $itemsDescription List of assoc array representing items
+   * @param boolean $partial whether or not do a partial update
    * @return boolean true on success
    */
-  public function updateItems($datatype, $itemsDescription) {
-    $result = $this->client->managementApiCall('PUT', "{$this->hashid}/items/{$datatype}", null, json_encode($itemsDescription));
+  public function updateItems($datatype, $itemsDescription, $partial = false) {
+    $method = $partial ? 'PATCH' : 'PUT';
+    $result = $this->client->managementApiCall($method, "{$this->hashid}/items/{$datatype}", null, json_encode($itemsDescription));
     return $result['statusCode'] == 200;
   }
 
