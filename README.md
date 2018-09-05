@@ -261,19 +261,21 @@ dfParam_filter = array(
 
 As with other params, the parameters must be prefixed with the `prefix` specified in `$client` constructor (default: `dfParam_`).
 
-If you sorting for one field in ascending order, you can simply send the `sort` parameter with the name of the field to sort by as value:
+If you're by only one field and in ascending order, you can simply send the `sort` parameter with the name of the field to sort by as value:
 
 ```html
 <input name="dfParam_sort" value="price">
 ```
 
-If you want to specify the sort direction, you'll have to to send, for the `sort` param, an array, being the key the field to sort on and the value either `asc` or `desc`:
+If you want to sort by one field and specify the sort direction, you'll have to to send, for the `sort` param, an array, being the key the field to sort on and the value either `asc` or `desc`:
 
 ```html
 <input name="dfParam_sort[price]" value="desc".
 ```
 
 If you want to sort by several fields, just compound the previous definition in an array.
+
+__Note:__ When sorting for several fields, sort direction must be specified for every one.
 
 __Example:__ sort in descending order by price and if same price, sort by title in ascending order.
 
@@ -287,7 +289,7 @@ This constructs the array:
 ```php
 dfParam_sort = array(
   array('price' => 'desc'),
-  array('title', 'asc')
+  array('title' => 'asc')
 );
 ```
 
