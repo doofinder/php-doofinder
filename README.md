@@ -532,6 +532,16 @@ define('API_KEY', 'eu1-384fdag73c7ff0a59g589xf9f4083bxb9727f9c3')
 // Instantiate the object, use your Doofinder's API_KEY.
 $client = new \Doofinder\Api\Management\Client(API_KEY);
 
+// Create a search engine
+$newSearchEngine = $client->addSearchEngine(
+  'my new se', array('language'=>'es', 'site_url'=>'http://www.example.com')
+);
+
+// Update search engine
+$updateSearchEngine = $client->updateSearchEngine(
+  '595b37610d5fc780d510595eaa301213', array('currency'=>'USD')
+);
+
 // Get a list of search engines
 $searchEngines = $client->getSearchEngines();
 // From the list, we will choose the first one

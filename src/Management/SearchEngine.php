@@ -18,11 +18,18 @@ class SearchEngine {
   public $name = null;
   public $hashid = null;
   public $client = null;
-
-  public function __construct(Client $client, $hashid, $name) {
+  public $site_url = null;
+  public $language = null;
+  public $currency = null;
+  
+    
+  public function __construct(Client $client, $hashid, $name, $site_url, $language, $currency) {
     $this->name = $name;
     $this->hashid = $hashid;
     $this->client = $client;
+    $this->site_url = $site_url;
+    $this->language = $language;
+    $this->currency = $currency;
   }
 
   /**
