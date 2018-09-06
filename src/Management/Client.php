@@ -207,6 +207,7 @@ class Client
     curl_setopt($session, CURLOPT_HTTPHEADER, $headers); // Adding request headers
 
     if (!is_null($data)) {
+      $data = is_array($data) ? json_encode($data): $data;
       curl_setopt($session, CURLOPT_POSTFIELDS, $data);
     }
 
