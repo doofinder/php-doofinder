@@ -110,4 +110,121 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
   }
 
+  public function testGetSearchEngines(){
+    $expectedUrl = 'https://xx1-api.doofinder.com/v1/searchengines?page=';
+    $this->client->expects($this->once())
+      ->method('talkToServer')
+      ->with(
+        $this->equalTo('GET'),
+        $this->stringContains($expectedUrl),
+        $this->equalTo(array("Authorization: Token testApiKey",
+                             'Content-Type: application/json',
+                             'Expect:')),
+        null
+      )
+      ->willReturn(
+        array('statusCode'=>200, 'contentResponse'=>json_encode(array("next"=>null, "results"=>array())))
+      );
+    $this->client->getSearchEngines();
+  }
+
+  public function testGetMoreThan10SearchEngines(){
+    $expectedUrl = 'https://xx1-api.doofinder.com/v1/searchengines?page=';
+    for($ii=0;$ii<14;$ii++){
+      $returnedSearchEngines[] = array("name"=>"se{$ii}", "hashid"=>"hadhid{$ii}");
+    }
+
+    $twoResponses = array_chunk($returnedSearchEngines, 10);
+
+    $firstResponse = array(
+      'statusCode'=>200,
+      'contentResponse'=>json_encode(array('next'=>'something', 'results'=>$twoResponses[0]))
+    );
+
+    $secondResponse = array(
+      'statusCode'=>200,
+      'contentResponse'=>json_encode(array('next'=>null, 'results'=>$twoResponses[1]))
+    );
+    $this->client->expects($this->exactly(2))
+      ->method('talkToServer')
+      ->with(
+        $this->equalTo('GET'),
+        $this->stringContains($expectedUrl),
+        $this->equalTo(array("Authorization: Token testApiKey",
+                             'Content-Type: application/json',
+                             'Expect:')),
+        null
+      )
+      ->will($this->onConsecutiveCalls($firstResponse, $secondResponse));
+
+    $this->client->getSearchEngines();
+  }
+
+  public function testGetSearchEngine(){
+    $expectedUrl = 'https://xx1-api.doofinder.com/v1/searchengines/testHashid';
+    $jsonSearchEngine =json_encode(array('hashid'=>'testHashid', 'name'=>'testName'));
+    $this->client->expects($this->once())
+      ->method('talkToServer')
+      ->with(
+        $this->equalTo('GET'), $this->equalTo($expectedUrl),
+        $this->equalTo(array("Authorization: Token testApiKey",
+                             'Content-Type: application/json',
+                             'Expect:')),
+        null
+      )
+      ->willReturn(array('statusCode'=>200, 'contentResponse'=>$jsonSearchEngine));
+
+    $this->client->getSearchEngine('testHashid');
+  }
+
+  public function testAddSearchEngine(){
+    $expectedUrl = 'https://xx1-api.doofinder.com/v1/searchengines';
+    $jsonSearchEngine =json_encode(array('hashid'=>'testHashid', 'name'=>'testName'));
+    $this->client->expects($this->once())
+      ->method('talkToServer')
+      ->with(
+        $this->equalTo('POST'), $this->equalTo($expectedUrl),
+        $this->equalTo(array("Authorization: Token testApiKey",
+                             'Content-Type: application/json',
+                             'Expect:')),
+        array('name'=>'test', 'site_url'=>'xx')
+      )
+      ->willReturn(array('statusCode'=>200, 'contentResponse'=>$jsonSearchEngine));
+
+    $this->client->addSearchEngine('test', array('site_url'=>'xx'));
+  }
+
+   public function testUpdateSearchEngine(){
+    $expectedUrl = 'https://xx1-api.doofinder.com/v1/searchengines/testHashid';
+    $jsonSearchEngine =json_encode(array('hashid'=>'testHashid', 'name'=>'testName'));
+    $this->client->expects($this->once())
+      ->method('talkToServer')
+      ->with(
+        $this->equalTo('PATCH'), $this->equalTo($expectedUrl),
+        $this->equalTo(array("Authorization: Token testApiKey",
+                             'Content-Type: application/json',
+                             'Expect:')),
+        array('site_url'=>'xxmod')
+      )
+      ->willReturn(array('statusCode'=>200, 'contentResponse'=>$jsonSearchEngine));
+
+    $this->client->updateSearchEngine('testHashid', array('site_url'=>'xxmod'));
+  }
+
+    public function testDeleteSearchEngine(){
+    $expectedUrl = 'https://xx1-api.doofinder.com/v1/searchengines/testHashid';
+    $this->client->expects($this->once())
+      ->method('talkToServer')
+      ->with(
+        $this->equalTo('DELETE'), $this->equalTo($expectedUrl),
+        $this->equalTo(array("Authorization: Token testApiKey",
+                             'Content-Type: application/json',
+                             'Expect:'))
+      )
+      ->willReturn(array('statusCode'=>204, 'contentResponse'=>''));
+
+    $this->client->deleteSearchEngine('testHashid');
+  }
+
+
 }

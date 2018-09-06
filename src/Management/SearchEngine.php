@@ -21,15 +21,15 @@ class SearchEngine {
   public $site_url = null;
   public $language = null;
   public $currency = null;
-  
-    
-  public function __construct(Client $client, $hashid, $name, $site_url, $language, $currency) {
+
+
+  public function __construct(Client $client, $hashid, $name, $options = array()) {
     $this->name = $name;
     $this->hashid = $hashid;
     $this->client = $client;
-    $this->site_url = $site_url;
-    $this->language = $language;
-    $this->currency = $currency;
+    $this->site_url = array_key_exists('site_url', $options) ? $options['site_url'] : null;
+    $this->language = array_key_exists('language', $options) ? $options['language'] : null;
+    $this->currency = array_key_exists('currency', $options) ? $options['currency'] : null;
   }
 
   /**

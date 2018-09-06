@@ -81,6 +81,7 @@ class Client
     if (!in_array($method, array('POST', 'PUT', 'PATCH', 'DELETE'))){
       $data = null;
     }
+
     $serverResponse = $this->talkToServer($method, $url, $headers, $data);
     $statusCode = $serverResponse['statusCode'];
     $contentResponse = $serverResponse['contentResponse'];
@@ -136,10 +137,9 @@ class Client
   public function getSearchEngine($hashid){
     $searchEngines = array();
     $response = $this->managementApiCall('GET', "searchengines/{$hashid}");
-    $searchengine = $response['response'];
+    $searchengine_options = $response['response'];
     return new SearchEngine(
-        $this, $searchengine['hashid'], $searchengine['name'],
-        $searchengine['site_url'], $searchengine['language'], $searchengine['currency']
+        $this, $searchengine_options['hashid'], $searchengine_options['name'], $searchengine_options
     );
   }
 
@@ -159,7 +159,7 @@ class Client
       $foreign_fields = json_encode(array_values($foreign_fields));
       throw new BadRequest("The fields {$foreign_fields} are not allowed");
     }
-    $result = $this->managementApiCall('POST', 'searchengines', null, json_encode($payload));
+    $result = $this->managementApiCall('POST', 'searchengines', null, $payload);
 
     return $this->buildSearchEngine($result['response']);
   }
@@ -193,7 +193,7 @@ class Client
       throw new BadRequest("The fields {$foreign_fields} are not allowed");
     }
 
-    $result = $this->managementApiCall('PATCH', "searchengines/{$hashid}", null, json_encode($options));
+    $result = $this->managementApiCall('PATCH', "searchengines/{$hashid}", null, $options);
 
     return $this->buildSearchEngine($result['response']);
   }
@@ -228,10 +228,10 @@ class Client
    * @return array list of searchengines
    */
   private function buildSearchEngines($searchEnginesListing){
-    foreach ($searchEnginesListing as $searchengine) {
+    $searchEngines = array();
+    foreach ($searchEnginesListing as $searchengine_options) {
       $searchEngines[] = new SearchEngine(
-        $this, $searchengine['hashid'], $searchengine['name'],
-        $searchengine['site_url'], $searchengine['language'], $searchengine['currency']
+        $this, $searchengine_options['hashid'], $searchengine_options['name'], $searchengine_options
       );
     }
     return $searchEngines;
@@ -245,10 +245,7 @@ class Client
    * @return SearchEngine
    */
   private function buildSearchEngine($attributes){
-    return new SearchEngine(
-      $this, $attributes['hashid'], $attributes['name'], $attributes['site_url'],
-      $attributes['language'], $attributes['currency']
-    );
+    return new SearchEngine($this, $attributes['hashid'], $attributes['name'], $attributes);
   }
 
 }

@@ -546,6 +546,9 @@ $updateSearchEngine = $client->updateSearchEngine(
 $searchEngines = $client->getSearchEngines();
 // From the list, we will choose the first one
 $mySearchEngine = $searchEngines[0];
+
+// Delete search engine
+$client->deleteSearchEngine('7f98f789d7a3c8bbd56a635bf0bd09fe');
 ```
 
 The `SearchEngine` object gives you methods to manage a search engine.
