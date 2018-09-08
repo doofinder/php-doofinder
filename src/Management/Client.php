@@ -159,7 +159,7 @@ class Client
       $foreign_fields = json_encode(array_values($foreign_fields));
       throw new BadRequest("The fields {$foreign_fields} are not allowed");
     }
-    $result = $this->managementApiCall('POST', 'searchengines', null, $payload);
+    $result = $this->managementApiCall('POST', 'searchengines', null, json_encode($payload));
 
     return $this->buildSearchEngine($result['response']);
   }
@@ -193,7 +193,7 @@ class Client
       throw new BadRequest("The fields {$foreign_fields} are not allowed");
     }
 
-    $result = $this->managementApiCall('PATCH', "searchengines/{$hashid}", null, $options);
+    $result = $this->managementApiCall('PATCH', "searchengines/{$hashid}", null, json_encode($options));
 
     return $this->buildSearchEngine($result['response']);
   }
@@ -207,7 +207,7 @@ class Client
     curl_setopt($session, CURLOPT_HTTPHEADER, $headers); // Adding request headers
 
     if (!is_null($data)) {
-      $data = is_array($data) ? json_encode($data): $data;
+      $data = is_array($data) ? json_encode($data): $data; // just for safety
       curl_setopt($session, CURLOPT_POSTFIELDS, $data);
     }
 

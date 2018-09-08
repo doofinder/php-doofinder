@@ -363,6 +363,22 @@ class SearchEngineTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals($this->searchEngine->logs(), array('a', 'response'));
   }
 
+  public function testDelete()
+  {
+    $this->client->deleteSearchEngine('testHashid')
+      ->shouldBeCalledTimes(1)
+      ->willReturn(true);
+    $this->assertEquals($this->searchEngine->delete(), true);
+  }
+
+  public function testUpdate()
+  {
+    $this->client->updateSearchEngine('testHashid', array("t"=>"nMod"))
+      ->shouldBeCalledTimes(1)
+      ->willReturn(true);
+    $this->searchEngine->update(array("t"=>"nMod"));
+  }
+
   /**
    * Expose protected/private attribute of an object.
    *

@@ -268,6 +268,25 @@ class SearchEngine {
   }
 
   /**
+   * Delete SearchEngine
+   *
+   * @return boolean true if successful
+   */
+  public function delete() {
+    return $this->client->deleteSearchEngine($this->hashid);
+  }
+
+  /**
+   * Update SearchEngine
+   *
+   * @param array $attributes attributes to update
+   * @return $this the searchEngine object, updated
+   */
+  public function update($attributes){
+    return $this->client->updateSearchEngine($this->hashid, $attributes);
+  }
+
+  /**
    * Extracts identificator from an item or task url.
    *
    * @param string $url item or task resource locator

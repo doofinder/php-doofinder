@@ -83,11 +83,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                  $this->equalTo(array("Authorization: Token testApiKey",
                                       'Content-Type: application/json',
                                       'Expect:')),
-                 array('custom'=>'data')
+                 json_encode(array('custom'=>'data'))
                )
                  ->willReturn(array('statusCode'=>200, 'contentResponse'=>''));
 
-    $this->client->managementApiCall('POST', 'testHashid/tasks/', null, array('custom'=>'data'));
+    $this->client->managementApiCall('POST', 'testHashid/tasks/', null, json_encode(array('custom'=>'data')));
 
   }
 
@@ -187,7 +187,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->equalTo(array("Authorization: Token testApiKey",
                              'Content-Type: application/json',
                              'Expect:')),
-        array('name'=>'test', 'site_url'=>'xx')
+        json_encode(array('name'=>'test', 'site_url'=>'xx'))
       )
       ->willReturn(array('statusCode'=>200, 'contentResponse'=>$jsonSearchEngine));
 
@@ -204,7 +204,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->equalTo(array("Authorization: Token testApiKey",
                              'Content-Type: application/json',
                              'Expect:')),
-        array('site_url'=>'xxmod')
+        json_encode(array('site_url'=>'xxmod'))
       )
       ->willReturn(array('statusCode'=>200, 'contentResponse'=>$jsonSearchEngine));
 
