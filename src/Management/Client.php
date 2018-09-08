@@ -135,7 +135,6 @@ class Client
    * @return SearchEngine searchEngine object
    */
   public function getSearchEngine($hashid){
-    $searchEngines = array();
     $response = $this->managementApiCall('GET', "searchengines/{$hashid}");
     $searchengine_options = $response['response'];
     return new SearchEngine(
