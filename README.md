@@ -532,11 +532,48 @@ define('API_KEY', 'eu1-384fdag73c7ff0a59g589xf9f4083bxb9727f9c3')
 // Instantiate the object, use your Doofinder's API_KEY.
 $client = new \Doofinder\Api\Management\Client(API_KEY);
 
+// Create a search engine
+$newSearchEngine = $client->addSearchEngine(
+  'my new se', array('language'=>'es', 'site_url'=>'http://www.example.com')
+);
+
+// Update search engine via the client ...
+$updateSearchEngine = $client->updateSearchEngine(
+  '595b37610d5fc780d510595eaa301213', array('currency'=>'USD')
+);
+// ... or the search engine itself
+$re_updateSearchEngine = $updateSearchEngine->update(array("name"=>"yet another update"));
+
 // Get a list of search engines
 $searchEngines = $client->getSearchEngines();
 // From the list, we will choose the first one
 $mySearchEngine = $searchEngines[0];
+
+// Delete search engine via the client
+$client->deleteSearchEngine('7f98f789d7a3c8bbd56a635bf0bd09fe');
+// o... or the searchnengine itself
+$mySearchEngine->delete();
 ```
+
+#### SearchEngines management
+
+```php
+// adding
+$newSearchEngine = $client->addSearchEngine(
+  'new SE',
+  array('language'=>'es', 'currency'=>'EUR', 'site_url'-=>'http://www.apple.com')
+);
+// updating
+$updateSearchEngine = $client->updateSearchEngine(
+  '595b37610d5fc780d510595eaa301213', array('name'=>'updated Name')
+);
+// deletion
+$client->deleteSearchEngine('595b37610d5fc780d510595eaa301213');
+// also update & delete on the searchEngine object itself
+$updateSearchEngine = $mySearchEngine->update(array('language'=>'en'));
+$success = $mySearchEngine->delete();
+```
+------------------------------------
 
 The `SearchEngine` object gives you methods to manage a search engine.
 

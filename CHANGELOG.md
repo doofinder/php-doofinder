@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.7.6] - 2018-09-??
+### Added
+  - SearchEngines CRUD
+
 ## [5.7.5] - 2018-09-03
 ### Added
   - Support for partial updates.

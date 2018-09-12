@@ -18,11 +18,18 @@ class SearchEngine {
   public $name = null;
   public $hashid = null;
   public $client = null;
+  public $site_url = null;
+  public $language = null;
+  public $currency = null;
 
-  public function __construct(Client $client, $hashid, $name) {
+
+  public function __construct(Client $client, $hashid, $name, $options = array()) {
     $this->name = $name;
     $this->hashid = $hashid;
     $this->client = $client;
+    $this->site_url = array_key_exists('site_url', $options) ? $options['site_url'] : null;
+    $this->language = array_key_exists('language', $options) ? $options['language'] : null;
+    $this->currency = array_key_exists('currency', $options) ? $options['currency'] : null;
   }
 
   /**
@@ -258,6 +265,25 @@ class SearchEngine {
   public function logs() {
     $result = $this->client->managementApiCall("GET", "{$this->hashid}/logs");
     return $result['response'];
+  }
+
+  /**
+   * Delete SearchEngine
+   *
+   * @return boolean true if successful
+   */
+  public function delete() {
+    return $this->client->deleteSearchEngine($this->hashid);
+  }
+
+  /**
+   * Update SearchEngine
+   *
+   * @param array $attributes attributes to update
+   * @return $this the searchEngine object, updated
+   */
+  public function update($attributes){
+    return $this->client->updateSearchEngine($this->hashid, $attributes);
   }
 
   /**

@@ -22,6 +22,7 @@ namespace Doofinder\Api\Management;
 use Doofinder\Api\Management\SearchEngine;
 use Doofinder\Api\Management\Errors\Utils;
 use Doofinder\Api\Management\Errors\InvalidApiKey;
+use Doofinder\Api\Management\Errors\BadRequest;
 
 /**
  * Class to manage the connection with the API servers.
@@ -80,6 +81,7 @@ class Client
     if (!in_array($method, array('POST', 'PUT', 'PATCH', 'DELETE'))){
       $data = null;
     }
+
     $serverResponse = $this->talkToServer($method, $url, $headers, $data);
     $statusCode = $serverResponse['statusCode'];
     $contentResponse = $serverResponse['contentResponse'];
@@ -111,14 +113,88 @@ class Client
    */
   public function getSearchEngines(){
     $searchEngines = array();
-    $apiRoot = $this->getApiRoot();
-    unset($apiRoot['searchengines']);
-
-    foreach ($apiRoot as $hashid => $props) {
-      $searchEngines[] = new SearchEngine($this, $hashid, $props['name']);
+    $keep = true;
+    $page = 1;
+    // keep asking for search engines as long as there's a "next" link
+    while($keep){
+      $response = $this->managementApiCall('GET', 'searchengines', array('page'=>$page));
+      $searchEngines = array_merge(
+        $searchEngines, $this->buildSearchEngines($response['response']['results'])
+      );
+      $keep = $response['response']['next'] != NULL;
+      $page++;
     }
 
     return $searchEngines;
+  }
+
+  /**
+   * Obtain a single SearchEngine object, ready to interact with the API
+   *
+   * @param string $hashid hashid of the searchEngine to fetch
+   * @return SearchEngine searchEngine object
+   */
+  public function getSearchEngine($hashid){
+    $response = $this->managementApiCall('GET', "searchengines/{$hashid}");
+    $searchengine_options = $response['response'];
+    return new SearchEngine(
+        $this, $searchengine_options['hashid'], $searchengine_options['name'], $searchengine_options
+    );
+  }
+
+  /**
+   * Creates a new SearchEngine
+   *
+   * @param string $name Name of the searchEngine. Required
+   * @param array $options Assoc array with all properties for the created search engine
+   * @return SearchEngine the created SearchEngine object
+   */
+  public function addSearchEngine($name, $options = array()){
+    $valid_fields = array('name', 'site_url', 'language', 'currency');
+    $payload = array_merge(array('name' => $name), $options);
+    $foreign_fields = array_diff(array_keys($payload), $valid_fields);
+
+    if(count(($foreign_fields))){
+      $foreign_fields = json_encode(array_values($foreign_fields));
+      throw new BadRequest("The fields {$foreign_fields} are not allowed");
+    }
+    $result = $this->managementApiCall('POST', 'searchengines', null, json_encode($payload));
+
+    return $this->buildSearchEngine($result['response']);
+  }
+
+  /**
+   * Delete a  SearchEngine
+   *
+   * @param string $hashid hashid of the searchEngine. Required
+   * @return boolean true on success
+   */
+  public function deleteSearchEngine($hashid){
+    $result = $this->managementApiCall('DELETE', "searchengines/{$hashid}");
+
+    return $result['statusCode'] == 204; // dont know why it isn't 202
+  }
+
+  /**
+   * Updates a SearchEngine
+   *
+   * @param string $hashid hashid of the SearchEngine to be updated. Required
+   * @param array $options Assoc array with the options to update
+   *
+   * @return SearchEngine the updated searchEngine
+   */
+  public function updateSearchEngine($hashid, $options = array()) {
+    $valid_fields = array('name', 'site_url', 'language', 'currency');
+    $foreign_fields = array_diff(array_keys($options), $valid_fields);
+
+    if(count($foreign_fields)){
+      $foreign_fields = json_encode(array_values($foreign_fields));
+      throw new BadRequest("The fields {$foreign_fields} are not allowed");
+    }
+
+    $result = $this->managementApiCall('PATCH', "searchengines/{$hashid}", null, json_encode($options));
+
+    return $this->buildSearchEngine($result['response']);
   }
 
   protected function talkToServer($method, $url, $headers, $data)
@@ -130,6 +206,7 @@ class Client
     curl_setopt($session, CURLOPT_HTTPHEADER, $headers); // Adding request headers
 
     if (!is_null($data)) {
+      $data = is_array($data) ? json_encode($data): $data; // just for safety
       curl_setopt($session, CURLOPT_POSTFIELDS, $data);
     }
 
@@ -143,6 +220,32 @@ class Client
       'statusCode' => $statusCode
     );
 
+  }
+
+  /**
+   * Builds a list of searchEngines from a list of raw assoc arrays
+   * @param array list of searchEngines attribues
+   * @return array list of searchengines
+   */
+  private function buildSearchEngines($searchEnginesListing){
+    $searchEngines = array();
+    foreach ($searchEnginesListing as $searchengine_options) {
+      $searchEngines[] = new SearchEngine(
+        $this, $searchengine_options['hashid'], $searchengine_options['name'], $searchengine_options
+      );
+    }
+    return $searchEngines;
+  }
+
+  /**
+   * Builds a SearchEngine object from assoc. array
+   * it hopes to find 'name', 'site_url', 'currency' and 'language' keys
+   *
+   * @param array $attributes attrs to build the searchengine with
+   * @return SearchEngine
+   */
+  private function buildSearchEngine($attributes){
+    return new SearchEngine($this, $attributes['hashid'], $attributes['name'], $attributes);
   }
 
 }
