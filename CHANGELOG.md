@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [5.8.0] - 2018-09-07
+## [5.7.6] - 2018-09-??
 ### Added
   - SearchEngines CRUD
 
