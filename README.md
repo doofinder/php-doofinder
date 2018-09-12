@@ -583,6 +583,7 @@ The `SearchEngine` object gives you methods to manage a search engine.
 $types = $mySearchEngine->getTypes();             // Obtain search engine's datatypes
 $new_types = $mySearchEngine->addType('product'); // Add new type
 $mySearchEngine->deleteType('product');           // Remove the type and all items within it.
+$mySearchEngine->deleteType(array('product', 'category')); // Remove multiple types at once.
 ```
 
 **Warning:** Type deletion is an *asynchronous operation*, that keeps going after the `deleteType` method has returned `true`. If you try to perform `addItem`, `deleteItem`, `updateItem` or `updateItems` right after a `deleteType` operation, chances are you get an `IndexingInProgress` exception, because those ops aren't allowed while the `deleteType` is still in progress. If that happens, just wait a little and try again.
