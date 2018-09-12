@@ -70,7 +70,8 @@ class SearchEngine {
    * @return boolean true on success
    */
   public function deleteType($datatype) {
-    $result = $this->client->managementApiCall('DELETE', "{$this->hashid}/types/{$datatype}");
+    $datatype_list = implode(",", (array) $datatype);
+    $result = $this->client->managementApiCall('DELETE', "{$this->hashid}/types/{$datatype_list}");
     return $result['statusCode'] == 202;
   }
 
