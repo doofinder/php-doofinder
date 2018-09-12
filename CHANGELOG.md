@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [5.7.6] - 2018-09-??
+## [5.7.6] - 2018-09-12
 ### Added
   - SearchEngines CRUD
   - Support for multiple types deletion in a single request.
