@@ -36,8 +36,10 @@ class Client {
   const DEFAULT_RPP = 10;
   const DEFAULT_PARAMS_PREFIX = 'dfParam_';
   const DEFAULT_API_VERSION = '5';
+  const DEFAULT_BASE_ADDRESS = 'https://%s-search.doofinder.com';
 
   private $api_key = null; // Authentication
+  private $zone = null;
   private $hashid = null;  // ID of the Search Engine
 
   private $apiVersion = null;
@@ -132,9 +134,9 @@ class Client {
     }
   }
 
-  private function getSearchUrl($entryPoint = 'search', $params = array()) {
-    $baseAddress = $this->baseAddress ? $this->baseAddress : sprintf("https://%s-search.doofinder.com/%s", $this->zone, $this->apiVersion);
-    return sprintf("%s/%s?%s", $baseAddress, $entryPoint, http_build_query($this->sanitize($params), '', '&'));
+  public function getEndpointURL($entryPoint = 'search', $params = array()) {
+    $enpointAddress = sprintf("%s/%s/%s", $this->getServerAddress(), $this->getApiVersion(), $entryPoint);
+    return sprintf("%s?%s", $enpointAddress, http_build_query($this->sanitize($params), '', '&'));
   }
 
   private function addPrefix($value) {
@@ -156,7 +158,7 @@ class Client {
   private function apiCall($entryPoint = 'search', $params = array()){
     $params['hashid'] = $this->hashid;
 
-    $session = curl_init($this->getSearchUrl($entryPoint, $params));
+    $session = curl_init($this->getEndpointURL($entryPoint, $params));
 
     // Configure cURL to return response but not headers
     curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET');
@@ -594,10 +596,9 @@ class Client {
    * @param string $apiVersion the api version , '1.0', '3.0', '4' or '5'
    */
   public function setApiVersion($apiVersion) {
+    $apiVersion = trim($apiVersion);
+
     switch (true) {
-      case in_array($apiVersion, array('1.0', '3.0')):
-        $this->authenticationHeader = false;
-        break;
       case intval($apiVersion) == 4:
         $this->authenticationHeader = 'API Token';
         break;
@@ -731,8 +732,28 @@ class Client {
    * @param string $baseAddress
    * @return void
    */
-  public function setBaseAddress($baseAddress){
-    $this->baseAddress = $baseAddress;
+  public function setBaseAddress($baseAddress) {
+    $baseAddress = trim($baseAddress);
+    $this->baseAddress = $baseAddress ? $baseAddress : self::DEFAULT_BASE_ADDRESS;
+  }
+
+  /**
+   * Return the selected API version.
+   * @return String
+   */
+  public function getApiVersion() {
+    return $this->apiVersion;
+  }
+
+  /**
+   * Return the address of the search server for the zone specified by API key.
+   * @return String
+   */
+  public function getServerAddress() {
+    return sprintf(
+      $this->baseAddress ? $this->baseAddress : self::DEFAULT_BASE_ADDRESS,
+      $this->zone
+    );
   }
 
   /**
