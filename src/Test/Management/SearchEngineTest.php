@@ -49,7 +49,7 @@ class SearchEngineTest extends \PHPUnit_Framework_TestCase
 
   public function testItemsReturnsScrollIterator()
   {
-    $scrollIterator = $this->searchEngine->items('newType');
+    $scrollIterator = $this->searchEngine->getItems('newType');
     // returns a ScrollIterator
     $this->assertInstanceOf('\Doofinder\Api\Management\ScrollIterator', $scrollIterator);
     // for the right Datatype

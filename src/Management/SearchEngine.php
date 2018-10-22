@@ -76,6 +76,11 @@ class SearchEngine {
   }
 
   public function items($datatype) {
+    trigger_error('SearchEngine.items() is deprecated and will be removed, use SearchEngine.getItems() instead', E_USER_NOTICE);
+    return $this->getItems($datatype);
+  }
+
+  public function getItems($datatype) {
     return new ScrollIterator($this, $datatype);
   }
 
