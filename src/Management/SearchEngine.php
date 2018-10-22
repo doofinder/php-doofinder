@@ -38,6 +38,7 @@ class SearchEngine {
    * @return array list of types
    */
   public function getDatatypes() {
+    trigger_error('SearchEngine.getDatatypes() is deprecated and will be removed, use SearchEngine.getTypes() instead', E_USER_NOTICE);
     return $this->getTypes();
   }
 

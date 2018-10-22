@@ -19,10 +19,9 @@ class SearchEngineTest extends \PHPUnit_Framework_TestCase
     // Set up the expectation for the managemetApiCall() method
     // to be called only once and with the strings 'GET' and 'testHashid/types'
     // as its parameters.
-    $this->client->managementApiCall('GET', 'testHashid/types')->shouldBeCalledTimes(2);
+    $this->client->managementApiCall('GET', 'testHashid/types')->shouldBeCalledTimes(1);
 
     $this->searchEngine->getTypes();
-    $this->searchEngine->getDataTypes();
   }
 
   public function testAddTypesApiCall()

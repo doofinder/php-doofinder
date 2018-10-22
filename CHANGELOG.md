@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
   - `getItems()` method in order to deprecate the old `items()` method.
+  - Deprecation message for `getDatatypes()` method in favor of the `getTypes()` method.
 
 ## [5.7.6] - 2018-09-12
 ### Added
