@@ -38,15 +38,46 @@ class SearchEngine {
    * @return array list of types
    */
   public function getDatatypes() {
+    trigger_error('SearchEngine.getDatatypes() is deprecated and will be removed, use SearchEngine.getTypes() instead', E_USER_NOTICE);
     return $this->getTypes();
   }
 
   /**
-   * Get a list of searchengine's types
+   * Get a list of search engine's user types.
+   *
+   * Some types are internal (their name starts by 'df_') and this method does
+   * not return them.
    *
    * @return array list of types
    */
   public function getTypes() {
+    $lambda = function($name) {
+      return strpos($name, 'df_') !== 0;
+    };
+    return array_filter((array) $this->getAllTypes(), $lambda);
+  }
+
+  /**
+   * Get a list of Doofinder's internal types for the current search engine.
+   *
+   * WARNING: These datatypes are not intended to be manipulated by users but
+   * you can if you want. Don't complain if something bad happens ;-)
+   *
+   * @return arrat list of types
+   */
+  public function getInternalTypes() {
+    $lambda = function($name) {
+      return strpos($name, 'df_') === 0;
+    };
+    return array_filter((array) $this->getAllTypes(), $lambda);
+  }
+
+  /**
+   * Get a list of all search engine's types (both user and internal types).
+   *
+   * @return array list of types
+   */
+  public function getAllTypes() {
     $result = $this->client->managementApiCall('GET', "{$this->hashid}/types");
     return $result['response'];
   }
@@ -76,6 +107,11 @@ class SearchEngine {
   }
 
   public function items($datatype) {
+    trigger_error('SearchEngine.items() is deprecated and will be removed, use SearchEngine.getItems() instead', E_USER_NOTICE);
+    return $this->getItems($datatype);
+  }
+
+  public function getItems($datatype) {
     return new ScrollIterator($this, $datatype);
   }
 

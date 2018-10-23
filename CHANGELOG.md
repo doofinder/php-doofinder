@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+  - `getItems()` method in order to deprecate the old `items()` method.
+  - Deprecation message for `getDatatypes()` method in favor of the `getTypes()` method.
+  - `getAllTypes()` method to retrieve all user and internal datatypes for a search engine.
+  - `getInternalTypes()` method to retrieve internal datatypes only for a search engine.
+
+### Changed
+  - `getTypes()` now only returns user-defined datatypes and not internal ones so passing the result of that function to `deleteType()` doesn't produce unexpected results (like removing all search suggestions).
 
 ## [5.7.6] - 2018-09-12
 ### Added

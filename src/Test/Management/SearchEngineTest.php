@@ -19,10 +19,11 @@ class SearchEngineTest extends \PHPUnit_Framework_TestCase
     // Set up the expectation for the managemetApiCall() method
     // to be called only once and with the strings 'GET' and 'testHashid/types'
     // as its parameters.
-    $this->client->managementApiCall('GET', 'testHashid/types')->shouldBeCalledTimes(2);
+    $this->client->managementApiCall('GET', 'testHashid/types')->shouldBeCalledTimes(3);
 
     $this->searchEngine->getTypes();
-    $this->searchEngine->getDataTypes();
+    $this->searchEngine->getInternalTypes();
+    $this->searchEngine->getAllTypes();
   }
 
   public function testAddTypesApiCall()
@@ -49,7 +50,7 @@ class SearchEngineTest extends \PHPUnit_Framework_TestCase
 
   public function testItemsReturnsScrollIterator()
   {
-    $scrollIterator = $this->searchEngine->items('newType');
+    $scrollIterator = $this->searchEngine->getItems('newType');
     // returns a ScrollIterator
     $this->assertInstanceOf('\Doofinder\Api\Management\ScrollIterator', $scrollIterator);
     // for the right Datatype
