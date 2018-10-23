@@ -54,7 +54,7 @@ class SearchEngine {
     $lambda = function($name) {
       return strpos($name, 'df_') !== 0;
     };
-    return array_filter($this->getAllTypes(), $lambda);
+    return array_filter((array) $this->getAllTypes(), $lambda);
   }
 
   /**
