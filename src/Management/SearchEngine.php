@@ -58,6 +58,21 @@ class SearchEngine {
   }
 
   /**
+   * Get a list of Doofinder's internal types for the current search engine.
+   *
+   * WARNING: These datatypes are not intended to be manipulated by users but
+   * you can if you want. Don't complain if something bad happens ;-)
+   *
+   * @return arrat list of types
+   */
+  public function getInternalTypes() {
+    $lambda = function($name) {
+      return strpos($name, 'df_') === 0;
+    };
+    return array_filter((array) $this->getAllTypes(), $lambda);
+  }
+
+  /**
    * Get a list of all search engine's types (both user and internal types).
    *
    * @return array list of types
