@@ -580,9 +580,9 @@ The `SearchEngine` object gives you methods to manage a search engine.
 #### Types Management
 
 ```php
-$types = $mySearchEngine->getTypes();             // Obtain search engine's user datatypes
-$types = $mySearchEngine->getInternalTypes();     // Obtain search engine's internal datatypes
-$types = $mySearchEngine->getAllTypes();          // Obtain all search engine's datatypes
+$types = $mySearchEngine->getTypes();             // Obtain search engine's user data types
+$types = $mySearchEngine->getInternalTypes();     // Obtain search engine's internal data types
+$types = $mySearchEngine->getAllTypes();          // Obtain all search engine's data types
 $new_types = $mySearchEngine->addType('product'); // Add new type
 $mySearchEngine->deleteType('product');           // Remove the type and all items within it.
 $mySearchEngine->deleteType(array('product', 'category')); // Remove multiple types at once.
