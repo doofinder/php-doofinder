@@ -2,4 +2,4 @@
 
 namespace Doofinder\Api\Management\Errors;
 
-class QuotaExhausted extends DoofinderException {}
+class DoofinderException extends \Exception {}

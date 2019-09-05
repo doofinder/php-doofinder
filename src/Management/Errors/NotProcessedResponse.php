@@ -2,4 +2,4 @@
 
 namespace Doofinder\Api\Management\Errors;
 
-class NotProcessedResponse extends \Exception {}
+class NotProcessedResponse extends DoofinderException {}

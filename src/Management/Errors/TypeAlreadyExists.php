@@ -2,4 +2,4 @@
 
 namespace Doofinder\Api\Management\Errors;
 
-class TypeAlreadyExists extends \Exception {}
+class TypeAlreadyExists extends DoofinderException {}
