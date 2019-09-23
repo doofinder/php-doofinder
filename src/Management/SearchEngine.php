@@ -330,7 +330,7 @@ class SearchEngine {
    * @return the item identificator
    */
   private static function obtainId($url) {
-    preg_match('~/\w{32}/(items/\w+|tasks)/([\w-_]+)/?$~', $url, $matches);
+    preg_match('~/\w{32}/(items/\w+|tasks)/([\w_-]+)/?$~', $url, $matches);
     return $matches[2];
   }
 }
