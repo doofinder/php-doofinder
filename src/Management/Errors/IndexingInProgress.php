@@ -2,4 +2,4 @@
 
 namespace Doofinder\Api\Management\Errors;
 
-class IndexingInProgress extends \Exception {}
+class IndexingInProgress extends DoofinderException {}
