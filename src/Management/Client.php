@@ -123,6 +123,11 @@ class Client
       );
       $keep = $response['response']['next'] != NULL;
       $page++;
+      if ($keep) {
+        // Guarantee max two queries per second
+        // @codingStandardsIgnoreLine
+        usleep(600000);
+      }
     }
 
     return $searchEngines;
