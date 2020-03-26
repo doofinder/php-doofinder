@@ -38,6 +38,8 @@ namespace Swagger\Client;
  */
 class Configuration
 {
+    const API_ENDPOINT = 'https://%s-api.doofinder.com';
+
     private static $defaultConfiguration;
 
     /**
@@ -80,7 +82,7 @@ class Configuration
      *
      * @var string
      */
-    protected $host = 'https://{search_zone}-api.doofinder.com';
+    protected $host = null;
 
     /**
      * User agent of the HTTP request, set to "PHP-Swagger" by default
@@ -129,6 +131,9 @@ class Configuration
     public function setApiKey($apiKeyIdentifier, $key)
     {
         $this->apiKeys[$apiKeyIdentifier] = $key;
+        $clusterRegion = explode('-', $key)[0];
+        $this->host = sprintf(self::API_ENDPOINT, $clusterRegion);
+
         return $this;
     }
 

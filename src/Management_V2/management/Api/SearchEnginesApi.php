@@ -665,7 +665,7 @@ class SearchEnginesApi
      */
     public function searchEngineCreateWithHttpInfo($body)
     {
-        $returnType = '\Swagger\Client\Model\SearchEngine';
+        $returnType = 'object';
         $request = $this->searchEngineCreateRequest($body);
 
         try {
@@ -759,7 +759,7 @@ class SearchEnginesApi
      */
     public function searchEngineCreateAsyncWithHttpInfo($body)
     {
-        $returnType = '\Swagger\Client\Model\SearchEngine';
+        $returnType = 'object';
         $request = $this->searchEngineCreateRequest($body);
 
         return $this->client
@@ -1202,7 +1202,7 @@ class SearchEnginesApi
      */
     public function searchEngineListWithHttpInfo()
     {
-        $returnType = '\Swagger\Client\Model\SearchEngines';
+        $returnType = 'object';
         $request = $this->searchEngineListRequest();
 
         try {
@@ -1242,13 +1242,13 @@ class SearchEnginesApi
                     $content = json_decode($content);
                 }
             }
-
+            
             return [
                 ObjectSerializer::deserialize($content, $returnType, []),
                 $response->getStatusCode(),
                 $response->getHeaders()
             ];
-
+            
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
@@ -1294,7 +1294,7 @@ class SearchEnginesApi
      */
     public function searchEngineListAsyncWithHttpInfo()
     {
-        $returnType = '\Swagger\Client\Model\SearchEngines';
+        $returnType = 'object';
         $request = $this->searchEngineListRequest();
 
         return $this->client
@@ -1457,7 +1457,7 @@ class SearchEnginesApi
      */
     public function searchEngineShowWithHttpInfo($hashid)
     {
-        $returnType = '\Swagger\Client\Model\SearchEngine';
+        $returnType = 'object';
         $request = $this->searchEngineShowRequest($hashid);
 
         try {
@@ -1551,7 +1551,7 @@ class SearchEnginesApi
      */
     public function searchEngineShowAsyncWithHttpInfo($hashid)
     {
-        $returnType = '\Swagger\Client\Model\SearchEngine';
+        $returnType = 'object';
         $request = $this->searchEngineShowRequest($hashid);
 
         return $this->client
@@ -1731,7 +1731,7 @@ class SearchEnginesApi
      */
     public function searchEngineUpdateWithHttpInfo($body, $hashid)
     {
-        $returnType = '\Swagger\Client\Model\SearchEngine';
+        $returnType = 'object';
         $request = $this->searchEngineUpdateRequest($body, $hashid);
 
         try {
@@ -1827,7 +1827,7 @@ class SearchEnginesApi
      */
     public function searchEngineUpdateAsyncWithHttpInfo($body, $hashid)
     {
-        $returnType = '\Swagger\Client\Model\SearchEngine';
+        $returnType = 'object';
         $request = $this->searchEngineUpdateRequest($body, $hashid);
 
         return $this->client
