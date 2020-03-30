@@ -40,7 +40,7 @@
 
 ## Installation
 
-To install the library you can download it from the project's [releases](https://github.com/doofinder/php-doofinder/releases) page or use [Composer](https://packagist.org/packages/doofinder/doofinder).
+To install the library you can download it from the project's [releases](https://github.com/doofinder/php-doofinder/releases) page or use [Composer](https://packagist.org/packages/doofinder/doofinder).  You could found a V2 [Management API](https://github.com/doofinder/php-management-doofinder).  
 
 Requires PHP 5.3 or later. Not tested in previous versions.
 
