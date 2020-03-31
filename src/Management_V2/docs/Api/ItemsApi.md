@@ -5,27 +5,27 @@ All URIs are relative to *https://{search_zone}-api.doofinder.com*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**itemCreate**](ItemsApi.md#itemcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/items/ | Creates an item.
-[**itemDelete**](ItemsApi.md#itemdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/items/{item_id} | Deletes an item.
-[**itemIndex**](ItemsApi.md#itemindex) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/items/ | Scrolls through all items
-[**itemShow**](ItemsApi.md#itemshow) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/items/{item_id} | Get an item
-[**itemTempCreate**](ItemsApi.md#itemtempcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/ | Creates an item in the temporal index
-[**itemTempDelete**](ItemsApi.md#itemtempdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/{item_id} | Deletes an item in the temporal index
-[**itemTempShow**](ItemsApi.md#itemtempshow) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/{item_id} | Get an item from the temporal index
-[**itemTempUpdate**](ItemsApi.md#itemtempupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/{item_id} | Partially updates an item in the temporal index
-[**itemUpdate**](ItemsApi.md#itemupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/items/{item_id} | Partially updates an item.
-[**itemsBulkCreate**](ItemsApi.md#itemsbulkcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Creates items in bulk
-[**itemsBulkDelete**](ItemsApi.md#itemsbulkdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Deletes items in bulk
-[**itemsBulkUpdate**](ItemsApi.md#itemsbulkupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Partial updates items in bulk
-[**itemsTempBulkCreate**](ItemsApi.md#itemstempbulkcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Creates items in bulk in the temporal index
-[**itemsTempBulkDelete**](ItemsApi.md#itemstempbulkdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Deletes items in bulk in the temporal index
-[**itemsTempBulkUpdate**](ItemsApi.md#itemstempbulkupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Partial updates items in bulk in the temporal index
+[**itemDelete**](ItemsApi.md#itemdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/items/{item_id} | Deletes an item from the index.
+[**itemIndex**](ItemsApi.md#itemindex) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/items/ | Scrolls through all index items
+[**itemShow**](ItemsApi.md#itemshow) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/items/{item_id} | Gets an item from the index.
+[**itemTempCreate**](ItemsApi.md#itemtempcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/ | Creates an item in the temporal index.
+[**itemTempDelete**](ItemsApi.md#itemtempdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/{item_id} | Deletes an item in the temporal index.
+[**itemTempShow**](ItemsApi.md#itemtempshow) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/{item_id} | Gets an item from the temporal index.
+[**itemTempUpdate**](ItemsApi.md#itemtempupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/{item_id} | Partially updates an item in the temporal index.
+[**itemUpdate**](ItemsApi.md#itemupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/items/{item_id} | Partially updates an item in the index.
+[**itemsBulkCreate**](ItemsApi.md#itemsbulkcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Creates a bulk of item in the index.
+[**itemsBulkDelete**](ItemsApi.md#itemsbulkdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Deletes a bulk of items from the index.
+[**itemsBulkUpdate**](ItemsApi.md#itemsbulkupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Partial updates a bulk of items in the index.
+[**itemsTempBulkCreate**](ItemsApi.md#itemstempbulkcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Creates a bulk of items in the temporal index.
+[**itemsTempBulkDelete**](ItemsApi.md#itemstempbulkdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Deletes items in bulk in the temporal index.
+[**itemsTempBulkUpdate**](ItemsApi.md#itemstempbulkupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Partial updates a bulk of items in the temporal index.
 
 # **itemCreate**
 > \Swagger\Client\Model\Item itemCreate($body, $hashid, $name)
 
 Creates an item.
 
-Creates an item with the data provided.
+Creates an item in the index with the data provided.
 
 ### Example
 ```php
@@ -45,9 +45,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = new \Swagger\Client\Model\map(); // map[string,object] | Item fields
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$body = new \Swagger\Client\Model\map(); // map[string,object] | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->itemCreate($body, $hashid, $name);
@@ -62,9 +62,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**map[string,object]**](../Model/map.md)| Item fields |
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **body** | [**map[string,object]**](../Model/map.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
@@ -82,11 +82,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemDelete**
-> object itemDelete($hashid, $name, $item_id)
+> itemDelete($hashid, $name, $item_id)
 
-Deletes an item.
+Deletes an item from the index.
 
-Deletes an item given its id.
+Deletes an item from the index given its id.
 
 ### Example
 ```php
@@ -106,13 +106,12 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
-$item_id = "item_id_example"; // string | Item unique identifier
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
+$item_id = "item_id_example"; // string | Item unique identifier inside an index.
 
 try {
-    $result = $apiInstance->itemDelete($hashid, $name, $item_id);
-    print_r($result);
+    $apiInstance->itemDelete($hashid, $name, $item_id);
 } catch (Exception $e) {
     echo 'Exception when calling ItemsApi->itemDelete: ', $e->getMessage(), PHP_EOL;
 }
@@ -123,13 +122,13 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
- **item_id** | **string**| Item unique identifier |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
+ **item_id** | **string**| Item unique identifier inside an index. |
 
 ### Return type
 
-**object**
+void (empty response body)
 
 ### Authorization
 
@@ -138,16 +137,16 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemIndex**
-> \Swagger\Client\Model\Scroll itemIndex($hashid, $name, $scroll_id, $rpp)
+> \Swagger\Client\Model\Scroller itemIndex($hashid, $name, $scroll_id, $rpp)
 
-Scrolls through all items
+Scrolls through all index items
 
-Starts a scroll through all items. Generate a scroll id that can be traversed with successive requests.
+Scrolls through all index items. The first request starts the scroll and generate a scroll id that can be traversed with each successive requests. There is a limited time period on which the traverse is possible. After 5 minutes the scroll expires and it is no longer accesible, a new request should be made to traverse items again from the beginning.
 
 ### Example
 ```php
@@ -167,10 +166,10 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
-$scroll_id = "scroll_id_example"; // string | Unique identifier for the scroll. The scroll saves a \"pointer\" to the last fetched page.
-$rpp = 56; // int | _Results per page_. How many items are fetched per page
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
+$scroll_id = "scroll_id_example"; // string | Unique identifier for the scroll. The scroll saves a \"pointer\" to the last fetched page so each successive request to the same scroll_id return a new page.
+$rpp = 56; // int | _Results per page_. How many items are fetched per page/request.
 
 try {
     $result = $apiInstance->itemIndex($hashid, $name, $scroll_id, $rpp);
@@ -185,14 +184,14 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
- **scroll_id** | **string**| Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page. | [optional]
- **rpp** | **int**| _Results per page_. How many items are fetched per page | [optional]
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
+ **scroll_id** | **string**| Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page so each successive request to the same scroll_id return a new page. | [optional]
+ **rpp** | **int**| _Results per page_. How many items are fetched per page/request. | [optional]
 
 ### Return type
 
-[**\Swagger\Client\Model\Scroll**](../Model/Scroll.md)
+[**\Swagger\Client\Model\Scroller**](../Model/Scroller.md)
 
 ### Authorization
 
@@ -208,9 +207,9 @@ Name | Type | Description  | Notes
 # **itemShow**
 > \Swagger\Client\Model\Item itemShow($hashid, $name, $item_id)
 
-Get an item
+Gets an item from the index.
 
-Fetch an item from the search engine and index
+Gets an item from the index by its id.
 
 ### Example
 ```php
@@ -230,9 +229,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
-$item_id = "item_id_example"; // string | Item unique identifier
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
+$item_id = "item_id_example"; // string | Item unique identifier inside an index.
 
 try {
     $result = $apiInstance->itemShow($hashid, $name, $item_id);
@@ -247,9 +246,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
- **item_id** | **string**| Item unique identifier |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
+ **item_id** | **string**| Item unique identifier inside an index. |
 
 ### Return type
 
@@ -269,9 +268,9 @@ Name | Type | Description  | Notes
 # **itemTempCreate**
 > \Swagger\Client\Model\Item itemTempCreate($body, $hashid, $name)
 
-Creates an item in the temporal index
+Creates an item in the temporal index.
 
-Creates an item with the data provided in the temporal index
+Creates an item with the data provided in the temporal index.
 
 ### Example
 ```php
@@ -291,9 +290,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = new \Swagger\Client\Model\map(); // map[string,object] | Item fields
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$body = new \Swagger\Client\Model\map(); // map[string,object] | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->itemTempCreate($body, $hashid, $name);
@@ -308,9 +307,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**map[string,object]**](../Model/map.md)| Item fields |
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **body** | [**map[string,object]**](../Model/map.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
@@ -328,11 +327,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemTempDelete**
-> object itemTempDelete($hashid, $name, $item_id)
+> itemTempDelete($hashid, $name, $item_id)
 
-Deletes an item in the temporal index
+Deletes an item in the temporal index.
 
-Deletes an item given its id in the temporal index
+Deletes an item from the temporal index given its id.
 
 ### Example
 ```php
@@ -352,13 +351,12 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
-$item_id = "item_id_example"; // string | Item unique identifier
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
+$item_id = "item_id_example"; // string | Item unique identifier inside an index.
 
 try {
-    $result = $apiInstance->itemTempDelete($hashid, $name, $item_id);
-    print_r($result);
+    $apiInstance->itemTempDelete($hashid, $name, $item_id);
 } catch (Exception $e) {
     echo 'Exception when calling ItemsApi->itemTempDelete: ', $e->getMessage(), PHP_EOL;
 }
@@ -369,13 +367,13 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
- **item_id** | **string**| Item unique identifier |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
+ **item_id** | **string**| Item unique identifier inside an index. |
 
 ### Return type
 
-**object**
+void (empty response body)
 
 ### Authorization
 
@@ -384,16 +382,16 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemTempShow**
 > \Swagger\Client\Model\Item itemTempShow($hashid, $name, $item_id)
 
-Get an item from the temporal index
+Gets an item from the temporal index.
 
-Fetch an item from the search engine and temporal index
+Gets an item from the temporal index by its id.
 
 ### Example
 ```php
@@ -413,9 +411,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
-$item_id = "item_id_example"; // string | Item unique identifier
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
+$item_id = "item_id_example"; // string | Item unique identifier inside an index.
 
 try {
     $result = $apiInstance->itemTempShow($hashid, $name, $item_id);
@@ -430,9 +428,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
- **item_id** | **string**| Item unique identifier |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
+ **item_id** | **string**| Item unique identifier inside an index. |
 
 ### Return type
 
@@ -452,9 +450,9 @@ Name | Type | Description  | Notes
 # **itemTempUpdate**
 > \Swagger\Client\Model\Item itemTempUpdate($body, $hashid, $name, $item_id)
 
-Partially updates an item in the temporal index
+Partially updates an item in the temporal index.
 
-Partially updates an item and returns the indexed result in the temporal index
+Partially updates an item in the temporal index given its id. The operation will return the updated item.
 
 ### Example
 ```php
@@ -474,10 +472,10 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = new \Swagger\Client\Model\map(); // map[string,object] | Item fields
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
-$item_id = "item_id_example"; // string | Item unique identifier
+$body = new \Swagger\Client\Model\map(); // map[string,object] | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
+$item_id = "item_id_example"; // string | Item unique identifier inside an index.
 
 try {
     $result = $apiInstance->itemTempUpdate($body, $hashid, $name, $item_id);
@@ -492,10 +490,10 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**map[string,object]**](../Model/map.md)| Item fields |
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
- **item_id** | **string**| Item unique identifier |
+ **body** | [**map[string,object]**](../Model/map.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
+ **item_id** | **string**| Item unique identifier inside an index. |
 
 ### Return type
 
@@ -515,9 +513,9 @@ Name | Type | Description  | Notes
 # **itemUpdate**
 > \Swagger\Client\Model\Item itemUpdate($body, $hashid, $name, $item_id)
 
-Partially updates an item.
+Partially updates an item in the index.
 
-Partially updates an item and returns the indexed result.
+Partially updates an item in the index. The operation returns the updated item.
 
 ### Example
 ```php
@@ -537,10 +535,10 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = new \Swagger\Client\Model\map(); // map[string,object] | Item fields
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
-$item_id = "item_id_example"; // string | Item unique identifier
+$body = new \Swagger\Client\Model\map(); // map[string,object] | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
+$item_id = "item_id_example"; // string | Item unique identifier inside an index.
 
 try {
     $result = $apiInstance->itemUpdate($body, $hashid, $name, $item_id);
@@ -555,10 +553,10 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**map[string,object]**](../Model/map.md)| Item fields |
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
- **item_id** | **string**| Item unique identifier |
+ **body** | [**map[string,object]**](../Model/map.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
+ **item_id** | **string**| Item unique identifier inside an index. |
 
 ### Return type
 
@@ -578,9 +576,9 @@ Name | Type | Description  | Notes
 # **itemsBulkCreate**
 > \Swagger\Client\Model\BulkResult itemsBulkCreate($body, $hashid, $name)
 
-Creates items in bulk
+Creates a bulk of item in the index.
 
-Creates an array of items in a single bulk operation
+Creates an array of items in the index in a single bulk operation.
 
 ### Example
 ```php
@@ -600,9 +598,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | Bulk data
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$body = array(new \Swagger\Client\Model\ItemsIdsInner()); // \Swagger\Client\Model\ItemsIdsInner[] | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->itemsBulkCreate($body, $hashid, $name);
@@ -617,9 +615,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)| Bulk data |
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **body** | [**\Swagger\Client\Model\ItemsIdsInner[]**](../Model/ItemsIdsInner.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
@@ -639,9 +637,9 @@ Name | Type | Description  | Notes
 # **itemsBulkDelete**
 > \Swagger\Client\Model\BulkResult itemsBulkDelete($body, $hashid, $name)
 
-Deletes items in bulk
+Deletes a bulk of items from the index.
 
-Deletes an array of items in a single bulk operation
+Deletes an array of items from the index in a single bulk operation.
 
 ### Example
 ```php
@@ -661,9 +659,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | Bulk data
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->itemsBulkDelete($body, $hashid, $name);
@@ -678,9 +676,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)| Bulk data |
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
@@ -700,9 +698,9 @@ Name | Type | Description  | Notes
 # **itemsBulkUpdate**
 > \Swagger\Client\Model\BulkResult itemsBulkUpdate($body, $hashid, $name)
 
-Partial updates items in bulk
+Partial updates a bulk of items in the index.
 
-Updates an array of items in a single bulk operation
+Updates an array of items in a single bulk operation.
 
 ### Example
 ```php
@@ -722,9 +720,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | Bulk data
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->itemsBulkUpdate($body, $hashid, $name);
@@ -739,9 +737,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)| Bulk data |
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
@@ -761,9 +759,9 @@ Name | Type | Description  | Notes
 # **itemsTempBulkCreate**
 > \Swagger\Client\Model\BulkResult itemsTempBulkCreate($body, $hashid, $name)
 
-Creates items in bulk in the temporal index
+Creates a bulk of items in the temporal index.
 
-Creates an array of items in a single bulk operation in the temporal index
+Creates an array of items in the temporal index in a single bulk operation.
 
 ### Example
 ```php
@@ -783,9 +781,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | Bulk data
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->itemsTempBulkCreate($body, $hashid, $name);
@@ -800,9 +798,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)| Bulk data |
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
@@ -822,9 +820,9 @@ Name | Type | Description  | Notes
 # **itemsTempBulkDelete**
 > \Swagger\Client\Model\BulkResult itemsTempBulkDelete($body, $hashid, $name)
 
-Deletes items in bulk in the temporal index
+Deletes items in bulk in the temporal index.
 
-Deletes an array of items in a single bulk operation in the temporal index
+Deletes an array of items in a single bulk operation in the temporal index.
 
 ### Example
 ```php
@@ -844,9 +842,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | Bulk data
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$body = array(new \Swagger\Client\Model\ItemsIdsInner()); // \Swagger\Client\Model\ItemsIdsInner[] | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->itemsTempBulkDelete($body, $hashid, $name);
@@ -861,9 +859,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)| Bulk data |
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **body** | [**\Swagger\Client\Model\ItemsIdsInner[]**](../Model/ItemsIdsInner.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
@@ -883,9 +881,9 @@ Name | Type | Description  | Notes
 # **itemsTempBulkUpdate**
 > \Swagger\Client\Model\BulkResult itemsTempBulkUpdate($body, $hashid, $name)
 
-Partial updates items in bulk in the temporal index
+Partial updates a bulk of items in the temporal index.
 
-Updates an array of items in a single bulk operation in the temporal index
+Updates an array of items in a single bulk operation in the temporal index.
 
 ### Example
 ```php
@@ -905,9 +903,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | Bulk data
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->itemsTempBulkUpdate($body, $hashid, $name);
@@ -922,9 +920,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)| Bulk data |
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 

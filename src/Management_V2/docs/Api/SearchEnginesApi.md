@@ -4,20 +4,20 @@ All URIs are relative to *https://{search_zone}-api.doofinder.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**process**](SearchEnginesApi.md#process) | **POST** /api/v2/search_engines/{searchengine_hashid}/_process | Process Search Engine Data Sources
-[**processStatus**](SearchEnginesApi.md#processstatus) | **GET** /api/v2/search_engines/{searchengine_hashid}/_process | 
-[**searchEngineCreate**](SearchEnginesApi.md#searchenginecreate) | **POST** /api/v2/search_engines | Create new search engine
-[**searchEngineDelete**](SearchEnginesApi.md#searchenginedelete) | **DELETE** /api/v2/search_engines/{hashid} | Delete a search engine
-[**searchEngineList**](SearchEnginesApi.md#searchenginelist) | **GET** /api/v2/search_engines | List search engines
-[**searchEngineShow**](SearchEnginesApi.md#searchengineshow) | **GET** /api/v2/search_engines/{hashid} | Get a search engine
-[**searchEngineUpdate**](SearchEnginesApi.md#searchengineupdate) | **PATCH** /api/v2/search_engines/{hashid} | Update a search engine
+[**process**](SearchEnginesApi.md#process) | **POST** /api/v2/search_engines/{hashid}/_process | Process all search engine&#x27;s data sources.
+[**processStatus**](SearchEnginesApi.md#processstatus) | **GET** /api/v2/search_engines/{hashid}/_process | Gets the status of the process task.
+[**searchEngineCreate**](SearchEnginesApi.md#searchenginecreate) | **POST** /api/v2/search_engines | Creates a new search engine.
+[**searchEngineDelete**](SearchEnginesApi.md#searchenginedelete) | **DELETE** /api/v2/search_engines/{hashid} | Deletes a search engine.
+[**searchEngineList**](SearchEnginesApi.md#searchenginelist) | **GET** /api/v2/search_engines | Lists search engines.
+[**searchEngineShow**](SearchEnginesApi.md#searchengineshow) | **GET** /api/v2/search_engines/{hashid} | Gets a search engine.
+[**searchEngineUpdate**](SearchEnginesApi.md#searchengineupdate) | **PATCH** /api/v2/search_engines/{hashid} | Updates a search engine.
 
 # **process**
-> object process($searchengine_hashid, $indices)
+> \Swagger\Client\Model\ProcessingTask process($hashid)
 
-Process Search Engine Data Sources
+Process all search engine's data sources.
 
-Schedule a task for process data sources
+Schedules a task for processing all search engine's data sources.
 
 ### Example
 ```php
@@ -37,11 +37,10 @@ $apiInstance = new Swagger\Client\Api\SearchEnginesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$searchengine_hashid = "searchengine_hashid_example"; // string | Search engine identifier (hashid)
-$indices = "indices_example"; // string | List of indices to be processed (optional).
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
 
 try {
-    $result = $apiInstance->process($searchengine_hashid, $indices);
+    $result = $apiInstance->process($hashid);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling SearchEnginesApi->process: ', $e->getMessage(), PHP_EOL;
@@ -53,12 +52,11 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **searchengine_hashid** | **string**| Search engine identifier (hashid) |
- **indices** | **string**| List of indices to be processed (optional). | [optional]
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\ProcessingTask**](../Model/ProcessingTask.md)
 
 ### Authorization
 
@@ -72,9 +70,9 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **processStatus**
-> \Swagger\Client\Model\TaskResponse processStatus($searchengine_hashid)
+> \Swagger\Client\Model\ProcessingTask processStatus($hashid)
 
-
+Gets the status of the process task.
 
 ### Example
 ```php
@@ -94,10 +92,10 @@ $apiInstance = new Swagger\Client\Api\SearchEnginesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$searchengine_hashid = "searchengine_hashid_example"; // string | Search engine identifier (hashid)
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
 
 try {
-    $result = $apiInstance->processStatus($searchengine_hashid);
+    $result = $apiInstance->processStatus($hashid);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling SearchEnginesApi->processStatus: ', $e->getMessage(), PHP_EOL;
@@ -109,11 +107,11 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **searchengine_hashid** | **string**| Search engine identifier (hashid) |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
 
 ### Return type
 
-[**\Swagger\Client\Model\TaskResponse**](../Model/TaskResponse.md)
+[**\Swagger\Client\Model\ProcessingTask**](../Model/ProcessingTask.md)
 
 ### Authorization
 
@@ -129,9 +127,9 @@ Name | Type | Description  | Notes
 # **searchEngineCreate**
 > \Swagger\Client\Model\SearchEngine searchEngineCreate($body)
 
-Create new search engine
+Creates a new search engine.
 
-Create a new search engine
+Creates a new search engine with the data provided. It is not possible to execute searches against the new search engine as it does not have any index yet. You need to create an index belonging to the new search engine in order to be able to make searches.
 
 ### Example
 ```php
@@ -151,7 +149,7 @@ $apiInstance = new Swagger\Client\Api\SearchEnginesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = new \Swagger\Client\Model\NewSearchEngine(); // \Swagger\Client\Model\NewSearchEngine | Search engine data
+$body = new \Swagger\Client\Model\SearchEngine(); // \Swagger\Client\Model\SearchEngine | 
 
 try {
     $result = $apiInstance->searchEngineCreate($body);
@@ -166,7 +164,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**\Swagger\Client\Model\NewSearchEngine**](../Model/NewSearchEngine.md)| Search engine data |
+ **body** | [**\Swagger\Client\Model\SearchEngine**](../Model/SearchEngine.md)|  |
 
 ### Return type
 
@@ -184,11 +182,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **searchEngineDelete**
-> object searchEngineDelete($hashid)
+> searchEngineDelete($hashid)
 
-Delete a search engine
+Deletes a search engine.
 
-Delete a search engine
+Deletes a search engine given its hashid.
 
 ### Example
 ```php
@@ -208,11 +206,10 @@ $apiInstance = new Swagger\Client\Api\SearchEnginesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
 
 try {
-    $result = $apiInstance->searchEngineDelete($hashid);
-    print_r($result);
+    $apiInstance->searchEngineDelete($hashid);
 } catch (Exception $e) {
     echo 'Exception when calling SearchEnginesApi->searchEngineDelete: ', $e->getMessage(), PHP_EOL;
 }
@@ -223,11 +220,11 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Search engine identifier (hashid) |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
 
 ### Return type
 
-**object**
+void (empty response body)
 
 ### Authorization
 
@@ -236,16 +233,16 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **searchEngineList**
 > \Swagger\Client\Model\SearchEngines searchEngineList()
 
-List search engines
+Lists search engines.
 
-List search engines
+Lists all user's search engines.
 
 ### Example
 ```php
@@ -296,9 +293,9 @@ This endpoint does not need any parameter.
 # **searchEngineShow**
 > \Swagger\Client\Model\SearchEngine searchEngineShow($hashid)
 
-Get a search engine
+Gets a search engine.
 
-Get a search engine given by his hashid
+Returns a search engine details given its hashid.
 
 ### Example
 ```php
@@ -318,7 +315,7 @@ $apiInstance = new Swagger\Client\Api\SearchEnginesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
 
 try {
     $result = $apiInstance->searchEngineShow($hashid);
@@ -333,7 +330,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Search engine identifier (hashid) |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
 
 ### Return type
 
@@ -353,9 +350,9 @@ Name | Type | Description  | Notes
 # **searchEngineUpdate**
 > \Swagger\Client\Model\SearchEngine searchEngineUpdate($body, $hashid)
 
-Update a search engine
+Updates a search engine.
 
-Update a search engine by the given hashid
+Updates a search engine identified by its hashid.
 
 ### Example
 ```php
@@ -375,8 +372,8 @@ $apiInstance = new Swagger\Client\Api\SearchEnginesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = new \Swagger\Client\Model\NewSearchEngine(); // \Swagger\Client\Model\NewSearchEngine | Search engine data
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
+$body = new \Swagger\Client\Model\SearchEngine(); // \Swagger\Client\Model\SearchEngine | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
 
 try {
     $result = $apiInstance->searchEngineUpdate($body, $hashid);
@@ -391,8 +388,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**\Swagger\Client\Model\NewSearchEngine**](../Model/NewSearchEngine.md)| Search engine data |
- **hashid** | **string**| Search engine identifier (hashid) |
+ **body** | [**\Swagger\Client\Model\SearchEngine**](../Model/SearchEngine.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
 
 ### Return type
 

@@ -13,7 +13,7 @@
 /**
  * Doofinder Management API
  *
- * # Introduction Doofinder's management API allows you to perform the same administrative tasks you can do on your search engines using the doofinder control panel, directly from your code.  You could found here our legacy [Management API V1](https://www.doofinder.com/support/developer/api/management-api).  # Basics ## Endpoint All requests should be done with `https` protocol in our api location.  `https://{search_zone}-api.doofinder.com`  where `{search_zone}` depends on your location, is the geographic zone your search engine is located at. i.e.: eu1. Also, indicates which host to use in your API calls.  ## Authentication  We provide two methods of authentication for our API. In any of theese you need a management api key that you could obtain in our [management control panel](https://www.doofinder.com/admin).  You can generate it in your user account -> Api Keys.  Example of the generated API Key: `eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### API Token You could authenticate with the previous API key in header as a Token. The correct way to authenticate is to send a HTTP Header with the name `Authorization` and the value `Token <API Key>`  For example, for the key shown above:  `Authorization: Token eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### JWT Token (Draft) Also you could authenticate with a JSON Web Token generating jwt keys with your API Key. To authenticate using JWT you need to send a HTTP Header with the name `Authorization` and the value `Bearer <JWT token>`.  For example, with the key shown above:  `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk`  ## Conventions Along most of the code samples you will find placeholders for some common variable values. They are:  - `{hashid}`: The search engine's unique id. i.e.: d8fdeab7fce96a19d3fc7b0ca7a1e98b - `{index}`: When storing items, they're always stored under a certain \"index\". i.e.: product. - `{token}`: Your personal authentication token obtained in the control panel. - `{uid}`: The Id of a Doofinder User
+ * # Introduction  Doofinder's management API allows you to perform some of the administrative tasks you can do on your search engines using the doofinder control panel, directly from your code.  # Basics  ## Endpoint  All requests should be done with `https` protocol in our API location.  `https://{search_zone}-api.doofinder.com`  where `{search_zone}` depends on your location, is the geographic zone your search engine is located at. i.e.: eu1. Also, indicates which host to use in your API calls.  ## Authentication  We provide two methods of authentication for our API. In any of these you need a management API key that you could obtain in our [management control panel](https://www.doofinder.com/admin).  You can generate it in your user account -> API Keys.  Example of a generated API Key: `eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### API Token  You can authenticate with the previous API key in header as a Token. The correct way to authenticate is to send a HTTP Header with the name `Authorization` and the value `Token <API Key>`  For example, for the key shown above:  `Authorization: Token eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### JWT Token (Draft)  Also you can authenticate with a [JSON Web Token](https://jwt.io) generating JWT keys with your API Key. To authenticate using JWT you need to send a HTTP Header with the name `Authorization` and the value `Bearer <JWT token>`.  For example, with the key shown above:  `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk`  ## Conventions  Along most of the code samples you will find placeholders for some common variable values. They are:  - `{hashid}`: The search engine's unique id. i.e.: d8fdeab7fce96a19d3fc7b0ca7a1e98b - `{index}`: When storing items, they're always stored under a certain \"index\". i.e.: product. - `{token}`: Your personal authentication token obtained in the control panel. - `{uid}`: The Id of a Doofinder User  # Objects  ## Search Engines  A Search Engine is a set of multiple Indices, and some options to configure them. It must contain at least one indice.  A Search Engine can be uniquely identified by the parameter called `hashid`.  A Search Engine can be processed, which means the process of reading the data from the Data Sources (usually an url), indexing the data in a temporary index and finally build the index ready for use.  ## Indices  An Index is a collection of Items, the same way a Search Engine is a collection of Indices. It has options that define the schema used for Items, Data Sources that define where to get the data, and some searching options.  Each Index may also have one temporary index. A temporary index shares the same options of its main index. There are operations to manage temporary indices like create, delete, reindex, etc. The usual flow for a temporary index is create one, index items on it and replace the main index with the temporary one. This way you can reindex your whole data having zero downtime of the search service.  ## Data Sources  A Data Source defines a source of items for indexing. There are many kinds but they are basically a location for taking items for indexing and the most common is just an url with a file. These are the sources that are read when calling a Search Engine processing. An Index does not need a Data Source if you index the items directly using the API.  ## Items  Items are the objects stored in an Index, and the ones returned after executing a search. Items may have an schema (a collection of fields) depending on their Index preset. This way a `product` item has price, category, etc.
  *
  * OpenAPI spec version: 2.0
  * Contact: support@doofinder.com
@@ -56,9 +56,9 @@ class BulkResultResults implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'result' => 'string',
+        'error' => 'string',
 'id' => 'string',
-'error' => 'string'    ];
+'result' => 'string'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
@@ -66,9 +66,9 @@ class BulkResultResults implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'result' => null,
+        'error' => null,
 'id' => null,
-'error' => null    ];
+'result' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -97,9 +97,9 @@ class BulkResultResults implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'result' => 'result',
+        'error' => 'error',
 'id' => 'id',
-'error' => 'error'    ];
+'result' => 'result'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -107,9 +107,9 @@ class BulkResultResults implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'result' => 'setResult',
+        'error' => 'setError',
 'id' => 'setId',
-'error' => 'setError'    ];
+'result' => 'setResult'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -117,9 +117,9 @@ class BulkResultResults implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'result' => 'getResult',
+        'error' => 'getError',
 'id' => 'getId',
-'error' => 'getError'    ];
+'result' => 'getResult'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -162,7 +162,22 @@ class BulkResultResults implements ModelInterface, ArrayAccess
         return self::$swaggerModelName;
     }
 
-    
+    const RESULT_CREATED = 'created';
+const RESULT_UPDATED = 'updated';
+const RESULT_DELETED = 'deleted';
+
+    /**
+     * Gets allowable values of the enum
+     *
+     * @return string[]
+     */
+    public function getResultAllowableValues()
+    {
+        return [
+            self::RESULT_CREATED,
+self::RESULT_UPDATED,
+self::RESULT_DELETED,        ];
+    }
 
     /**
      * Associative array for storing property values
@@ -179,9 +194,9 @@ class BulkResultResults implements ModelInterface, ArrayAccess
      */
     public function __construct(array $data = null)
     {
-        $this->container['result'] = isset($data['result']) ? $data['result'] : null;
-        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
         $this->container['error'] = isset($data['error']) ? $data['error'] : null;
+        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
+        $this->container['result'] = isset($data['result']) ? $data['result'] : null;
     }
 
     /**
@@ -192,6 +207,14 @@ class BulkResultResults implements ModelInterface, ArrayAccess
     public function listInvalidProperties()
     {
         $invalidProperties = [];
+
+        $allowedValues = $this->getResultAllowableValues();
+        if (!is_null($this->container['result']) && !in_array($this->container['result'], $allowedValues, true)) {
+            $invalidProperties[] = sprintf(
+                "invalid value for 'result', must be one of '%s'",
+                implode("', '", $allowedValues)
+            );
+        }
 
         return $invalidProperties;
     }
@@ -209,25 +232,25 @@ class BulkResultResults implements ModelInterface, ArrayAccess
 
 
     /**
-     * Gets result
+     * Gets error
      *
      * @return string
      */
-    public function getResult()
+    public function getError()
     {
-        return $this->container['result'];
+        return $this->container['error'];
     }
 
     /**
-     * Sets result
+     * Sets error
      *
-     * @param string $result Result of the operation
+     * @param string $error Result error of the operation.
      *
      * @return $this
      */
-    public function setResult($result)
+    public function setError($error)
     {
-        $this->container['result'] = $result;
+        $this->container['error'] = $error;
 
         return $this;
     }
@@ -245,7 +268,7 @@ class BulkResultResults implements ModelInterface, ArrayAccess
     /**
      * Sets id
      *
-     * @param string $id Item unique identifier
+     * @param string $id Item unique identifier.
      *
      * @return $this
      */
@@ -257,25 +280,34 @@ class BulkResultResults implements ModelInterface, ArrayAccess
     }
 
     /**
-     * Gets error
+     * Gets result
      *
      * @return string
      */
-    public function getError()
+    public function getResult()
     {
-        return $this->container['error'];
+        return $this->container['result'];
     }
 
     /**
-     * Sets error
+     * Sets result
      *
-     * @param string $error Result error of the operation
+     * @param string $result Result of the operation.
      *
      * @return $this
      */
-    public function setError($error)
+    public function setResult($result)
     {
-        $this->container['error'] = $error;
+        $allowedValues = $this->getResultAllowableValues();
+        if (!is_null($result) && !in_array($result, $allowedValues, true)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    "Invalid value for 'result', must be one of '%s'",
+                    implode("', '", $allowedValues)
+                )
+            );
+        }
+        $this->container['result'] = $result;
 
         return $this;
     }

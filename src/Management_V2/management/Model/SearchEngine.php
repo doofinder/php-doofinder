@@ -13,7 +13,7 @@
 /**
  * Doofinder Management API
  *
- * # Introduction Doofinder's management API allows you to perform the same administrative tasks you can do on your search engines using the doofinder control panel, directly from your code.  You could found here our legacy [Management API V1](https://www.doofinder.com/support/developer/api/management-api).  # Basics ## Endpoint All requests should be done with `https` protocol in our api location.  `https://{search_zone}-api.doofinder.com`  where `{search_zone}` depends on your location, is the geographic zone your search engine is located at. i.e.: eu1. Also, indicates which host to use in your API calls.  ## Authentication  We provide two methods of authentication for our API. In any of theese you need a management api key that you could obtain in our [management control panel](https://www.doofinder.com/admin).  You can generate it in your user account -> Api Keys.  Example of the generated API Key: `eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### API Token You could authenticate with the previous API key in header as a Token. The correct way to authenticate is to send a HTTP Header with the name `Authorization` and the value `Token <API Key>`  For example, for the key shown above:  `Authorization: Token eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### JWT Token (Draft) Also you could authenticate with a JSON Web Token generating jwt keys with your API Key. To authenticate using JWT you need to send a HTTP Header with the name `Authorization` and the value `Bearer <JWT token>`.  For example, with the key shown above:  `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk`  ## Conventions Along most of the code samples you will find placeholders for some common variable values. They are:  - `{hashid}`: The search engine's unique id. i.e.: d8fdeab7fce96a19d3fc7b0ca7a1e98b - `{index}`: When storing items, they're always stored under a certain \"index\". i.e.: product. - `{token}`: Your personal authentication token obtained in the control panel. - `{uid}`: The Id of a Doofinder User
+ * # Introduction  Doofinder's management API allows you to perform some of the administrative tasks you can do on your search engines using the doofinder control panel, directly from your code.  # Basics  ## Endpoint  All requests should be done with `https` protocol in our API location.  `https://{search_zone}-api.doofinder.com`  where `{search_zone}` depends on your location, is the geographic zone your search engine is located at. i.e.: eu1. Also, indicates which host to use in your API calls.  ## Authentication  We provide two methods of authentication for our API. In any of these you need a management API key that you could obtain in our [management control panel](https://www.doofinder.com/admin).  You can generate it in your user account -> API Keys.  Example of a generated API Key: `eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### API Token  You can authenticate with the previous API key in header as a Token. The correct way to authenticate is to send a HTTP Header with the name `Authorization` and the value `Token <API Key>`  For example, for the key shown above:  `Authorization: Token eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### JWT Token (Draft)  Also you can authenticate with a [JSON Web Token](https://jwt.io) generating JWT keys with your API Key. To authenticate using JWT you need to send a HTTP Header with the name `Authorization` and the value `Bearer <JWT token>`.  For example, with the key shown above:  `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk`  ## Conventions  Along most of the code samples you will find placeholders for some common variable values. They are:  - `{hashid}`: The search engine's unique id. i.e.: d8fdeab7fce96a19d3fc7b0ca7a1e98b - `{index}`: When storing items, they're always stored under a certain \"index\". i.e.: product. - `{token}`: Your personal authentication token obtained in the control panel. - `{uid}`: The Id of a Doofinder User  # Objects  ## Search Engines  A Search Engine is a set of multiple Indices, and some options to configure them. It must contain at least one indice.  A Search Engine can be uniquely identified by the parameter called `hashid`.  A Search Engine can be processed, which means the process of reading the data from the Data Sources (usually an url), indexing the data in a temporary index and finally build the index ready for use.  ## Indices  An Index is a collection of Items, the same way a Search Engine is a collection of Indices. It has options that define the schema used for Items, Data Sources that define where to get the data, and some searching options.  Each Index may also have one temporary index. A temporary index shares the same options of its main index. There are operations to manage temporary indices like create, delete, reindex, etc. The usual flow for a temporary index is create one, index items on it and replace the main index with the temporary one. This way you can reindex your whole data having zero downtime of the search service.  ## Data Sources  A Data Source defines a source of items for indexing. There are many kinds but they are basically a location for taking items for indexing and the most common is just an url with a file. These are the sources that are read when calling a Search Engine processing. An Index does not need a Data Source if you index the items directly using the API.  ## Items  Items are the objects stored in an Index, and the ones returned after executing a search. Items may have an schema (a collection of fields) depending on their Index preset. This way a `product` item has price, category, etc.
  *
  * OpenAPI spec version: 2.0
  * Contact: support@doofinder.com
@@ -27,17 +27,20 @@
  */
 
 namespace Swagger\Client\Model;
+
+use \ArrayAccess;
 use \Swagger\Client\ObjectSerializer;
 
 /**
  * SearchEngine Class Doc Comment
  *
  * @category Class
+ * @description A search engine groups a number of indices. Any search done to the search engine takes the best results of all indices beneath it. Also, search engine options applies to all its indices.
  * @package  Swagger\Client
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
-class SearchEngine extends NewSearchEngine 
+class SearchEngine implements ModelInterface, ArrayAccess
 {
     const DISCRIMINATOR = null;
 
@@ -54,9 +57,13 @@ class SearchEngine extends NewSearchEngine
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'indices' => '\Swagger\Client\Model\Indices',
+        'hashid' => 'string',
 'inactive' => 'bool',
-'hashid' => 'string'    ];
+'indices' => '\Swagger\Client\Model\Indices',
+'language' => 'string',
+'name' => 'string',
+'site_url' => 'string',
+'stopwords' => 'bool'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
@@ -64,9 +71,13 @@ class SearchEngine extends NewSearchEngine
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'indices' => null,
+        'hashid' => null,
 'inactive' => null,
-'hashid' => null    ];
+'indices' => null,
+'language' => null,
+'name' => null,
+'site_url' => null,
+'stopwords' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -75,7 +86,7 @@ class SearchEngine extends NewSearchEngine
      */
     public static function swaggerTypes()
     {
-        return self::$swaggerTypes + parent::swaggerTypes();
+        return self::$swaggerTypes;
     }
 
     /**
@@ -85,7 +96,7 @@ class SearchEngine extends NewSearchEngine
      */
     public static function swaggerFormats()
     {
-        return self::$swaggerFormats + parent::swaggerFormats();
+        return self::$swaggerFormats;
     }
 
     /**
@@ -95,9 +106,13 @@ class SearchEngine extends NewSearchEngine
      * @var string[]
      */
     protected static $attributeMap = [
-        'indices' => 'indices',
+        'hashid' => 'hashid',
 'inactive' => 'inactive',
-'hashid' => 'hashid'    ];
+'indices' => 'indices',
+'language' => 'language',
+'name' => 'name',
+'site_url' => 'site_url',
+'stopwords' => 'stopwords'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -105,9 +120,13 @@ class SearchEngine extends NewSearchEngine
      * @var string[]
      */
     protected static $setters = [
-        'indices' => 'setIndices',
+        'hashid' => 'setHashid',
 'inactive' => 'setInactive',
-'hashid' => 'setHashid'    ];
+'indices' => 'setIndices',
+'language' => 'setLanguage',
+'name' => 'setName',
+'site_url' => 'setSiteUrl',
+'stopwords' => 'setStopwords'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -115,9 +134,13 @@ class SearchEngine extends NewSearchEngine
      * @var string[]
      */
     protected static $getters = [
-        'indices' => 'getIndices',
+        'hashid' => 'getHashid',
 'inactive' => 'getInactive',
-'hashid' => 'getHashid'    ];
+'indices' => 'getIndices',
+'language' => 'getLanguage',
+'name' => 'getName',
+'site_url' => 'getSiteUrl',
+'stopwords' => 'getStopwords'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -127,7 +150,7 @@ class SearchEngine extends NewSearchEngine
      */
     public static function attributeMap()
     {
-        return parent::attributeMap() + self::$attributeMap;
+        return self::$attributeMap;
     }
 
     /**
@@ -137,7 +160,7 @@ class SearchEngine extends NewSearchEngine
      */
     public static function setters()
     {
-        return parent::setters() + self::$setters;
+        return self::$setters;
     }
 
     /**
@@ -147,7 +170,7 @@ class SearchEngine extends NewSearchEngine
      */
     public static function getters()
     {
-        return parent::getters() + self::$getters;
+        return self::$getters;
     }
 
     /**
@@ -162,6 +185,12 @@ class SearchEngine extends NewSearchEngine
 
     
 
+    /**
+     * Associative array for storing property values
+     *
+     * @var mixed[]
+     */
+    protected $container = [];
 
     /**
      * Constructor
@@ -171,11 +200,13 @@ class SearchEngine extends NewSearchEngine
      */
     public function __construct(array $data = null)
     {
-        parent::__construct($data);
-
-        $this->container['indices'] = isset($data['indices']) ? $data['indices'] : null;
-        $this->container['inactive'] = isset($data['inactive']) ? $data['inactive'] : null;
         $this->container['hashid'] = isset($data['hashid']) ? $data['hashid'] : null;
+        $this->container['inactive'] = isset($data['inactive']) ? $data['inactive'] : null;
+        $this->container['indices'] = isset($data['indices']) ? $data['indices'] : null;
+        $this->container['language'] = isset($data['language']) ? $data['language'] : null;
+        $this->container['name'] = isset($data['name']) ? $data['name'] : null;
+        $this->container['site_url'] = isset($data['site_url']) ? $data['site_url'] : null;
+        $this->container['stopwords'] = isset($data['stopwords']) ? $data['stopwords'] : false;
     }
 
     /**
@@ -185,8 +216,14 @@ class SearchEngine extends NewSearchEngine
      */
     public function listInvalidProperties()
     {
-        $invalidProperties = parent::listInvalidProperties();
+        $invalidProperties = [];
 
+        if ($this->container['language'] === null) {
+            $invalidProperties[] = "'language' can't be null";
+        }
+        if ($this->container['name'] === null) {
+            $invalidProperties[] = "'name' can't be null";
+        }
         return $invalidProperties;
     }
 
@@ -201,6 +238,54 @@ class SearchEngine extends NewSearchEngine
         return count($this->listInvalidProperties()) === 0;
     }
 
+
+    /**
+     * Gets hashid
+     *
+     * @return string
+     */
+    public function getHashid()
+    {
+        return $this->container['hashid'];
+    }
+
+    /**
+     * Sets hashid
+     *
+     * @param string $hashid A unique code that identify a search engine.
+     *
+     * @return $this
+     */
+    public function setHashid($hashid)
+    {
+        $this->container['hashid'] = $hashid;
+
+        return $this;
+    }
+
+    /**
+     * Gets inactive
+     *
+     * @return bool
+     */
+    public function getInactive()
+    {
+        return $this->container['inactive'];
+    }
+
+    /**
+     * Sets inactive
+     *
+     * @param bool $inactive Indicates if the search engine has been deactivated and therefore it can not receive requests.
+     *
+     * @return $this
+     */
+    public function setInactive($inactive)
+    {
+        $this->container['inactive'] = $inactive;
+
+        return $this;
+    }
 
     /**
      * Gets indices
@@ -227,49 +312,97 @@ class SearchEngine extends NewSearchEngine
     }
 
     /**
-     * Gets inactive
+     * Gets language
      *
-     * @return bool
+     * @return string
      */
-    public function getInactive()
+    public function getLanguage()
     {
-        return $this->container['inactive'];
+        return $this->container['language'];
     }
 
     /**
-     * Sets inactive
+     * Sets language
      *
-     * @param bool $inactive Indicates if the search engine has been deactivated and therefore it can not receive requests (read-only)
+     * @param string $language An ISO 639-1 language code that determines the language of the search engine. The language affects how the words indexed are tokenized and which stopwords to use.
      *
      * @return $this
      */
-    public function setInactive($inactive)
+    public function setLanguage($language)
     {
-        $this->container['inactive'] = $inactive;
+        $this->container['language'] = $language;
 
         return $this;
     }
 
     /**
-     * Gets hashid
+     * Gets name
      *
      * @return string
      */
-    public function getHashid()
+    public function getName()
     {
-        return $this->container['hashid'];
+        return $this->container['name'];
     }
 
     /**
-     * Sets hashid
+     * Sets name
      *
-     * @param string $hashid A unique code that identify a search engine (read-only)
+     * @param string $name A short name that helps identifying the search engine.
      *
      * @return $this
      */
-    public function setHashid($hashid)
+    public function setName($name)
     {
-        $this->container['hashid'] = $hashid;
+        $this->container['name'] = $name;
+
+        return $this;
+    }
+
+    /**
+     * Gets site_url
+     *
+     * @return string
+     */
+    public function getSiteUrl()
+    {
+        return $this->container['site_url'];
+    }
+
+    /**
+     * Sets site_url
+     *
+     * @param string $site_url The url of the site to be integrated with the search engine. It determines the default allowed domains for requests.
+     *
+     * @return $this
+     */
+    public function setSiteUrl($site_url)
+    {
+        $this->container['site_url'] = $site_url;
+
+        return $this;
+    }
+
+    /**
+     * Gets stopwords
+     *
+     * @return bool
+     */
+    public function getStopwords()
+    {
+        return $this->container['stopwords'];
+    }
+
+    /**
+     * Sets stopwords
+     *
+     * @param bool $stopwords Ignores high-frequency terms like \"the\", \"and\", \"is\". These words have a low weight and contribute little to the relevance score.
+     *
+     * @return $this
+     */
+    public function setStopwords($stopwords)
+    {
+        $this->container['stopwords'] = $stopwords;
 
         return $this;
     }

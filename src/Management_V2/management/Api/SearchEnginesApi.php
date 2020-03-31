@@ -12,7 +12,7 @@
 /**
  * Doofinder Management API
  *
- * # Introduction Doofinder's management API allows you to perform the same administrative tasks you can do on your search engines using the doofinder control panel, directly from your code.  You could found here our legacy [Management API V1](https://www.doofinder.com/support/developer/api/management-api).  # Basics ## Endpoint All requests should be done with `https` protocol in our api location.  `https://{search_zone}-api.doofinder.com`  where `{search_zone}` depends on your location, is the geographic zone your search engine is located at. i.e.: eu1. Also, indicates which host to use in your API calls.  ## Authentication  We provide two methods of authentication for our API. In any of theese you need a management api key that you could obtain in our [management control panel](https://www.doofinder.com/admin).  You can generate it in your user account -> Api Keys.  Example of the generated API Key: `eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### API Token You could authenticate with the previous API key in header as a Token. The correct way to authenticate is to send a HTTP Header with the name `Authorization` and the value `Token <API Key>`  For example, for the key shown above:  `Authorization: Token eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### JWT Token (Draft) Also you could authenticate with a JSON Web Token generating jwt keys with your API Key. To authenticate using JWT you need to send a HTTP Header with the name `Authorization` and the value `Bearer <JWT token>`.  For example, with the key shown above:  `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk`  ## Conventions Along most of the code samples you will find placeholders for some common variable values. They are:  - `{hashid}`: The search engine's unique id. i.e.: d8fdeab7fce96a19d3fc7b0ca7a1e98b - `{index}`: When storing items, they're always stored under a certain \"index\". i.e.: product. - `{token}`: Your personal authentication token obtained in the control panel. - `{uid}`: The Id of a Doofinder User
+ * # Introduction  Doofinder's management API allows you to perform some of the administrative tasks you can do on your search engines using the doofinder control panel, directly from your code.  # Basics  ## Endpoint  All requests should be done with `https` protocol in our API location.  `https://{search_zone}-api.doofinder.com`  where `{search_zone}` depends on your location, is the geographic zone your search engine is located at. i.e.: eu1. Also, indicates which host to use in your API calls.  ## Authentication  We provide two methods of authentication for our API. In any of these you need a management API key that you could obtain in our [management control panel](https://www.doofinder.com/admin).  You can generate it in your user account -> API Keys.  Example of a generated API Key: `eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### API Token  You can authenticate with the previous API key in header as a Token. The correct way to authenticate is to send a HTTP Header with the name `Authorization` and the value `Token <API Key>`  For example, for the key shown above:  `Authorization: Token eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### JWT Token (Draft)  Also you can authenticate with a [JSON Web Token](https://jwt.io) generating JWT keys with your API Key. To authenticate using JWT you need to send a HTTP Header with the name `Authorization` and the value `Bearer <JWT token>`.  For example, with the key shown above:  `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk`  ## Conventions  Along most of the code samples you will find placeholders for some common variable values. They are:  - `{hashid}`: The search engine's unique id. i.e.: d8fdeab7fce96a19d3fc7b0ca7a1e98b - `{index}`: When storing items, they're always stored under a certain \"index\". i.e.: product. - `{token}`: Your personal authentication token obtained in the control panel. - `{uid}`: The Id of a Doofinder User  # Objects  ## Search Engines  A Search Engine is a set of multiple Indices, and some options to configure them. It must contain at least one indice.  A Search Engine can be uniquely identified by the parameter called `hashid`.  A Search Engine can be processed, which means the process of reading the data from the Data Sources (usually an url), indexing the data in a temporary index and finally build the index ready for use.  ## Indices  An Index is a collection of Items, the same way a Search Engine is a collection of Indices. It has options that define the schema used for Items, Data Sources that define where to get the data, and some searching options.  Each Index may also have one temporary index. A temporary index shares the same options of its main index. There are operations to manage temporary indices like create, delete, reindex, etc. The usual flow for a temporary index is create one, index items on it and replace the main index with the temporary one. This way you can reindex your whole data having zero downtime of the search service.  ## Data Sources  A Data Source defines a source of items for indexing. There are many kinds but they are basically a location for taking items for indexing and the most common is just an url with a file. These are the sources that are read when calling a Search Engine processing. An Index does not need a Data Source if you index the items directly using the API.  ## Items  Items are the objects stored in an Index, and the ones returned after executing a search. Items may have an schema (a collection of fields) depending on their Index preset. This way a `product` item has price, category, etc.
  *
  * OpenAPI spec version: 2.0
  * Contact: support@doofinder.com
@@ -89,37 +89,35 @@ class SearchEnginesApi
     /**
      * Operation process
      *
-     * Process Search Engine Data Sources
+     * Process all search engine's data sources.
      *
-     * @param  string $searchengine_hashid Search engine identifier (hashid) (required)
-     * @param  string $indices List of indices to be processed (optional). (optional)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\ProcessingTask
      */
-    public function process($searchengine_hashid, $indices = null)
+    public function process($hashid)
     {
-        list($response) = $this->processWithHttpInfo($searchengine_hashid, $indices);
+        list($response) = $this->processWithHttpInfo($hashid);
         return $response;
     }
 
     /**
      * Operation processWithHttpInfo
      *
-     * Process Search Engine Data Sources
+     * Process all search engine's data sources.
      *
-     * @param  string $searchengine_hashid Search engine identifier (hashid) (required)
-     * @param  string $indices List of indices to be processed (optional). (optional)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\ProcessingTask, HTTP status code, HTTP response headers (array of strings)
      */
-    public function processWithHttpInfo($searchengine_hashid, $indices = null)
+    public function processWithHttpInfo($hashid)
     {
-        $returnType = 'object';
-        $request = $this->processRequest($searchengine_hashid, $indices);
+        $returnType = '\Swagger\Client\Model\ProcessingTask';
+        $request = $this->processRequest($hashid);
 
         try {
             $options = $this->createHttpClientOption();
@@ -170,7 +168,7 @@ class SearchEnginesApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\ProcessingTask',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -183,17 +181,16 @@ class SearchEnginesApi
     /**
      * Operation processAsync
      *
-     * Process Search Engine Data Sources
+     * Process all search engine's data sources.
      *
-     * @param  string $searchengine_hashid Search engine identifier (hashid) (required)
-     * @param  string $indices List of indices to be processed (optional). (optional)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function processAsync($searchengine_hashid, $indices = null)
+    public function processAsync($hashid)
     {
-        return $this->processAsyncWithHttpInfo($searchengine_hashid, $indices)
+        return $this->processAsyncWithHttpInfo($hashid)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -204,18 +201,17 @@ class SearchEnginesApi
     /**
      * Operation processAsyncWithHttpInfo
      *
-     * Process Search Engine Data Sources
+     * Process all search engine's data sources.
      *
-     * @param  string $searchengine_hashid Search engine identifier (hashid) (required)
-     * @param  string $indices List of indices to be processed (optional). (optional)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function processAsyncWithHttpInfo($searchengine_hashid, $indices = null)
+    public function processAsyncWithHttpInfo($hashid)
     {
-        $returnType = 'object';
-        $request = $this->processRequest($searchengine_hashid, $indices);
+        $returnType = '\Swagger\Client\Model\ProcessingTask';
+        $request = $this->processRequest($hashid);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -257,38 +253,33 @@ class SearchEnginesApi
     /**
      * Create request for operation 'process'
      *
-     * @param  string $searchengine_hashid Search engine identifier (hashid) (required)
-     * @param  string $indices List of indices to be processed (optional). (optional)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function processRequest($searchengine_hashid, $indices = null)
+    protected function processRequest($hashid)
     {
-        // verify the required parameter 'searchengine_hashid' is set
-        if ($searchengine_hashid === null || (is_array($searchengine_hashid) && count($searchengine_hashid) === 0)) {
+        // verify the required parameter 'hashid' is set
+        if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $searchengine_hashid when calling process'
+                'Missing the required parameter $hashid when calling process'
             );
         }
 
-        $resourcePath = '/api/v2/search_engines/{searchengine_hashid}/_process';
+        $resourcePath = '/api/v2/search_engines/{hashid}/_process';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
         $multipart = false;
 
-        // query params
-        if ($indices !== null) {
-            $queryParams['indices'] = ObjectSerializer::toQueryValue($indices);
-        }
 
         // path params
-        if ($searchengine_hashid !== null) {
+        if ($hashid !== null) {
             $resourcePath = str_replace(
-                '{' . 'searchengine_hashid' . '}',
-                ObjectSerializer::toPathValue($searchengine_hashid),
+                '{' . 'hashid' . '}',
+                ObjectSerializer::toPathValue($hashid),
                 $resourcePath
             );
         }
@@ -370,31 +361,35 @@ class SearchEnginesApi
     /**
      * Operation processStatus
      *
-     * @param  string $searchengine_hashid Search engine identifier (hashid) (required)
+     * Gets the status of the process task.
+     *
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Swagger\Client\Model\TaskResponse
+     * @return \Swagger\Client\Model\ProcessingTask
      */
-    public function processStatus($searchengine_hashid)
+    public function processStatus($hashid)
     {
-        list($response) = $this->processStatusWithHttpInfo($searchengine_hashid);
+        list($response) = $this->processStatusWithHttpInfo($hashid);
         return $response;
     }
 
     /**
      * Operation processStatusWithHttpInfo
      *
-     * @param  string $searchengine_hashid Search engine identifier (hashid) (required)
+     * Gets the status of the process task.
+     *
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Swagger\Client\Model\TaskResponse, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\ProcessingTask, HTTP status code, HTTP response headers (array of strings)
      */
-    public function processStatusWithHttpInfo($searchengine_hashid)
+    public function processStatusWithHttpInfo($hashid)
     {
-        $returnType = '\Swagger\Client\Model\TaskResponse';
-        $request = $this->processStatusRequest($searchengine_hashid);
+        $returnType = '\Swagger\Client\Model\ProcessingTask';
+        $request = $this->processStatusRequest($hashid);
 
         try {
             $options = $this->createHttpClientOption();
@@ -445,7 +440,7 @@ class SearchEnginesApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Swagger\Client\Model\TaskResponse',
+                        '\Swagger\Client\Model\ProcessingTask',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -458,16 +453,16 @@ class SearchEnginesApi
     /**
      * Operation processStatusAsync
      *
-     * 
+     * Gets the status of the process task.
      *
-     * @param  string $searchengine_hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function processStatusAsync($searchengine_hashid)
+    public function processStatusAsync($hashid)
     {
-        return $this->processStatusAsyncWithHttpInfo($searchengine_hashid)
+        return $this->processStatusAsyncWithHttpInfo($hashid)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -478,17 +473,17 @@ class SearchEnginesApi
     /**
      * Operation processStatusAsyncWithHttpInfo
      *
-     * 
+     * Gets the status of the process task.
      *
-     * @param  string $searchengine_hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function processStatusAsyncWithHttpInfo($searchengine_hashid)
+    public function processStatusAsyncWithHttpInfo($hashid)
     {
-        $returnType = '\Swagger\Client\Model\TaskResponse';
-        $request = $this->processStatusRequest($searchengine_hashid);
+        $returnType = '\Swagger\Client\Model\ProcessingTask';
+        $request = $this->processStatusRequest($hashid);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -530,21 +525,21 @@ class SearchEnginesApi
     /**
      * Create request for operation 'processStatus'
      *
-     * @param  string $searchengine_hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function processStatusRequest($searchengine_hashid)
+    protected function processStatusRequest($hashid)
     {
-        // verify the required parameter 'searchengine_hashid' is set
-        if ($searchengine_hashid === null || (is_array($searchengine_hashid) && count($searchengine_hashid) === 0)) {
+        // verify the required parameter 'hashid' is set
+        if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $searchengine_hashid when calling processStatus'
+                'Missing the required parameter $hashid when calling processStatus'
             );
         }
 
-        $resourcePath = '/api/v2/search_engines/{searchengine_hashid}/_process';
+        $resourcePath = '/api/v2/search_engines/{hashid}/_process';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -553,10 +548,10 @@ class SearchEnginesApi
 
 
         // path params
-        if ($searchengine_hashid !== null) {
+        if ($hashid !== null) {
             $resourcePath = str_replace(
-                '{' . 'searchengine_hashid' . '}',
-                ObjectSerializer::toPathValue($searchengine_hashid),
+                '{' . 'hashid' . '}',
+                ObjectSerializer::toPathValue($hashid),
                 $resourcePath
             );
         }
@@ -638,9 +633,9 @@ class SearchEnginesApi
     /**
      * Operation searchEngineCreate
      *
-     * Create new search engine
+     * Creates a new search engine.
      *
-     * @param  \Swagger\Client\Model\NewSearchEngine $body Search engine data (required)
+     * @param  \Swagger\Client\Model\SearchEngine $body body (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -655,9 +650,9 @@ class SearchEnginesApi
     /**
      * Operation searchEngineCreateWithHttpInfo
      *
-     * Create new search engine
+     * Creates a new search engine.
      *
-     * @param  \Swagger\Client\Model\NewSearchEngine $body Search engine data (required)
+     * @param  \Swagger\Client\Model\SearchEngine $body (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -730,9 +725,9 @@ class SearchEnginesApi
     /**
      * Operation searchEngineCreateAsync
      *
-     * Create new search engine
+     * Creates a new search engine.
      *
-     * @param  \Swagger\Client\Model\NewSearchEngine $body Search engine data (required)
+     * @param  \Swagger\Client\Model\SearchEngine $body (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -750,9 +745,9 @@ class SearchEnginesApi
     /**
      * Operation searchEngineCreateAsyncWithHttpInfo
      *
-     * Create new search engine
+     * Creates a new search engine.
      *
-     * @param  \Swagger\Client\Model\NewSearchEngine $body Search engine data (required)
+     * @param  \Swagger\Client\Model\SearchEngine $body (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -802,7 +797,7 @@ class SearchEnginesApi
     /**
      * Create request for operation 'searchEngineCreate'
      *
-     * @param  \Swagger\Client\Model\NewSearchEngine $body Search engine data (required)
+     * @param  \Swagger\Client\Model\SearchEngine $body (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -905,34 +900,33 @@ class SearchEnginesApi
     /**
      * Operation searchEngineDelete
      *
-     * Delete a search engine
+     * Deletes a search engine.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return void
      */
     public function searchEngineDelete($hashid)
     {
-        list($response) = $this->searchEngineDeleteWithHttpInfo($hashid);
-        return $response;
+        $this->searchEngineDeleteWithHttpInfo($hashid);
     }
 
     /**
      * Operation searchEngineDeleteWithHttpInfo
      *
-     * Delete a search engine
+     * Deletes a search engine.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
     public function searchEngineDeleteWithHttpInfo($hashid)
     {
-        $returnType = 'object';
+        $returnType = '';
         $request = $this->searchEngineDeleteRequest($hashid);
 
         try {
@@ -963,32 +957,10 @@ class SearchEnginesApi
                 );
             }
 
-            $responseBody = $response->getBody();
-            if ($returnType === '\SplFileObject') {
-                $content = $responseBody; //stream goes to serializer
-            } else {
-                $content = $responseBody->getContents();
-                if (!in_array($returnType, ['string','integer','bool'])) {
-                    $content = json_decode($content);
-                }
-            }
-
-            return [
-                ObjectSerializer::deserialize($content, $returnType, []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
+            return [null, $statusCode, $response->getHeaders()];
 
         } catch (ApiException $e) {
             switch ($e->getCode()) {
-                case 204:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        'object',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -997,9 +969,9 @@ class SearchEnginesApi
     /**
      * Operation searchEngineDeleteAsync
      *
-     * Delete a search engine
+     * Deletes a search engine.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1017,37 +989,23 @@ class SearchEnginesApi
     /**
      * Operation searchEngineDeleteAsyncWithHttpInfo
      *
-     * Delete a search engine
+     * Deletes a search engine.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function searchEngineDeleteAsyncWithHttpInfo($hashid)
     {
-        $returnType = 'object';
+        $returnType = '';
         $request = $this->searchEngineDeleteRequest($hashid);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
-                    $responseBody = $response->getBody();
-                    if ($returnType === '\SplFileObject') {
-                        $content = $responseBody; //stream goes to serializer
-                    } else {
-                        $content = $responseBody->getContents();
-                        if ($returnType !== 'string') {
-                            $content = json_decode($content);
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, $returnType, []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
+                    return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
                 function ($exception) {
                     $response = $exception->getResponse();
@@ -1069,7 +1027,7 @@ class SearchEnginesApi
     /**
      * Create request for operation 'searchEngineDelete'
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1105,11 +1063,11 @@ class SearchEnginesApi
 
         if ($multipart) {
             $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json']
+                []
             );
         } else {
             $headers = $this->headerSelector->selectHeaders(
-                ['application/json'],
+                [],
                 []
             );
         }
@@ -1177,7 +1135,7 @@ class SearchEnginesApi
     /**
      * Operation searchEngineList
      *
-     * List search engines
+     * Lists search engines.
      *
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
@@ -1193,7 +1151,7 @@ class SearchEnginesApi
     /**
      * Operation searchEngineListWithHttpInfo
      *
-     * List search engines
+     * Lists search engines.
      *
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
@@ -1242,13 +1200,13 @@ class SearchEnginesApi
                     $content = json_decode($content);
                 }
             }
-            
+
             return [
                 ObjectSerializer::deserialize($content, $returnType, []),
                 $response->getStatusCode(),
                 $response->getHeaders()
             ];
-            
+
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
@@ -1267,7 +1225,7 @@ class SearchEnginesApi
     /**
      * Operation searchEngineListAsync
      *
-     * List search engines
+     * Lists search engines.
      *
      *
      * @throws \InvalidArgumentException
@@ -1286,7 +1244,7 @@ class SearchEnginesApi
     /**
      * Operation searchEngineListAsyncWithHttpInfo
      *
-     * List search engines
+     * Lists search engines.
      *
      *
      * @throws \InvalidArgumentException
@@ -1430,9 +1388,9 @@ class SearchEnginesApi
     /**
      * Operation searchEngineShow
      *
-     * Get a search engine
+     * Gets a search engine.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -1447,9 +1405,9 @@ class SearchEnginesApi
     /**
      * Operation searchEngineShowWithHttpInfo
      *
-     * Get a search engine
+     * Gets a search engine.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -1522,9 +1480,9 @@ class SearchEnginesApi
     /**
      * Operation searchEngineShowAsync
      *
-     * Get a search engine
+     * Gets a search engine.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1542,9 +1500,9 @@ class SearchEnginesApi
     /**
      * Operation searchEngineShowAsyncWithHttpInfo
      *
-     * Get a search engine
+     * Gets a search engine.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1594,7 +1552,7 @@ class SearchEnginesApi
     /**
      * Create request for operation 'searchEngineShow'
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1702,10 +1660,10 @@ class SearchEnginesApi
     /**
      * Operation searchEngineUpdate
      *
-     * Update a search engine
+     * Updates a search engine.
      *
-     * @param  \Swagger\Client\Model\NewSearchEngine $body Search engine data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  \Swagger\Client\Model\SearchEngine $body body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -1720,10 +1678,10 @@ class SearchEnginesApi
     /**
      * Operation searchEngineUpdateWithHttpInfo
      *
-     * Update a search engine
+     * Updates a search engine.
      *
-     * @param  \Swagger\Client\Model\NewSearchEngine $body Search engine data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  \Swagger\Client\Model\SearchEngine $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -1796,10 +1754,10 @@ class SearchEnginesApi
     /**
      * Operation searchEngineUpdateAsync
      *
-     * Update a search engine
+     * Updates a search engine.
      *
-     * @param  \Swagger\Client\Model\NewSearchEngine $body Search engine data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  \Swagger\Client\Model\SearchEngine $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1817,10 +1775,10 @@ class SearchEnginesApi
     /**
      * Operation searchEngineUpdateAsyncWithHttpInfo
      *
-     * Update a search engine
+     * Updates a search engine.
      *
-     * @param  \Swagger\Client\Model\NewSearchEngine $body Search engine data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  \Swagger\Client\Model\SearchEngine $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1870,8 +1828,8 @@ class SearchEnginesApi
     /**
      * Create request for operation 'searchEngineUpdate'
      *
-     * @param  \Swagger\Client\Model\NewSearchEngine $body Search engine data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
+     * @param  \Swagger\Client\Model\SearchEngine $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

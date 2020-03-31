@@ -5,18 +5,18 @@ All URIs are relative to *https://{search_zone}-api.doofinder.com*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**getReindexingStatus**](IndicesApi.md#getreindexingstatus) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/_reindex_to_temp/ | Return the status of the current reindexing task.
-[**indexCreate**](IndicesApi.md#indexcreate) | **POST** /api/v2/search_engines/{searchengine_hashid}/indices | Create an index
-[**indexDelete**](IndicesApi.md#indexdelete) | **DELETE** /api/v2/search_engines/{searchengine_hashid}/indices/{name} | Delete an Index
-[**indexIndex**](IndicesApi.md#indexindex) | **GET** /api/v2/search_engines/{searchengine_hashid}/indices | List indices
-[**indexShow**](IndicesApi.md#indexshow) | **GET** /api/v2/search_engines/{searchengine_hashid}/indices/{name} | Get an Index
-[**indexUpdate**](IndicesApi.md#indexupdate) | **PATCH** /api/v2/search_engines/{searchengine_hashid}/indices/{name} | Update an index
+[**indexCreate**](IndicesApi.md#indexcreate) | **POST** /api/v2/search_engines/{hashid}/indices | Creates an index.
+[**indexDelete**](IndicesApi.md#indexdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name} | Deletes an Index.
+[**indexIndex**](IndicesApi.md#indexindex) | **GET** /api/v2/search_engines/{hashid}/indices | Lists all indices.
+[**indexShow**](IndicesApi.md#indexshow) | **GET** /api/v2/search_engines/{hashid}/indices/{name} | Gets an Index.
+[**indexUpdate**](IndicesApi.md#indexupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name} | Updates an index.
 [**reindexToTemp**](IndicesApi.md#reindextotemp) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/_reindex_to_temp/ | Reindex the content of the real index into the temporary one.
 [**replaceByTemp**](IndicesApi.md#replacebytemp) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/_replace_by_temp/ | Replace the real index with the temporary one.
-[**temporaryIndexCreate**](IndicesApi.md#temporaryindexcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/ | Creates a temporary index
+[**temporaryIndexCreate**](IndicesApi.md#temporaryindexcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/ | Creates a temporary index.
 [**temporaryIndexDelete**](IndicesApi.md#temporaryindexdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/temp/ | Deletes the temporary index.
 
 # **getReindexingStatus**
-> object getReindexingStatus($hashid, $name)
+> \Swagger\Client\Model\ReindexingTask getReindexingStatus($hashid, $name)
 
 Return the status of the current reindexing task.
 
@@ -40,8 +40,8 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->getReindexingStatus($hashid, $name);
@@ -56,12 +56,12 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\ReindexingTask**](../Model/ReindexingTask.md)
 
 ### Authorization
 
@@ -75,11 +75,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **indexCreate**
-> \Swagger\Client\Model\Index indexCreate($body, $searchengine_hashid)
+> \Swagger\Client\Model\Index indexCreate($body, $hashid)
 
-Create an index
+Creates an index.
 
-Create new index for the given search engine
+Creates a new index for the given search engine.
 
 ### Example
 ```php
@@ -99,11 +99,11 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = new \Swagger\Client\Model\Index(); // \Swagger\Client\Model\Index | Index data
-$searchengine_hashid = "searchengine_hashid_example"; // string | Search engine identifier (hashid)
+$body = new \Swagger\Client\Model\Index(); // \Swagger\Client\Model\Index | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
 
 try {
-    $result = $apiInstance->indexCreate($body, $searchengine_hashid);
+    $result = $apiInstance->indexCreate($body, $hashid);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling IndicesApi->indexCreate: ', $e->getMessage(), PHP_EOL;
@@ -115,8 +115,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**\Swagger\Client\Model\Index**](../Model/Index.md)| Index data |
- **searchengine_hashid** | **string**| Search engine identifier (hashid) |
+ **body** | [**\Swagger\Client\Model\Index**](../Model/Index.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
 
 ### Return type
 
@@ -134,11 +134,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **indexDelete**
-> object indexDelete($searchengine_hashid, $name)
+> indexDelete($hashid, $name)
 
-Delete an Index
+Deletes an Index.
 
-Delete an Index for the given search engine and name
+Deletes an Index for the given search engine and index name.
 
 ### Example
 ```php
@@ -158,12 +158,11 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$searchengine_hashid = "searchengine_hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
-    $result = $apiInstance->indexDelete($searchengine_hashid, $name);
-    print_r($result);
+    $apiInstance->indexDelete($hashid, $name);
 } catch (Exception $e) {
     echo 'Exception when calling IndicesApi->indexDelete: ', $e->getMessage(), PHP_EOL;
 }
@@ -174,12 +173,12 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **searchengine_hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
-**object**
+void (empty response body)
 
 ### Authorization
 
@@ -188,16 +187,16 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **indexIndex**
-> \Swagger\Client\Model\Indices indexIndex($searchengine_hashid)
+> \Swagger\Client\Model\Indices indexIndex($hashid)
 
-List indices
+Lists all indices.
 
-List the indices of the given search engine
+List all indices of the given search engine.
 
 ### Example
 ```php
@@ -217,10 +216,10 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$searchengine_hashid = "searchengine_hashid_example"; // string | Search engine identifier (hashid)
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
 
 try {
-    $result = $apiInstance->indexIndex($searchengine_hashid);
+    $result = $apiInstance->indexIndex($hashid);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling IndicesApi->indexIndex: ', $e->getMessage(), PHP_EOL;
@@ -232,7 +231,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **searchengine_hashid** | **string**| Search engine identifier (hashid) |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
 
 ### Return type
 
@@ -250,11 +249,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **indexShow**
-> \Swagger\Client\Model\Index indexShow($searchengine_hashid, $name)
+> \Swagger\Client\Model\Index indexShow($hashid, $name)
 
-Get an Index
+Gets an Index.
 
-Get index of the given search engine and name
+Gets the index for the given search engine and index name.
 
 ### Example
 ```php
@@ -274,11 +273,11 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$searchengine_hashid = "searchengine_hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
-    $result = $apiInstance->indexShow($searchengine_hashid, $name);
+    $result = $apiInstance->indexShow($hashid, $name);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling IndicesApi->indexShow: ', $e->getMessage(), PHP_EOL;
@@ -290,8 +289,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **searchengine_hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
@@ -309,11 +308,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **indexUpdate**
-> \Swagger\Client\Model\Index indexUpdate($body, $searchengine_hashid, $name)
+> \Swagger\Client\Model\Index indexUpdate($body, $hashid, $name)
 
-Update an index
+Updates an index.
 
-Update an index for the given search engine and name
+Updates an index for the given search engine and index name.
 
 ### Example
 ```php
@@ -333,12 +332,12 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = new \Swagger\Client\Model\UpdateIndex(); // \Swagger\Client\Model\UpdateIndex | Index data
-$searchengine_hashid = "searchengine_hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$body = new \Swagger\Client\Model\IndexUpdate(); // \Swagger\Client\Model\IndexUpdate | 
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
-    $result = $apiInstance->indexUpdate($body, $searchengine_hashid, $name);
+    $result = $apiInstance->indexUpdate($body, $hashid, $name);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling IndicesApi->indexUpdate: ', $e->getMessage(), PHP_EOL;
@@ -350,9 +349,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**\Swagger\Client\Model\UpdateIndex**](../Model/UpdateIndex.md)| Index data |
- **searchengine_hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **body** | [**\Swagger\Client\Model\IndexUpdate**](../Model/IndexUpdate.md)|  |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
@@ -374,7 +373,7 @@ Name | Type | Description  | Notes
 
 Reindex the content of the real index into the temporary one.
 
-This executes a reindexing operation between the real index and the temporary one, taking all items from real and creating them in the temporary. This will return a 404 (Not found) if there is no temporary index.
+This executes a reindexing operation between the real index and the temporary one. It reads all items from the real and index them onto the temporary. This will return a 404 (Not found) if there is no temporary index.
 
 ### Example
 ```php
@@ -394,8 +393,8 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->reindexToTemp($hashid, $name);
@@ -410,8 +409,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
@@ -433,7 +432,7 @@ Name | Type | Description  | Notes
 
 Replace the real index with the temporary one.
 
-This request takes the temporary index and \"overwrites\" the real one. Any content in the real index will be lost with this operation.
+This request replaces completely the real index with the temporary one. From this moment the contents of the temporary are now the contents of the real index.
 
 ### Example
 ```php
@@ -453,8 +452,8 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->replaceByTemp($hashid, $name);
@@ -469,8 +468,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
@@ -490,9 +489,9 @@ Name | Type | Description  | Notes
 # **temporaryIndexCreate**
 > object temporaryIndexCreate($hashid, $name)
 
-Creates a temporary index
+Creates a temporary index.
 
-Creates a new temporary index for the given index. There could not be two temporary index at the same time so any request made to this endpoint when there is one created will fail. Creating a temporary index also set a lock preventing any changes on the search engine.
+Creates a new empty temporary index for the given index. There can not be two temporary indices at the same time, so any request made to this endpoint when there is one created will fail. Creating a temporary index also sets a lock preventing any changes on the search engine until the temporary index is deleted.
 
 ### Example
 ```php
@@ -512,8 +511,8 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->temporaryIndexCreate($hashid, $name);
@@ -528,8 +527,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
@@ -547,7 +546,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **temporaryIndexDelete**
-> object temporaryIndexDelete($hashid, $name)
+> temporaryIndexDelete($hashid, $name)
 
 Deletes the temporary index.
 
@@ -571,12 +570,11 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$name = "name_example"; // string | Name of an index.
 
 try {
-    $result = $apiInstance->temporaryIndexDelete($hashid, $name);
-    print_r($result);
+    $apiInstance->temporaryIndexDelete($hashid, $name);
 } catch (Exception $e) {
     echo 'Exception when calling IndicesApi->temporaryIndexDelete: ', $e->getMessage(), PHP_EOL;
 }
@@ -587,12 +585,12 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Search engine identifier (hashid) |
- **name** | **string**| Name of the Index |
+ **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **name** | **string**| Name of an index. |
 
 ### Return type
 
-**object**
+void (empty response body)
 
 ### Authorization
 
@@ -601,7 +599,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 

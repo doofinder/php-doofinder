@@ -12,7 +12,7 @@
 /**
  * Doofinder Management API
  *
- * # Introduction Doofinder's management API allows you to perform the same administrative tasks you can do on your search engines using the doofinder control panel, directly from your code.  You could found here our legacy [Management API V1](https://www.doofinder.com/support/developer/api/management-api).  # Basics ## Endpoint All requests should be done with `https` protocol in our api location.  `https://{search_zone}-api.doofinder.com`  where `{search_zone}` depends on your location, is the geographic zone your search engine is located at. i.e.: eu1. Also, indicates which host to use in your API calls.  ## Authentication  We provide two methods of authentication for our API. In any of theese you need a management api key that you could obtain in our [management control panel](https://www.doofinder.com/admin).  You can generate it in your user account -> Api Keys.  Example of the generated API Key: `eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### API Token You could authenticate with the previous API key in header as a Token. The correct way to authenticate is to send a HTTP Header with the name `Authorization` and the value `Token <API Key>`  For example, for the key shown above:  `Authorization: Token eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### JWT Token (Draft) Also you could authenticate with a JSON Web Token generating jwt keys with your API Key. To authenticate using JWT you need to send a HTTP Header with the name `Authorization` and the value `Bearer <JWT token>`.  For example, with the key shown above:  `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk`  ## Conventions Along most of the code samples you will find placeholders for some common variable values. They are:  - `{hashid}`: The search engine's unique id. i.e.: d8fdeab7fce96a19d3fc7b0ca7a1e98b - `{index}`: When storing items, they're always stored under a certain \"index\". i.e.: product. - `{token}`: Your personal authentication token obtained in the control panel. - `{uid}`: The Id of a Doofinder User
+ * # Introduction  Doofinder's management API allows you to perform some of the administrative tasks you can do on your search engines using the doofinder control panel, directly from your code.  # Basics  ## Endpoint  All requests should be done with `https` protocol in our API location.  `https://{search_zone}-api.doofinder.com`  where `{search_zone}` depends on your location, is the geographic zone your search engine is located at. i.e.: eu1. Also, indicates which host to use in your API calls.  ## Authentication  We provide two methods of authentication for our API. In any of these you need a management API key that you could obtain in our [management control panel](https://www.doofinder.com/admin).  You can generate it in your user account -> API Keys.  Example of a generated API Key: `eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### API Token  You can authenticate with the previous API key in header as a Token. The correct way to authenticate is to send a HTTP Header with the name `Authorization` and the value `Token <API Key>`  For example, for the key shown above:  `Authorization: Token eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### JWT Token (Draft)  Also you can authenticate with a [JSON Web Token](https://jwt.io) generating JWT keys with your API Key. To authenticate using JWT you need to send a HTTP Header with the name `Authorization` and the value `Bearer <JWT token>`.  For example, with the key shown above:  `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk`  ## Conventions  Along most of the code samples you will find placeholders for some common variable values. They are:  - `{hashid}`: The search engine's unique id. i.e.: d8fdeab7fce96a19d3fc7b0ca7a1e98b - `{index}`: When storing items, they're always stored under a certain \"index\". i.e.: product. - `{token}`: Your personal authentication token obtained in the control panel. - `{uid}`: The Id of a Doofinder User  # Objects  ## Search Engines  A Search Engine is a set of multiple Indices, and some options to configure them. It must contain at least one indice.  A Search Engine can be uniquely identified by the parameter called `hashid`.  A Search Engine can be processed, which means the process of reading the data from the Data Sources (usually an url), indexing the data in a temporary index and finally build the index ready for use.  ## Indices  An Index is a collection of Items, the same way a Search Engine is a collection of Indices. It has options that define the schema used for Items, Data Sources that define where to get the data, and some searching options.  Each Index may also have one temporary index. A temporary index shares the same options of its main index. There are operations to manage temporary indices like create, delete, reindex, etc. The usual flow for a temporary index is create one, index items on it and replace the main index with the temporary one. This way you can reindex your whole data having zero downtime of the search service.  ## Data Sources  A Data Source defines a source of items for indexing. There are many kinds but they are basically a location for taking items for indexing and the most common is just an url with a file. These are the sources that are read when calling a Search Engine processing. An Index does not need a Data Source if you index the items directly using the API.  ## Items  Items are the objects stored in an Index, and the ones returned after executing a search. Items may have an schema (a collection of fields) depending on their Index preset. This way a `product` item has price, category, etc.
  *
  * OpenAPI spec version: 2.0
  * Contact: support@doofinder.com
@@ -89,49 +89,47 @@ class StatsApi
     /**
      * Operation bannersClicks
      *
-     * Get the total amount of clicks banners have got
+     * Get the total amount of clicks over banners.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the banner. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the banner. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\StatsBannersResult
      */
-    public function bannersClicks($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    public function bannersClicks($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
-        list($response) = $this->bannersClicksWithHttpInfo($hashid, $to, $from, $tz, $id, $device, $interval, $format);
+        list($response) = $this->bannersClicksWithHttpInfo($from, $to, $hashid, $id, $tz, $device, $format);
         return $response;
     }
 
     /**
      * Operation bannersClicksWithHttpInfo
      *
-     * Get the total amount of clicks banners have got
+     * Get the total amount of clicks over banners.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the banner. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the banner. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\StatsBannersResult, HTTP status code, HTTP response headers (array of strings)
      */
-    public function bannersClicksWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    public function bannersClicksWithHttpInfo($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->bannersClicksRequest($hashid, $to, $from, $tz, $id, $device, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsBannersResult';
+        $request = $this->bannersClicksRequest($from, $to, $hashid, $id, $tz, $device, $format);
 
         try {
             $options = $this->createHttpClientOption();
@@ -182,7 +180,7 @@ class StatsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\StatsBannersResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -195,23 +193,22 @@ class StatsApi
     /**
      * Operation bannersClicksAsync
      *
-     * Get the total amount of clicks banners have got
+     * Get the total amount of clicks over banners.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the banner. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the banner. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function bannersClicksAsync($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    public function bannersClicksAsync($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
-        return $this->bannersClicksAsyncWithHttpInfo($hashid, $to, $from, $tz, $id, $device, $interval, $format)
+        return $this->bannersClicksAsyncWithHttpInfo($from, $to, $hashid, $id, $tz, $device, $format)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -222,24 +219,23 @@ class StatsApi
     /**
      * Operation bannersClicksAsyncWithHttpInfo
      *
-     * Get the total amount of clicks banners have got
+     * Get the total amount of clicks over banners.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the banner. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the banner. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function bannersClicksAsyncWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    public function bannersClicksAsyncWithHttpInfo($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->bannersClicksRequest($hashid, $to, $from, $tz, $id, $device, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsBannersResult';
+        $request = $this->bannersClicksRequest($from, $to, $hashid, $id, $tz, $device, $format);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -281,20 +277,31 @@ class StatsApi
     /**
      * Create request for operation 'bannersClicks'
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the banner. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the banner. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function bannersClicksRequest($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    protected function bannersClicksRequest($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
+        // verify the required parameter 'from' is set
+        if ($from === null || (is_array($from) && count($from) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $from when calling bannersClicks'
+            );
+        }
+        // verify the required parameter 'to' is set
+        if ($to === null || (is_array($to) && count($to) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $to when calling bannersClicks'
+            );
+        }
         // verify the required parameter 'hashid' is set
         if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
@@ -310,16 +317,12 @@ class StatsApi
         $multipart = false;
 
         // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
         if ($from !== null) {
             $queryParams['from'] = ObjectSerializer::toQueryValue($from);
         }
         // query params
-        if ($tz !== null) {
-            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        if ($to !== null) {
+            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
         }
         // query params
         if ($hashid !== null) {
@@ -330,12 +333,12 @@ class StatsApi
             $queryParams['id'] = ObjectSerializer::toQueryValue($id);
         }
         // query params
-        if ($device !== null) {
-            $queryParams['device'] = ObjectSerializer::toQueryValue($device);
+        if ($tz !== null) {
+            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
         }
         // query params
-        if ($interval !== null) {
-            $queryParams['interval'] = ObjectSerializer::toQueryValue($interval);
+        if ($device !== null) {
+            $queryParams['device'] = ObjectSerializer::toQueryValue($device);
         }
         // query params
         if ($format !== null) {
@@ -420,49 +423,47 @@ class StatsApi
     /**
      * Operation bannersDisplay
      *
-     * Get the total amount of displays banners have got
+     * Gets how many times a banner has been shown.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the banner. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the banner. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\StatsBannersResult
      */
-    public function bannersDisplay($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    public function bannersDisplay($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
-        list($response) = $this->bannersDisplayWithHttpInfo($hashid, $to, $from, $tz, $id, $device, $interval, $format);
+        list($response) = $this->bannersDisplayWithHttpInfo($from, $to, $hashid, $id, $tz, $device, $format);
         return $response;
     }
 
     /**
      * Operation bannersDisplayWithHttpInfo
      *
-     * Get the total amount of displays banners have got
+     * Gets how many times a banner has been shown.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the banner. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the banner. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\StatsBannersResult, HTTP status code, HTTP response headers (array of strings)
      */
-    public function bannersDisplayWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    public function bannersDisplayWithHttpInfo($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->bannersDisplayRequest($hashid, $to, $from, $tz, $id, $device, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsBannersResult';
+        $request = $this->bannersDisplayRequest($from, $to, $hashid, $id, $tz, $device, $format);
 
         try {
             $options = $this->createHttpClientOption();
@@ -513,7 +514,7 @@ class StatsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\StatsBannersResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -526,23 +527,22 @@ class StatsApi
     /**
      * Operation bannersDisplayAsync
      *
-     * Get the total amount of displays banners have got
+     * Gets how many times a banner has been shown.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the banner. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the banner. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function bannersDisplayAsync($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    public function bannersDisplayAsync($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
-        return $this->bannersDisplayAsyncWithHttpInfo($hashid, $to, $from, $tz, $id, $device, $interval, $format)
+        return $this->bannersDisplayAsyncWithHttpInfo($from, $to, $hashid, $id, $tz, $device, $format)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -553,24 +553,23 @@ class StatsApi
     /**
      * Operation bannersDisplayAsyncWithHttpInfo
      *
-     * Get the total amount of displays banners have got
+     * Gets how many times a banner has been shown.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the banner. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the banner. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function bannersDisplayAsyncWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    public function bannersDisplayAsyncWithHttpInfo($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->bannersDisplayRequest($hashid, $to, $from, $tz, $id, $device, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsBannersResult';
+        $request = $this->bannersDisplayRequest($from, $to, $hashid, $id, $tz, $device, $format);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -612,20 +611,31 @@ class StatsApi
     /**
      * Create request for operation 'bannersDisplay'
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the banner. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the banner. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function bannersDisplayRequest($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    protected function bannersDisplayRequest($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
+        // verify the required parameter 'from' is set
+        if ($from === null || (is_array($from) && count($from) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $from when calling bannersDisplay'
+            );
+        }
+        // verify the required parameter 'to' is set
+        if ($to === null || (is_array($to) && count($to) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $to when calling bannersDisplay'
+            );
+        }
         // verify the required parameter 'hashid' is set
         if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
@@ -641,16 +651,12 @@ class StatsApi
         $multipart = false;
 
         // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
         if ($from !== null) {
             $queryParams['from'] = ObjectSerializer::toQueryValue($from);
         }
         // query params
-        if ($tz !== null) {
-            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        if ($to !== null) {
+            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
         }
         // query params
         if ($hashid !== null) {
@@ -661,12 +667,12 @@ class StatsApi
             $queryParams['id'] = ObjectSerializer::toQueryValue($id);
         }
         // query params
-        if ($device !== null) {
-            $queryParams['device'] = ObjectSerializer::toQueryValue($device);
+        if ($tz !== null) {
+            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
         }
         // query params
-        if ($interval !== null) {
-            $queryParams['interval'] = ObjectSerializer::toQueryValue($interval);
+        if ($device !== null) {
+            $queryParams['device'] = ObjectSerializer::toQueryValue($device);
         }
         // query params
         if ($format !== null) {
@@ -753,24 +759,21 @@ class StatsApi
      *
      * Get the checkouts by dates
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\StatsTimeResult
      */
-    public function checkoutsByDate($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function checkoutsByDate($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json')
     {
-        list($response) = $this->checkoutsByDateWithHttpInfo($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format);
+        list($response) = $this->checkoutsByDateWithHttpInfo($from, $to, $hashid, $tz, $device, $interval, $format);
         return $response;
     }
 
@@ -779,25 +782,22 @@ class StatsApi
      *
      * Get the checkouts by dates
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\StatsTimeResult, HTTP status code, HTTP response headers (array of strings)
      */
-    public function checkoutsByDateWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function checkoutsByDateWithHttpInfo($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->checkoutsByDateRequest($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsTimeResult';
+        $request = $this->checkoutsByDateRequest($from, $to, $hashid, $tz, $device, $interval, $format);
 
         try {
             $options = $this->createHttpClientOption();
@@ -848,7 +848,7 @@ class StatsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\StatsTimeResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -863,23 +863,20 @@ class StatsApi
      *
      * Get the checkouts by dates
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function checkoutsByDateAsync($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function checkoutsByDateAsync($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json')
     {
-        return $this->checkoutsByDateAsyncWithHttpInfo($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format)
+        return $this->checkoutsByDateAsyncWithHttpInfo($from, $to, $hashid, $tz, $device, $interval, $format)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -892,24 +889,21 @@ class StatsApi
      *
      * Get the checkouts by dates
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function checkoutsByDateAsyncWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function checkoutsByDateAsyncWithHttpInfo($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->checkoutsByDateRequest($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsTimeResult';
+        $request = $this->checkoutsByDateRequest($from, $to, $hashid, $tz, $device, $interval, $format);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -951,22 +945,31 @@ class StatsApi
     /**
      * Create request for operation 'checkoutsByDate'
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function checkoutsByDateRequest($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    protected function checkoutsByDateRequest($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json')
     {
+        // verify the required parameter 'from' is set
+        if ($from === null || (is_array($from) && count($from) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $from when calling checkoutsByDate'
+            );
+        }
+        // verify the required parameter 'to' is set
+        if ($to === null || (is_array($to) && count($to) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $to when calling checkoutsByDate'
+            );
+        }
         // verify the required parameter 'hashid' is set
         if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
@@ -982,36 +985,24 @@ class StatsApi
         $multipart = false;
 
         // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
         if ($from !== null) {
             $queryParams['from'] = ObjectSerializer::toQueryValue($from);
         }
         // query params
-        if ($tz !== null) {
-            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        if ($to !== null) {
+            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
         }
         // query params
         if ($hashid !== null) {
             $queryParams['hashid'] = ObjectSerializer::toQueryValue($hashid);
         }
         // query params
+        if ($tz !== null) {
+            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        }
+        // query params
         if ($device !== null) {
             $queryParams['device'] = ObjectSerializer::toQueryValue($device);
-        }
-        // query params
-        if ($custom_results_id !== null) {
-            $queryParams['custom_results_id'] = ObjectSerializer::toQueryValue($custom_results_id);
-        }
-        // query params
-        if ($query_name !== null) {
-            $queryParams['query_name'] = ObjectSerializer::toQueryValue($query_name);
-        }
-        // query params
-        if ($total_hits !== null) {
-            $queryParams['total_hits'] = ObjectSerializer::toQueryValue($total_hits);
         }
         // query params
         if ($interval !== null) {
@@ -1102,24 +1093,22 @@ class StatsApi
      *
      * Get the clicks by dates
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $custom_results_id Filter by some custom result. (optional)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\StatsTimeResult
      */
-    public function clicksByDate($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function clicksByDate($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json', $custom_results_id = null)
     {
-        list($response) = $this->clicksByDateWithHttpInfo($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format);
+        list($response) = $this->clicksByDateWithHttpInfo($from, $to, $hashid, $tz, $device, $interval, $format, $custom_results_id);
         return $response;
     }
 
@@ -1128,25 +1117,23 @@ class StatsApi
      *
      * Get the clicks by dates
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $custom_results_id Filter by some custom result. (optional)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\StatsTimeResult, HTTP status code, HTTP response headers (array of strings)
      */
-    public function clicksByDateWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function clicksByDateWithHttpInfo($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json', $custom_results_id = null)
     {
-        $returnType = 'object';
-        $request = $this->clicksByDateRequest($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsTimeResult';
+        $request = $this->clicksByDateRequest($from, $to, $hashid, $tz, $device, $interval, $format, $custom_results_id);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1197,7 +1184,7 @@ class StatsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\StatsTimeResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1212,23 +1199,21 @@ class StatsApi
      *
      * Get the clicks by dates
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $custom_results_id Filter by some custom result. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function clicksByDateAsync($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function clicksByDateAsync($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json', $custom_results_id = null)
     {
-        return $this->clicksByDateAsyncWithHttpInfo($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format)
+        return $this->clicksByDateAsyncWithHttpInfo($from, $to, $hashid, $tz, $device, $interval, $format, $custom_results_id)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1241,24 +1226,22 @@ class StatsApi
      *
      * Get the clicks by dates
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $custom_results_id Filter by some custom result. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function clicksByDateAsyncWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function clicksByDateAsyncWithHttpInfo($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json', $custom_results_id = null)
     {
-        $returnType = 'object';
-        $request = $this->clicksByDateRequest($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsTimeResult';
+        $request = $this->clicksByDateRequest($from, $to, $hashid, $tz, $device, $interval, $format, $custom_results_id);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1300,22 +1283,32 @@ class StatsApi
     /**
      * Create request for operation 'clicksByDate'
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $custom_results_id Filter by some custom result. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function clicksByDateRequest($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    protected function clicksByDateRequest($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json', $custom_results_id = null)
     {
+        // verify the required parameter 'from' is set
+        if ($from === null || (is_array($from) && count($from) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $from when calling clicksByDate'
+            );
+        }
+        // verify the required parameter 'to' is set
+        if ($to === null || (is_array($to) && count($to) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $to when calling clicksByDate'
+            );
+        }
         // verify the required parameter 'hashid' is set
         if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
@@ -1331,36 +1324,24 @@ class StatsApi
         $multipart = false;
 
         // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
         if ($from !== null) {
             $queryParams['from'] = ObjectSerializer::toQueryValue($from);
         }
         // query params
-        if ($tz !== null) {
-            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        if ($to !== null) {
+            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
         }
         // query params
         if ($hashid !== null) {
             $queryParams['hashid'] = ObjectSerializer::toQueryValue($hashid);
         }
         // query params
+        if ($tz !== null) {
+            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        }
+        // query params
         if ($device !== null) {
             $queryParams['device'] = ObjectSerializer::toQueryValue($device);
-        }
-        // query params
-        if ($custom_results_id !== null) {
-            $queryParams['custom_results_id'] = ObjectSerializer::toQueryValue($custom_results_id);
-        }
-        // query params
-        if ($query_name !== null) {
-            $queryParams['query_name'] = ObjectSerializer::toQueryValue($query_name);
-        }
-        // query params
-        if ($total_hits !== null) {
-            $queryParams['total_hits'] = ObjectSerializer::toQueryValue($total_hits);
         }
         // query params
         if ($interval !== null) {
@@ -1369,6 +1350,10 @@ class StatsApi
         // query params
         if ($format !== null) {
             $queryParams['format'] = ObjectSerializer::toQueryValue($format);
+        }
+        // query params
+        if ($custom_results_id !== null) {
+            $queryParams['custom_results_id'] = ObjectSerializer::toQueryValue($custom_results_id);
         }
 
 
@@ -1449,49 +1434,47 @@ class StatsApi
     /**
      * Operation clicksByQuery
      *
-     * Get the products clicked given a certain query
+     * Get the products clicked given a certain query term.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
      * @param  string $query Search query term (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\InlineResponse200
      */
-    public function clicksByQuery($hashid, $query, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $format = 'json')
+    public function clicksByQuery($from, $to, $hashid, $query, $tz = '+00:00', $device = null, $format = 'json')
     {
-        list($response) = $this->clicksByQueryWithHttpInfo($hashid, $query, $to, $from, $tz, $device, $interval, $format);
+        list($response) = $this->clicksByQueryWithHttpInfo($from, $to, $hashid, $query, $tz, $device, $format);
         return $response;
     }
 
     /**
      * Operation clicksByQueryWithHttpInfo
      *
-     * Get the products clicked given a certain query
+     * Get the products clicked given a certain query term.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
      * @param  string $query Search query term (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\InlineResponse200, HTTP status code, HTTP response headers (array of strings)
      */
-    public function clicksByQueryWithHttpInfo($hashid, $query, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $format = 'json')
+    public function clicksByQueryWithHttpInfo($from, $to, $hashid, $query, $tz = '+00:00', $device = null, $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->clicksByQueryRequest($hashid, $query, $to, $from, $tz, $device, $interval, $format);
+        $returnType = '\Swagger\Client\Model\InlineResponse200';
+        $request = $this->clicksByQueryRequest($from, $to, $hashid, $query, $tz, $device, $format);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1542,7 +1525,7 @@ class StatsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\InlineResponse200',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1555,23 +1538,22 @@ class StatsApi
     /**
      * Operation clicksByQueryAsync
      *
-     * Get the products clicked given a certain query
+     * Get the products clicked given a certain query term.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
      * @param  string $query Search query term (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function clicksByQueryAsync($hashid, $query, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $format = 'json')
+    public function clicksByQueryAsync($from, $to, $hashid, $query, $tz = '+00:00', $device = null, $format = 'json')
     {
-        return $this->clicksByQueryAsyncWithHttpInfo($hashid, $query, $to, $from, $tz, $device, $interval, $format)
+        return $this->clicksByQueryAsyncWithHttpInfo($from, $to, $hashid, $query, $tz, $device, $format)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1582,24 +1564,23 @@ class StatsApi
     /**
      * Operation clicksByQueryAsyncWithHttpInfo
      *
-     * Get the products clicked given a certain query
+     * Get the products clicked given a certain query term.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
      * @param  string $query Search query term (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function clicksByQueryAsyncWithHttpInfo($hashid, $query, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $format = 'json')
+    public function clicksByQueryAsyncWithHttpInfo($from, $to, $hashid, $query, $tz = '+00:00', $device = null, $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->clicksByQueryRequest($hashid, $query, $to, $from, $tz, $device, $interval, $format);
+        $returnType = '\Swagger\Client\Model\InlineResponse200';
+        $request = $this->clicksByQueryRequest($from, $to, $hashid, $query, $tz, $device, $format);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1641,20 +1622,31 @@ class StatsApi
     /**
      * Create request for operation 'clicksByQuery'
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
      * @param  string $query Search query term (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function clicksByQueryRequest($hashid, $query, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $format = 'json')
+    protected function clicksByQueryRequest($from, $to, $hashid, $query, $tz = '+00:00', $device = null, $format = 'json')
     {
+        // verify the required parameter 'from' is set
+        if ($from === null || (is_array($from) && count($from) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $from when calling clicksByQuery'
+            );
+        }
+        // verify the required parameter 'to' is set
+        if ($to === null || (is_array($to) && count($to) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $to when calling clicksByQuery'
+            );
+        }
         // verify the required parameter 'hashid' is set
         if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
@@ -1676,28 +1668,24 @@ class StatsApi
         $multipart = false;
 
         // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
         if ($from !== null) {
             $queryParams['from'] = ObjectSerializer::toQueryValue($from);
         }
         // query params
-        if ($tz !== null) {
-            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        if ($to !== null) {
+            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
         }
         // query params
         if ($hashid !== null) {
             $queryParams['hashid'] = ObjectSerializer::toQueryValue($hashid);
         }
         // query params
-        if ($device !== null) {
-            $queryParams['device'] = ObjectSerializer::toQueryValue($device);
+        if ($tz !== null) {
+            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
         }
         // query params
-        if ($interval !== null) {
-            $queryParams['interval'] = ObjectSerializer::toQueryValue($interval);
+        if ($device !== null) {
+            $queryParams['device'] = ObjectSerializer::toQueryValue($device);
         }
         // query params
         if ($format !== null) {
@@ -1790,49 +1778,47 @@ class StatsApi
     /**
      * Operation clicksTop
      *
-     * Get the most common clicks
+     * Get the most common clicks.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $query Filter by query done. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $query Search query term. (optional)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\InlineResponse2001
      */
-    public function clicksTop($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $query = null, $format = 'json')
+    public function clicksTop($from, $to, $hashid, $tz = '+00:00', $device = null, $format = 'json', $query = null)
     {
-        list($response) = $this->clicksTopWithHttpInfo($hashid, $to, $from, $tz, $device, $interval, $query, $format);
+        list($response) = $this->clicksTopWithHttpInfo($from, $to, $hashid, $tz, $device, $format, $query);
         return $response;
     }
 
     /**
      * Operation clicksTopWithHttpInfo
      *
-     * Get the most common clicks
+     * Get the most common clicks.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $query Filter by query done. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $query Search query term. (optional)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\InlineResponse2001, HTTP status code, HTTP response headers (array of strings)
      */
-    public function clicksTopWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $query = null, $format = 'json')
+    public function clicksTopWithHttpInfo($from, $to, $hashid, $tz = '+00:00', $device = null, $format = 'json', $query = null)
     {
-        $returnType = 'object';
-        $request = $this->clicksTopRequest($hashid, $to, $from, $tz, $device, $interval, $query, $format);
+        $returnType = '\Swagger\Client\Model\InlineResponse2001';
+        $request = $this->clicksTopRequest($from, $to, $hashid, $tz, $device, $format, $query);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1883,7 +1869,7 @@ class StatsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\InlineResponse2001',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1896,23 +1882,22 @@ class StatsApi
     /**
      * Operation clicksTopAsync
      *
-     * Get the most common clicks
+     * Get the most common clicks.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $query Filter by query done. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $query Search query term. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function clicksTopAsync($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $query = null, $format = 'json')
+    public function clicksTopAsync($from, $to, $hashid, $tz = '+00:00', $device = null, $format = 'json', $query = null)
     {
-        return $this->clicksTopAsyncWithHttpInfo($hashid, $to, $from, $tz, $device, $interval, $query, $format)
+        return $this->clicksTopAsyncWithHttpInfo($from, $to, $hashid, $tz, $device, $format, $query)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1923,24 +1908,23 @@ class StatsApi
     /**
      * Operation clicksTopAsyncWithHttpInfo
      *
-     * Get the most common clicks
+     * Get the most common clicks.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $query Filter by query done. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $query Search query term. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function clicksTopAsyncWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $query = null, $format = 'json')
+    public function clicksTopAsyncWithHttpInfo($from, $to, $hashid, $tz = '+00:00', $device = null, $format = 'json', $query = null)
     {
-        $returnType = 'object';
-        $request = $this->clicksTopRequest($hashid, $to, $from, $tz, $device, $interval, $query, $format);
+        $returnType = '\Swagger\Client\Model\InlineResponse2001';
+        $request = $this->clicksTopRequest($from, $to, $hashid, $tz, $device, $format, $query);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1982,20 +1966,31 @@ class StatsApi
     /**
      * Create request for operation 'clicksTop'
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $query Filter by query done. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $query Search query term. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function clicksTopRequest($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $query = null, $format = 'json')
+    protected function clicksTopRequest($from, $to, $hashid, $tz = '+00:00', $device = null, $format = 'json', $query = null)
     {
+        // verify the required parameter 'from' is set
+        if ($from === null || (is_array($from) && count($from) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $from when calling clicksTop'
+            );
+        }
+        // verify the required parameter 'to' is set
+        if ($to === null || (is_array($to) && count($to) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $to when calling clicksTop'
+            );
+        }
         // verify the required parameter 'hashid' is set
         if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
@@ -2011,36 +2006,32 @@ class StatsApi
         $multipart = false;
 
         // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
         if ($from !== null) {
             $queryParams['from'] = ObjectSerializer::toQueryValue($from);
         }
         // query params
-        if ($tz !== null) {
-            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        if ($to !== null) {
+            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
         }
         // query params
         if ($hashid !== null) {
             $queryParams['hashid'] = ObjectSerializer::toQueryValue($hashid);
         }
         // query params
+        if ($tz !== null) {
+            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        }
+        // query params
         if ($device !== null) {
             $queryParams['device'] = ObjectSerializer::toQueryValue($device);
         }
         // query params
-        if ($interval !== null) {
-            $queryParams['interval'] = ObjectSerializer::toQueryValue($interval);
+        if ($format !== null) {
+            $queryParams['format'] = ObjectSerializer::toQueryValue($format);
         }
         // query params
         if ($query !== null) {
             $queryParams['query'] = ObjectSerializer::toQueryValue($query);
-        }
-        // query params
-        if ($format !== null) {
-            $queryParams['format'] = ObjectSerializer::toQueryValue($format);
         }
 
 
@@ -2121,53 +2112,47 @@ class StatsApi
     /**
      * Operation initsByDate
      *
-     * Get the sessions started by dates
+     * Get the search sessions by dates.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\StatsTimeResult
      */
-    public function initsByDate($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function initsByDate($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json')
     {
-        list($response) = $this->initsByDateWithHttpInfo($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format);
+        list($response) = $this->initsByDateWithHttpInfo($from, $to, $hashid, $tz, $device, $interval, $format);
         return $response;
     }
 
     /**
      * Operation initsByDateWithHttpInfo
      *
-     * Get the sessions started by dates
+     * Get the search sessions by dates.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\StatsTimeResult, HTTP status code, HTTP response headers (array of strings)
      */
-    public function initsByDateWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function initsByDateWithHttpInfo($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->initsByDateRequest($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsTimeResult';
+        $request = $this->initsByDateRequest($from, $to, $hashid, $tz, $device, $interval, $format);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2218,7 +2203,7 @@ class StatsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\StatsTimeResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2231,25 +2216,22 @@ class StatsApi
     /**
      * Operation initsByDateAsync
      *
-     * Get the sessions started by dates
+     * Get the search sessions by dates.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function initsByDateAsync($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function initsByDateAsync($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json')
     {
-        return $this->initsByDateAsyncWithHttpInfo($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format)
+        return $this->initsByDateAsyncWithHttpInfo($from, $to, $hashid, $tz, $device, $interval, $format)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2260,26 +2242,23 @@ class StatsApi
     /**
      * Operation initsByDateAsyncWithHttpInfo
      *
-     * Get the sessions started by dates
+     * Get the search sessions by dates.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function initsByDateAsyncWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function initsByDateAsyncWithHttpInfo($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->initsByDateRequest($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsTimeResult';
+        $request = $this->initsByDateRequest($from, $to, $hashid, $tz, $device, $interval, $format);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2321,22 +2300,31 @@ class StatsApi
     /**
      * Create request for operation 'initsByDate'
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function initsByDateRequest($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $total_hits = null, $interval = '1d', $format = 'json')
+    protected function initsByDateRequest($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json')
     {
+        // verify the required parameter 'from' is set
+        if ($from === null || (is_array($from) && count($from) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $from when calling initsByDate'
+            );
+        }
+        // verify the required parameter 'to' is set
+        if ($to === null || (is_array($to) && count($to) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $to when calling initsByDate'
+            );
+        }
         // verify the required parameter 'hashid' is set
         if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
@@ -2352,354 +2340,20 @@ class StatsApi
         $multipart = false;
 
         // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
         if ($from !== null) {
             $queryParams['from'] = ObjectSerializer::toQueryValue($from);
         }
         // query params
-        if ($tz !== null) {
-            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        if ($to !== null) {
+            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
         }
         // query params
         if ($hashid !== null) {
             $queryParams['hashid'] = ObjectSerializer::toQueryValue($hashid);
         }
         // query params
-        if ($device !== null) {
-            $queryParams['device'] = ObjectSerializer::toQueryValue($device);
-        }
-        // query params
-        if ($custom_results_id !== null) {
-            $queryParams['custom_results_id'] = ObjectSerializer::toQueryValue($custom_results_id);
-        }
-        // query params
-        if ($query_name !== null) {
-            $queryParams['query_name'] = ObjectSerializer::toQueryValue($query_name);
-        }
-        // query params
-        if ($total_hits !== null) {
-            $queryParams['total_hits'] = ObjectSerializer::toQueryValue($total_hits);
-        }
-        // query params
-        if ($interval !== null) {
-            $queryParams['interval'] = ObjectSerializer::toQueryValue($interval);
-        }
-        // query params
-        if ($format !== null) {
-            $queryParams['format'] = ObjectSerializer::toQueryValue($format);
-        }
-
-
-        // body params
-        $_tempBody = null;
-
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json'],
-                []
-            );
-        }
-
-        // for model (json/xml)
-        if (isset($_tempBody)) {
-            // $_tempBody is the method argument, if present
-            $httpBody = $_tempBody;
-            // \stdClass has no __toString(), so we should encode it manually
-            if ($httpBody instanceof \stdClass && $headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($httpBody);
-            }
-        } elseif (count($formParams) > 0) {
-            if ($multipart) {
-                $multipartContents = [];
-                foreach ($formParams as $formParamName => $formParamValue) {
-                    $multipartContents[] = [
-                        'name' => $formParamName,
-                        'contents' => $formParamValue
-                    ];
-                }
-                // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
-
-            } elseif ($headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($formParams);
-
-            } else {
-                // for HTTP post (form)
-                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
-            }
-        }
-
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Authorization');
-        if ($apiKey !== null) {
-            $headers['Authorization'] = $apiKey;
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Authorization');
-        if ($apiKey !== null) {
-            $headers['Authorization'] = $apiKey;
-        }
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $query = \GuzzleHttp\Psr7\build_query($queryParams);
-        return new Request(
-            'GET',
-            $this->config->getHost() . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
-     * Operation metrics
-     *
-     * Get the search engines usage.
-     *
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $format Indicates which response format should be used (optional, default to json)
-     *
-     * @throws \Swagger\Client\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return object
-     */
-    public function metrics($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $format = 'json')
-    {
-        list($response) = $this->metricsWithHttpInfo($hashid, $to, $from, $tz, $device, $interval, $format);
-        return $response;
-    }
-
-    /**
-     * Operation metricsWithHttpInfo
-     *
-     * Get the search engines usage.
-     *
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $format Indicates which response format should be used (optional, default to json)
-     *
-     * @throws \Swagger\Client\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
-     */
-    public function metricsWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $format = 'json')
-    {
-        $returnType = 'object';
-        $request = $this->metricsRequest($hashid, $to, $from, $tz, $device, $interval, $format);
-
-        try {
-            $options = $this->createHttpClientOption();
-            try {
-                $response = $this->client->send($request, $options);
-            } catch (RequestException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    $e->getCode(),
-                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
-                    $e->getResponse() ? $e->getResponse()->getBody()->getContents() : null
-                );
-            }
-
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode < 200 || $statusCode > 299) {
-                throw new ApiException(
-                    sprintf(
-                        '[%d] Error connecting to the API (%s)',
-                        $statusCode,
-                        $request->getUri()
-                    ),
-                    $statusCode,
-                    $response->getHeaders(),
-                    $response->getBody()
-                );
-            }
-
-            $responseBody = $response->getBody();
-            if ($returnType === '\SplFileObject') {
-                $content = $responseBody; //stream goes to serializer
-            } else {
-                $content = $responseBody->getContents();
-                if (!in_array($returnType, ['string','integer','bool'])) {
-                    $content = json_decode($content);
-                }
-            }
-
-            return [
-                ObjectSerializer::deserialize($content, $returnType, []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
-
-        } catch (ApiException $e) {
-            switch ($e->getCode()) {
-                case 200:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        'object',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * Operation metricsAsync
-     *
-     * Get the search engines usage.
-     *
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $format Indicates which response format should be used (optional, default to json)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function metricsAsync($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $format = 'json')
-    {
-        return $this->metricsAsyncWithHttpInfo($hashid, $to, $from, $tz, $device, $interval, $format)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
-     * Operation metricsAsyncWithHttpInfo
-     *
-     * Get the search engines usage.
-     *
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $format Indicates which response format should be used (optional, default to json)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function metricsAsyncWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $format = 'json')
-    {
-        $returnType = 'object';
-        $request = $this->metricsRequest($hashid, $to, $from, $tz, $device, $interval, $format);
-
-        return $this->client
-            ->sendAsync($request, $this->createHttpClientOption())
-            ->then(
-                function ($response) use ($returnType) {
-                    $responseBody = $response->getBody();
-                    if ($returnType === '\SplFileObject') {
-                        $content = $responseBody; //stream goes to serializer
-                    } else {
-                        $content = $responseBody->getContents();
-                        if ($returnType !== 'string') {
-                            $content = json_decode($content);
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, $returnType, []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                },
-                function ($exception) {
-                    $response = $exception->getResponse();
-                    $statusCode = $response->getStatusCode();
-                    throw new ApiException(
-                        sprintf(
-                            '[%d] Error connecting to the API (%s)',
-                            $statusCode,
-                            $exception->getRequest()->getUri()
-                        ),
-                        $statusCode,
-                        $response->getHeaders(),
-                        $response->getBody()
-                    );
-                }
-            );
-    }
-
-    /**
-     * Create request for operation 'metrics'
-     *
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $format Indicates which response format should be used (optional, default to json)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    protected function metricsRequest($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $format = 'json')
-    {
-        // verify the required parameter 'hashid' is set
-        if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $hashid when calling metrics'
-            );
-        }
-
-        $resourcePath = '/api/v2/stats/metrics';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
-        $httpBody = '';
-        $multipart = false;
-
-        // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
-        if ($from !== null) {
-            $queryParams['from'] = ObjectSerializer::toQueryValue($from);
-        }
-        // query params
         if ($tz !== null) {
             $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
-        }
-        // query params
-        if ($hashid !== null) {
-            $queryParams['hashid'] = ObjectSerializer::toQueryValue($hashid);
         }
         // query params
         if ($device !== null) {
@@ -2792,49 +2446,47 @@ class StatsApi
     /**
      * Operation redirects
      *
-     * Get the total amount of redirects done
+     * Get the total amount of redirections done.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the redirection. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the redirection. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\StatsRedirectsResult
      */
-    public function redirects($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    public function redirects($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
-        list($response) = $this->redirectsWithHttpInfo($hashid, $to, $from, $tz, $id, $device, $interval, $format);
+        list($response) = $this->redirectsWithHttpInfo($from, $to, $hashid, $id, $tz, $device, $format);
         return $response;
     }
 
     /**
      * Operation redirectsWithHttpInfo
      *
-     * Get the total amount of redirects done
+     * Get the total amount of redirections done.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the redirection. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the redirection. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\StatsRedirectsResult, HTTP status code, HTTP response headers (array of strings)
      */
-    public function redirectsWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    public function redirectsWithHttpInfo($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->redirectsRequest($hashid, $to, $from, $tz, $id, $device, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsRedirectsResult';
+        $request = $this->redirectsRequest($from, $to, $hashid, $id, $tz, $device, $format);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2885,7 +2537,7 @@ class StatsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\StatsRedirectsResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2898,23 +2550,22 @@ class StatsApi
     /**
      * Operation redirectsAsync
      *
-     * Get the total amount of redirects done
+     * Get the total amount of redirections done.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the redirection. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the redirection. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function redirectsAsync($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    public function redirectsAsync($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
-        return $this->redirectsAsyncWithHttpInfo($hashid, $to, $from, $tz, $id, $device, $interval, $format)
+        return $this->redirectsAsyncWithHttpInfo($from, $to, $hashid, $id, $tz, $device, $format)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2925,24 +2576,23 @@ class StatsApi
     /**
      * Operation redirectsAsyncWithHttpInfo
      *
-     * Get the total amount of redirects done
+     * Get the total amount of redirections done.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the redirection. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the redirection. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function redirectsAsyncWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    public function redirectsAsyncWithHttpInfo($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->redirectsRequest($hashid, $to, $from, $tz, $id, $device, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsRedirectsResult';
+        $request = $this->redirectsRequest($from, $to, $hashid, $id, $tz, $device, $format);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2984,20 +2634,31 @@ class StatsApi
     /**
      * Create request for operation 'redirects'
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  int $id ID of the redirection. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
+     * @param  int $id Unique id of the redirection. (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function redirectsRequest($hashid, $to = null, $from = null, $tz = null, $id = null, $device = null, $interval = '1d', $format = 'json')
+    protected function redirectsRequest($from, $to, $hashid, $id = null, $tz = '+00:00', $device = null, $format = 'json')
     {
+        // verify the required parameter 'from' is set
+        if ($from === null || (is_array($from) && count($from) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $from when calling redirects'
+            );
+        }
+        // verify the required parameter 'to' is set
+        if ($to === null || (is_array($to) && count($to) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $to when calling redirects'
+            );
+        }
         // verify the required parameter 'hashid' is set
         if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
@@ -3013,16 +2674,12 @@ class StatsApi
         $multipart = false;
 
         // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
         if ($from !== null) {
             $queryParams['from'] = ObjectSerializer::toQueryValue($from);
         }
         // query params
-        if ($tz !== null) {
-            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        if ($to !== null) {
+            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
         }
         // query params
         if ($hashid !== null) {
@@ -3033,12 +2690,12 @@ class StatsApi
             $queryParams['id'] = ObjectSerializer::toQueryValue($id);
         }
         // query params
-        if ($device !== null) {
-            $queryParams['device'] = ObjectSerializer::toQueryValue($device);
+        if ($tz !== null) {
+            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
         }
         // query params
-        if ($interval !== null) {
-            $queryParams['interval'] = ObjectSerializer::toQueryValue($interval);
+        if ($device !== null) {
+            $queryParams['device'] = ObjectSerializer::toQueryValue($device);
         }
         // query params
         if ($format !== null) {
@@ -3125,23 +2782,21 @@ class StatsApi
      *
      * Get the top searches that got a product clicked
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
      * @param  string $dfid Doofinder ID to filter by (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  int $total_hits Filter by total hits (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\StatsTopSearchesResult
      */
-    public function searchesByClick($hashid, $dfid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $total_hits = null, $format = 'json')
+    public function searchesByClick($from, $to, $hashid, $dfid, $tz = '+00:00', $device = null, $format = 'json')
     {
-        list($response) = $this->searchesByClickWithHttpInfo($hashid, $dfid, $to, $from, $tz, $device, $interval, $total_hits, $format);
+        list($response) = $this->searchesByClickWithHttpInfo($from, $to, $hashid, $dfid, $tz, $device, $format);
         return $response;
     }
 
@@ -3150,24 +2805,22 @@ class StatsApi
      *
      * Get the top searches that got a product clicked
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
      * @param  string $dfid Doofinder ID to filter by (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  int $total_hits Filter by total hits (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\StatsTopSearchesResult, HTTP status code, HTTP response headers (array of strings)
      */
-    public function searchesByClickWithHttpInfo($hashid, $dfid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $total_hits = null, $format = 'json')
+    public function searchesByClickWithHttpInfo($from, $to, $hashid, $dfid, $tz = '+00:00', $device = null, $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->searchesByClickRequest($hashid, $dfid, $to, $from, $tz, $device, $interval, $total_hits, $format);
+        $returnType = '\Swagger\Client\Model\StatsTopSearchesResult';
+        $request = $this->searchesByClickRequest($from, $to, $hashid, $dfid, $tz, $device, $format);
 
         try {
             $options = $this->createHttpClientOption();
@@ -3218,7 +2871,7 @@ class StatsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\StatsTopSearchesResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3233,22 +2886,20 @@ class StatsApi
      *
      * Get the top searches that got a product clicked
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
      * @param  string $dfid Doofinder ID to filter by (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  int $total_hits Filter by total hits (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function searchesByClickAsync($hashid, $dfid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $total_hits = null, $format = 'json')
+    public function searchesByClickAsync($from, $to, $hashid, $dfid, $tz = '+00:00', $device = null, $format = 'json')
     {
-        return $this->searchesByClickAsyncWithHttpInfo($hashid, $dfid, $to, $from, $tz, $device, $interval, $total_hits, $format)
+        return $this->searchesByClickAsyncWithHttpInfo($from, $to, $hashid, $dfid, $tz, $device, $format)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -3261,23 +2912,21 @@ class StatsApi
      *
      * Get the top searches that got a product clicked
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
      * @param  string $dfid Doofinder ID to filter by (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  int $total_hits Filter by total hits (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function searchesByClickAsyncWithHttpInfo($hashid, $dfid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $total_hits = null, $format = 'json')
+    public function searchesByClickAsyncWithHttpInfo($from, $to, $hashid, $dfid, $tz = '+00:00', $device = null, $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->searchesByClickRequest($hashid, $dfid, $to, $from, $tz, $device, $interval, $total_hits, $format);
+        $returnType = '\Swagger\Client\Model\StatsTopSearchesResult';
+        $request = $this->searchesByClickRequest($from, $to, $hashid, $dfid, $tz, $device, $format);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -3319,21 +2968,31 @@ class StatsApi
     /**
      * Create request for operation 'searchesByClick'
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
      * @param  string $dfid Doofinder ID to filter by (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  int $total_hits Filter by total hits (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function searchesByClickRequest($hashid, $dfid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $total_hits = null, $format = 'json')
+    protected function searchesByClickRequest($from, $to, $hashid, $dfid, $tz = '+00:00', $device = null, $format = 'json')
     {
+        // verify the required parameter 'from' is set
+        if ($from === null || (is_array($from) && count($from) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $from when calling searchesByClick'
+            );
+        }
+        // verify the required parameter 'to' is set
+        if ($to === null || (is_array($to) && count($to) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $to when calling searchesByClick'
+            );
+        }
         // verify the required parameter 'hashid' is set
         if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
@@ -3355,32 +3014,24 @@ class StatsApi
         $multipart = false;
 
         // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
         if ($from !== null) {
             $queryParams['from'] = ObjectSerializer::toQueryValue($from);
         }
         // query params
-        if ($tz !== null) {
-            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        if ($to !== null) {
+            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
         }
         // query params
         if ($hashid !== null) {
             $queryParams['hashid'] = ObjectSerializer::toQueryValue($hashid);
         }
         // query params
+        if ($tz !== null) {
+            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        }
+        // query params
         if ($device !== null) {
             $queryParams['device'] = ObjectSerializer::toQueryValue($device);
-        }
-        // query params
-        if ($interval !== null) {
-            $queryParams['interval'] = ObjectSerializer::toQueryValue($interval);
-        }
-        // query params
-        if ($total_hits !== null) {
-            $queryParams['total_hits'] = ObjectSerializer::toQueryValue($total_hits);
         }
         // query params
         if ($format !== null) {
@@ -3475,25 +3126,25 @@ class StatsApi
      *
      * Get the searches by dates
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
+     * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $custom_results_id Filter by some custom result. (optional)
      * @param  string $query_name Type of query to filter by (optional)
      * @param  string $source Filter by search source. (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  int $total_hits Filter by the number of search results. (optional)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\StatsTimeResult
      */
-    public function searchesByDate($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $source = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function searchesByDate($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json', $custom_results_id = null, $query_name = null, $source = null, $total_hits = null)
     {
-        list($response) = $this->searchesByDateWithHttpInfo($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $source, $total_hits, $interval, $format);
+        list($response) = $this->searchesByDateWithHttpInfo($from, $to, $hashid, $tz, $device, $interval, $format, $custom_results_id, $query_name, $source, $total_hits);
         return $response;
     }
 
@@ -3502,26 +3153,26 @@ class StatsApi
      *
      * Get the searches by dates
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
+     * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $custom_results_id Filter by some custom result. (optional)
      * @param  string $query_name Type of query to filter by (optional)
      * @param  string $source Filter by search source. (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  int $total_hits Filter by the number of search results. (optional)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\StatsTimeResult, HTTP status code, HTTP response headers (array of strings)
      */
-    public function searchesByDateWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $source = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function searchesByDateWithHttpInfo($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json', $custom_results_id = null, $query_name = null, $source = null, $total_hits = null)
     {
-        $returnType = 'object';
-        $request = $this->searchesByDateRequest($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $source, $total_hits, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsTimeResult';
+        $request = $this->searchesByDateRequest($from, $to, $hashid, $tz, $device, $interval, $format, $custom_results_id, $query_name, $source, $total_hits);
 
         try {
             $options = $this->createHttpClientOption();
@@ -3572,7 +3223,7 @@ class StatsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\StatsTimeResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3587,24 +3238,24 @@ class StatsApi
      *
      * Get the searches by dates
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
+     * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $custom_results_id Filter by some custom result. (optional)
      * @param  string $query_name Type of query to filter by (optional)
      * @param  string $source Filter by search source. (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  int $total_hits Filter by the number of search results. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function searchesByDateAsync($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $source = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function searchesByDateAsync($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json', $custom_results_id = null, $query_name = null, $source = null, $total_hits = null)
     {
-        return $this->searchesByDateAsyncWithHttpInfo($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $source, $total_hits, $interval, $format)
+        return $this->searchesByDateAsyncWithHttpInfo($from, $to, $hashid, $tz, $device, $interval, $format, $custom_results_id, $query_name, $source, $total_hits)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -3617,25 +3268,25 @@ class StatsApi
      *
      * Get the searches by dates
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
+     * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $custom_results_id Filter by some custom result. (optional)
      * @param  string $query_name Type of query to filter by (optional)
      * @param  string $source Filter by search source. (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  int $total_hits Filter by the number of search results. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function searchesByDateAsyncWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $source = null, $total_hits = null, $interval = '1d', $format = 'json')
+    public function searchesByDateAsyncWithHttpInfo($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json', $custom_results_id = null, $query_name = null, $source = null, $total_hits = null)
     {
-        $returnType = 'object';
-        $request = $this->searchesByDateRequest($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $source, $total_hits, $interval, $format);
+        $returnType = '\Swagger\Client\Model\StatsTimeResult';
+        $request = $this->searchesByDateRequest($from, $to, $hashid, $tz, $device, $interval, $format, $custom_results_id, $query_name, $source, $total_hits);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -3677,23 +3328,35 @@ class StatsApi
     /**
      * Create request for operation 'searchesByDate'
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $custom_results_id Filter by custom results (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
+     * @param  string $interval Time interval for aggregations. (optional, default to 1d)
+     * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $custom_results_id Filter by some custom result. (optional)
      * @param  string $query_name Type of query to filter by (optional)
      * @param  string $source Filter by search source. (optional)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  int $total_hits Filter by the number of search results. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function searchesByDateRequest($hashid, $to = null, $from = null, $tz = null, $device = null, $custom_results_id = null, $query_name = null, $source = null, $total_hits = null, $interval = '1d', $format = 'json')
+    protected function searchesByDateRequest($from, $to, $hashid, $tz = '+00:00', $device = null, $interval = '1d', $format = 'json', $custom_results_id = null, $query_name = null, $source = null, $total_hits = null)
     {
+        // verify the required parameter 'from' is set
+        if ($from === null || (is_array($from) && count($from) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $from when calling searchesByDate'
+            );
+        }
+        // verify the required parameter 'to' is set
+        if ($to === null || (is_array($to) && count($to) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $to when calling searchesByDate'
+            );
+        }
         // verify the required parameter 'hashid' is set
         if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
@@ -3709,24 +3372,32 @@ class StatsApi
         $multipart = false;
 
         // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
         if ($from !== null) {
             $queryParams['from'] = ObjectSerializer::toQueryValue($from);
         }
         // query params
-        if ($tz !== null) {
-            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        if ($to !== null) {
+            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
         }
         // query params
         if ($hashid !== null) {
             $queryParams['hashid'] = ObjectSerializer::toQueryValue($hashid);
         }
         // query params
+        if ($tz !== null) {
+            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        }
+        // query params
         if ($device !== null) {
             $queryParams['device'] = ObjectSerializer::toQueryValue($device);
+        }
+        // query params
+        if ($interval !== null) {
+            $queryParams['interval'] = ObjectSerializer::toQueryValue($interval);
+        }
+        // query params
+        if ($format !== null) {
+            $queryParams['format'] = ObjectSerializer::toQueryValue($format);
         }
         // query params
         if ($custom_results_id !== null) {
@@ -3743,14 +3414,6 @@ class StatsApi
         // query params
         if ($total_hits !== null) {
             $queryParams['total_hits'] = ObjectSerializer::toQueryValue($total_hits);
-        }
-        // query params
-        if ($interval !== null) {
-            $queryParams['interval'] = ObjectSerializer::toQueryValue($interval);
-        }
-        // query params
-        if ($format !== null) {
-            $queryParams['format'] = ObjectSerializer::toQueryValue($format);
         }
 
 
@@ -3831,53 +3494,51 @@ class StatsApi
     /**
      * Operation searchesTop
      *
-     * Get the most common searches
+     * Get the most common searches.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  object $exclude Exclude filters (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $query_name Type of query to filter by (optional)
+     * @param  int $total_hits Filter by the number of search results. (optional)
+     * @param  object $exclude Exclude filters (optional)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\StatsTopSearchesResult
      */
-    public function searchesTop($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $total_hits = null, $query_name = null, $exclude = null, $format = 'json')
+    public function searchesTop($from, $to, $hashid, $tz = '+00:00', $device = null, $format = 'json', $query_name = null, $total_hits = null, $exclude = null)
     {
-        list($response) = $this->searchesTopWithHttpInfo($hashid, $to, $from, $tz, $device, $interval, $total_hits, $query_name, $exclude, $format);
+        list($response) = $this->searchesTopWithHttpInfo($from, $to, $hashid, $tz, $device, $format, $query_name, $total_hits, $exclude);
         return $response;
     }
 
     /**
      * Operation searchesTopWithHttpInfo
      *
-     * Get the most common searches
+     * Get the most common searches.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  object $exclude Exclude filters (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $query_name Type of query to filter by (optional)
+     * @param  int $total_hits Filter by the number of search results. (optional)
+     * @param  object $exclude Exclude filters (optional)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\StatsTopSearchesResult, HTTP status code, HTTP response headers (array of strings)
      */
-    public function searchesTopWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $total_hits = null, $query_name = null, $exclude = null, $format = 'json')
+    public function searchesTopWithHttpInfo($from, $to, $hashid, $tz = '+00:00', $device = null, $format = 'json', $query_name = null, $total_hits = null, $exclude = null)
     {
-        $returnType = 'object';
-        $request = $this->searchesTopRequest($hashid, $to, $from, $tz, $device, $interval, $total_hits, $query_name, $exclude, $format);
+        $returnType = '\Swagger\Client\Model\StatsTopSearchesResult';
+        $request = $this->searchesTopRequest($from, $to, $hashid, $tz, $device, $format, $query_name, $total_hits, $exclude);
 
         try {
             $options = $this->createHttpClientOption();
@@ -3928,7 +3589,7 @@ class StatsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\StatsTopSearchesResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3941,25 +3602,24 @@ class StatsApi
     /**
      * Operation searchesTopAsync
      *
-     * Get the most common searches
+     * Get the most common searches.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  object $exclude Exclude filters (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $query_name Type of query to filter by (optional)
+     * @param  int $total_hits Filter by the number of search results. (optional)
+     * @param  object $exclude Exclude filters (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function searchesTopAsync($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $total_hits = null, $query_name = null, $exclude = null, $format = 'json')
+    public function searchesTopAsync($from, $to, $hashid, $tz = '+00:00', $device = null, $format = 'json', $query_name = null, $total_hits = null, $exclude = null)
     {
-        return $this->searchesTopAsyncWithHttpInfo($hashid, $to, $from, $tz, $device, $interval, $total_hits, $query_name, $exclude, $format)
+        return $this->searchesTopAsyncWithHttpInfo($from, $to, $hashid, $tz, $device, $format, $query_name, $total_hits, $exclude)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -3970,26 +3630,25 @@ class StatsApi
     /**
      * Operation searchesTopAsyncWithHttpInfo
      *
-     * Get the most common searches
+     * Get the most common searches.
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  object $exclude Exclude filters (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $query_name Type of query to filter by (optional)
+     * @param  int $total_hits Filter by the number of search results. (optional)
+     * @param  object $exclude Exclude filters (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function searchesTopAsyncWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $total_hits = null, $query_name = null, $exclude = null, $format = 'json')
+    public function searchesTopAsyncWithHttpInfo($from, $to, $hashid, $tz = '+00:00', $device = null, $format = 'json', $query_name = null, $total_hits = null, $exclude = null)
     {
-        $returnType = 'object';
-        $request = $this->searchesTopRequest($hashid, $to, $from, $tz, $device, $interval, $total_hits, $query_name, $exclude, $format);
+        $returnType = '\Swagger\Client\Model\StatsTopSearchesResult';
+        $request = $this->searchesTopRequest($from, $to, $hashid, $tz, $device, $format, $query_name, $total_hits, $exclude);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -4031,22 +3690,33 @@ class StatsApi
     /**
      * Create request for operation 'searchesTop'
      *
+     * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
-     * @param  int $total_hits Filter by total hits (optional)
-     * @param  string $query_name Type of query to filter by (optional)
-     * @param  object $exclude Exclude filters (optional)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
+     * @param  string $query_name Type of query to filter by (optional)
+     * @param  int $total_hits Filter by the number of search results. (optional)
+     * @param  object $exclude Exclude filters (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function searchesTopRequest($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $total_hits = null, $query_name = null, $exclude = null, $format = 'json')
+    protected function searchesTopRequest($from, $to, $hashid, $tz = '+00:00', $device = null, $format = 'json', $query_name = null, $total_hits = null, $exclude = null)
     {
+        // verify the required parameter 'from' is set
+        if ($from === null || (is_array($from) && count($from) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $from when calling searchesTop'
+            );
+        }
+        // verify the required parameter 'to' is set
+        if ($to === null || (is_array($to) && count($to) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $to when calling searchesTop'
+            );
+        }
         // verify the required parameter 'hashid' is set
         if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
@@ -4062,44 +3732,40 @@ class StatsApi
         $multipart = false;
 
         // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
         if ($from !== null) {
             $queryParams['from'] = ObjectSerializer::toQueryValue($from);
         }
         // query params
-        if ($tz !== null) {
-            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        if ($to !== null) {
+            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
         }
         // query params
         if ($hashid !== null) {
             $queryParams['hashid'] = ObjectSerializer::toQueryValue($hashid);
         }
         // query params
+        if ($tz !== null) {
+            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        }
+        // query params
         if ($device !== null) {
             $queryParams['device'] = ObjectSerializer::toQueryValue($device);
         }
         // query params
-        if ($interval !== null) {
-            $queryParams['interval'] = ObjectSerializer::toQueryValue($interval);
-        }
-        // query params
-        if ($total_hits !== null) {
-            $queryParams['total_hits'] = ObjectSerializer::toQueryValue($total_hits);
+        if ($format !== null) {
+            $queryParams['format'] = ObjectSerializer::toQueryValue($format);
         }
         // query params
         if ($query_name !== null) {
             $queryParams['query_name'] = ObjectSerializer::toQueryValue($query_name);
         }
         // query params
-        if ($exclude !== null) {
-            $queryParams['exclude'] = ObjectSerializer::toQueryValue($exclude);
+        if ($total_hits !== null) {
+            $queryParams['total_hits'] = ObjectSerializer::toQueryValue($total_hits);
         }
         // query params
-        if ($format !== null) {
-            $queryParams['format'] = ObjectSerializer::toQueryValue($format);
+        if ($exclude !== null) {
+            $queryParams['exclude'] = ObjectSerializer::toQueryValue($exclude);
         }
 
 
@@ -4182,22 +3848,19 @@ class StatsApi
      *
      * Get the search engines usage.
      *
+     * @param  string $from Start date of the interval in the format of YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
      * @param  string $type Filter by the given usage type. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return \Swagger\Client\Model\StatsTimeResult
      */
-    public function usage($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $type = null, $format = 'json')
+    public function usage($from, $to, $hashid, $type = null, $format = 'json')
     {
-        list($response) = $this->usageWithHttpInfo($hashid, $to, $from, $tz, $device, $interval, $type, $format);
+        list($response) = $this->usageWithHttpInfo($from, $to, $hashid, $type, $format);
         return $response;
     }
 
@@ -4206,23 +3869,20 @@ class StatsApi
      *
      * Get the search engines usage.
      *
+     * @param  string $from Start date of the interval in the format of YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
      * @param  string $type Filter by the given usage type. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\StatsTimeResult, HTTP status code, HTTP response headers (array of strings)
      */
-    public function usageWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $type = null, $format = 'json')
+    public function usageWithHttpInfo($from, $to, $hashid, $type = null, $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->usageRequest($hashid, $to, $from, $tz, $device, $interval, $type, $format);
+        $returnType = '\Swagger\Client\Model\StatsTimeResult';
+        $request = $this->usageRequest($from, $to, $hashid, $type, $format);
 
         try {
             $options = $this->createHttpClientOption();
@@ -4273,7 +3933,7 @@ class StatsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Swagger\Client\Model\StatsTimeResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4288,21 +3948,18 @@ class StatsApi
      *
      * Get the search engines usage.
      *
+     * @param  string $from Start date of the interval in the format of YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
      * @param  string $type Filter by the given usage type. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function usageAsync($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $type = null, $format = 'json')
+    public function usageAsync($from, $to, $hashid, $type = null, $format = 'json')
     {
-        return $this->usageAsyncWithHttpInfo($hashid, $to, $from, $tz, $device, $interval, $type, $format)
+        return $this->usageAsyncWithHttpInfo($from, $to, $hashid, $type, $format)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -4315,22 +3972,19 @@ class StatsApi
      *
      * Get the search engines usage.
      *
+     * @param  string $from Start date of the interval in the format of YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
      * @param  string $type Filter by the given usage type. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function usageAsyncWithHttpInfo($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $type = null, $format = 'json')
+    public function usageAsyncWithHttpInfo($from, $to, $hashid, $type = null, $format = 'json')
     {
-        $returnType = 'object';
-        $request = $this->usageRequest($hashid, $to, $from, $tz, $device, $interval, $type, $format);
+        $returnType = '\Swagger\Client\Model\StatsTimeResult';
+        $request = $this->usageRequest($from, $to, $hashid, $type, $format);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -4372,20 +4026,29 @@ class StatsApi
     /**
      * Create request for operation 'usage'
      *
+     * @param  string $from Start date of the interval in the format of YYYYMMDD. (required)
+     * @param  string $to End date of the interval in the format of YYYYMMDD. (required)
      * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $to Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. (optional)
-     * @param  string $from Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. (optional)
-     * @param  string $device Device filter, by default is all (optional)
-     * @param  string $interval Time interval for aggregations (optional, default to 1d)
      * @param  string $type Filter by the given usage type. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function usageRequest($hashid, $to = null, $from = null, $tz = null, $device = null, $interval = '1d', $type = null, $format = 'json')
+    protected function usageRequest($from, $to, $hashid, $type = null, $format = 'json')
     {
+        // verify the required parameter 'from' is set
+        if ($from === null || (is_array($from) && count($from) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $from when calling usage'
+            );
+        }
+        // verify the required parameter 'to' is set
+        if ($to === null || (is_array($to) && count($to) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $to when calling usage'
+            );
+        }
         // verify the required parameter 'hashid' is set
         if ($hashid === null || (is_array($hashid) && count($hashid) === 0)) {
             throw new \InvalidArgumentException(
@@ -4401,28 +4064,16 @@ class StatsApi
         $multipart = false;
 
         // query params
-        if ($to !== null) {
-            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
-        }
-        // query params
         if ($from !== null) {
             $queryParams['from'] = ObjectSerializer::toQueryValue($from);
         }
         // query params
-        if ($tz !== null) {
-            $queryParams['tz'] = ObjectSerializer::toQueryValue($tz);
+        if ($to !== null) {
+            $queryParams['to'] = ObjectSerializer::toQueryValue($to);
         }
         // query params
         if ($hashid !== null) {
             $queryParams['hashid'] = ObjectSerializer::toQueryValue($hashid);
-        }
-        // query params
-        if ($device !== null) {
-            $queryParams['device'] = ObjectSerializer::toQueryValue($device);
-        }
-        // query params
-        if ($interval !== null) {
-            $queryParams['interval'] = ObjectSerializer::toQueryValue($interval);
         }
         // query params
         if ($type !== null) {

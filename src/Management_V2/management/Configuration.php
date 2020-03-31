@@ -38,7 +38,8 @@ namespace Swagger\Client;
  */
 class Configuration
 {
-    const API_ENDPOINT = 'https://%s-api.doofinder.com';
+    #const API_ENDPOINT = 'https://%s-api.doofinder.com';
+    const API_ENDPOINT = 'http://localhost:4001';
 
     private static $defaultConfiguration;
 
@@ -131,8 +132,8 @@ class Configuration
     public function setApiKey($apiKeyIdentifier, $key)
     {
         $this->apiKeys[$apiKeyIdentifier] = $key;
-        $clusterRegion = explode('-', $key)[0];
-        $this->host = sprintf(self::API_ENDPOINT, $clusterRegion);
+        #$clusterRegion = explode('-', $key)[0];
+        $this->host = sprintf(self::API_ENDPOINT, '');
 
         return $this;
     }

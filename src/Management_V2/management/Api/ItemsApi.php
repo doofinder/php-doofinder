@@ -12,7 +12,7 @@
 /**
  * Doofinder Management API
  *
- * # Introduction Doofinder's management API allows you to perform the same administrative tasks you can do on your search engines using the doofinder control panel, directly from your code.  You could found here our legacy [Management API V1](https://www.doofinder.com/support/developer/api/management-api).  # Basics ## Endpoint All requests should be done with `https` protocol in our api location.  `https://{search_zone}-api.doofinder.com`  where `{search_zone}` depends on your location, is the geographic zone your search engine is located at. i.e.: eu1. Also, indicates which host to use in your API calls.  ## Authentication  We provide two methods of authentication for our API. In any of theese you need a management api key that you could obtain in our [management control panel](https://www.doofinder.com/admin).  You can generate it in your user account -> Api Keys.  Example of the generated API Key: `eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### API Token You could authenticate with the previous API key in header as a Token. The correct way to authenticate is to send a HTTP Header with the name `Authorization` and the value `Token <API Key>`  For example, for the key shown above:  `Authorization: Token eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### JWT Token (Draft) Also you could authenticate with a JSON Web Token generating jwt keys with your API Key. To authenticate using JWT you need to send a HTTP Header with the name `Authorization` and the value `Bearer <JWT token>`.  For example, with the key shown above:  `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk`  ## Conventions Along most of the code samples you will find placeholders for some common variable values. They are:  - `{hashid}`: The search engine's unique id. i.e.: d8fdeab7fce96a19d3fc7b0ca7a1e98b - `{index}`: When storing items, they're always stored under a certain \"index\". i.e.: product. - `{token}`: Your personal authentication token obtained in the control panel. - `{uid}`: The Id of a Doofinder User
+ * # Introduction  Doofinder's management API allows you to perform some of the administrative tasks you can do on your search engines using the doofinder control panel, directly from your code.  # Basics  ## Endpoint  All requests should be done with `https` protocol in our API location.  `https://{search_zone}-api.doofinder.com`  where `{search_zone}` depends on your location, is the geographic zone your search engine is located at. i.e.: eu1. Also, indicates which host to use in your API calls.  ## Authentication  We provide two methods of authentication for our API. In any of these you need a management API key that you could obtain in our [management control panel](https://www.doofinder.com/admin).  You can generate it in your user account -> API Keys.  Example of a generated API Key: `eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### API Token  You can authenticate with the previous API key in header as a Token. The correct way to authenticate is to send a HTTP Header with the name `Authorization` and the value `Token <API Key>`  For example, for the key shown above:  `Authorization: Token eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### JWT Token (Draft)  Also you can authenticate with a [JSON Web Token](https://jwt.io) generating JWT keys with your API Key. To authenticate using JWT you need to send a HTTP Header with the name `Authorization` and the value `Bearer <JWT token>`.  For example, with the key shown above:  `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk`  ## Conventions  Along most of the code samples you will find placeholders for some common variable values. They are:  - `{hashid}`: The search engine's unique id. i.e.: d8fdeab7fce96a19d3fc7b0ca7a1e98b - `{index}`: When storing items, they're always stored under a certain \"index\". i.e.: product. - `{token}`: Your personal authentication token obtained in the control panel. - `{uid}`: The Id of a Doofinder User  # Objects  ## Search Engines  A Search Engine is a set of multiple Indices, and some options to configure them. It must contain at least one indice.  A Search Engine can be uniquely identified by the parameter called `hashid`.  A Search Engine can be processed, which means the process of reading the data from the Data Sources (usually an url), indexing the data in a temporary index and finally build the index ready for use.  ## Indices  An Index is a collection of Items, the same way a Search Engine is a collection of Indices. It has options that define the schema used for Items, Data Sources that define where to get the data, and some searching options.  Each Index may also have one temporary index. A temporary index shares the same options of its main index. There are operations to manage temporary indices like create, delete, reindex, etc. The usual flow for a temporary index is create one, index items on it and replace the main index with the temporary one. This way you can reindex your whole data having zero downtime of the search service.  ## Data Sources  A Data Source defines a source of items for indexing. There are many kinds but they are basically a location for taking items for indexing and the most common is just an url with a file. These are the sources that are read when calling a Search Engine processing. An Index does not need a Data Source if you index the items directly using the API.  ## Items  Items are the objects stored in an Index, and the ones returned after executing a search. Items may have an schema (a collection of fields) depending on their Index preset. This way a `product` item has price, category, etc.
  *
  * OpenAPI spec version: 2.0
  * Contact: support@doofinder.com
@@ -91,9 +91,9 @@ class ItemsApi
      *
      * Creates an item.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  map[string,object] $body body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -110,9 +110,9 @@ class ItemsApi
      *
      * Creates an item.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -187,9 +187,9 @@ class ItemsApi
      *
      * Creates an item.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -209,9 +209,9 @@ class ItemsApi
      *
      * Creates an item.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -261,9 +261,9 @@ class ItemsApi
     /**
      * Create request for operation 'itemCreate'
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -394,38 +394,37 @@ class ItemsApi
     /**
      * Operation itemDelete
      *
-     * Deletes an item.
+     * Deletes an item from the index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return void
      */
     public function itemDelete($hashid, $name, $item_id)
     {
-        list($response) = $this->itemDeleteWithHttpInfo($hashid, $name, $item_id);
-        return $response;
+        $this->itemDeleteWithHttpInfo($hashid, $name, $item_id);
     }
 
     /**
      * Operation itemDeleteWithHttpInfo
      *
-     * Deletes an item.
+     * Deletes an item from the index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
     public function itemDeleteWithHttpInfo($hashid, $name, $item_id)
     {
-        $returnType = 'object';
+        $returnType = '';
         $request = $this->itemDeleteRequest($hashid, $name, $item_id);
 
         try {
@@ -456,32 +455,10 @@ class ItemsApi
                 );
             }
 
-            $responseBody = $response->getBody();
-            if ($returnType === '\SplFileObject') {
-                $content = $responseBody; //stream goes to serializer
-            } else {
-                $content = $responseBody->getContents();
-                if (!in_array($returnType, ['string','integer','bool'])) {
-                    $content = json_decode($content);
-                }
-            }
-
-            return [
-                ObjectSerializer::deserialize($content, $returnType, []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
+            return [null, $statusCode, $response->getHeaders()];
 
         } catch (ApiException $e) {
             switch ($e->getCode()) {
-                case 204:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        'object',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -490,11 +467,11 @@ class ItemsApi
     /**
      * Operation itemDeleteAsync
      *
-     * Deletes an item.
+     * Deletes an item from the index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -512,39 +489,25 @@ class ItemsApi
     /**
      * Operation itemDeleteAsyncWithHttpInfo
      *
-     * Deletes an item.
+     * Deletes an item from the index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function itemDeleteAsyncWithHttpInfo($hashid, $name, $item_id)
     {
-        $returnType = 'object';
+        $returnType = '';
         $request = $this->itemDeleteRequest($hashid, $name, $item_id);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
-                    $responseBody = $response->getBody();
-                    if ($returnType === '\SplFileObject') {
-                        $content = $responseBody; //stream goes to serializer
-                    } else {
-                        $content = $responseBody->getContents();
-                        if ($returnType !== 'string') {
-                            $content = json_decode($content);
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, $returnType, []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
+                    return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
                 function ($exception) {
                     $response = $exception->getResponse();
@@ -566,9 +529,9 @@ class ItemsApi
     /**
      * Create request for operation 'itemDelete'
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -632,11 +595,11 @@ class ItemsApi
 
         if ($multipart) {
             $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json']
+                []
             );
         } else {
             $headers = $this->headerSelector->selectHeaders(
-                ['application/json'],
+                [],
                 []
             );
         }
@@ -704,16 +667,16 @@ class ItemsApi
     /**
      * Operation itemIndex
      *
-     * Scrolls through all items
+     * Scrolls through all index items
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $scroll_id Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page. (optional)
-     * @param  int $rpp _Results per page_. How many items are fetched per page (optional)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $scroll_id Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page so each successive request to the same scroll_id return a new page. (optional)
+     * @param  int $rpp _Results per page_. How many items are fetched per page/request. (optional)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Swagger\Client\Model\Scroll
+     * @return \Swagger\Client\Model\Scroller
      */
     public function itemIndex($hashid, $name, $scroll_id = null, $rpp = null)
     {
@@ -724,20 +687,20 @@ class ItemsApi
     /**
      * Operation itemIndexWithHttpInfo
      *
-     * Scrolls through all items
+     * Scrolls through all index items
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $scroll_id Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page. (optional)
-     * @param  int $rpp _Results per page_. How many items are fetched per page (optional)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $scroll_id Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page so each successive request to the same scroll_id return a new page. (optional)
+     * @param  int $rpp _Results per page_. How many items are fetched per page/request. (optional)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Swagger\Client\Model\Scroll, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Swagger\Client\Model\Scroller, HTTP status code, HTTP response headers (array of strings)
      */
     public function itemIndexWithHttpInfo($hashid, $name, $scroll_id = null, $rpp = null)
     {
-        $returnType = '\Swagger\Client\Model\Scroll';
+        $returnType = '\Swagger\Client\Model\Scroller';
         $request = $this->itemIndexRequest($hashid, $name, $scroll_id, $rpp);
 
         try {
@@ -789,7 +752,7 @@ class ItemsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Swagger\Client\Model\Scroll',
+                        '\Swagger\Client\Model\Scroller',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -802,12 +765,12 @@ class ItemsApi
     /**
      * Operation itemIndexAsync
      *
-     * Scrolls through all items
+     * Scrolls through all index items
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $scroll_id Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page. (optional)
-     * @param  int $rpp _Results per page_. How many items are fetched per page (optional)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $scroll_id Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page so each successive request to the same scroll_id return a new page. (optional)
+     * @param  int $rpp _Results per page_. How many items are fetched per page/request. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -825,19 +788,19 @@ class ItemsApi
     /**
      * Operation itemIndexAsyncWithHttpInfo
      *
-     * Scrolls through all items
+     * Scrolls through all index items
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $scroll_id Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page. (optional)
-     * @param  int $rpp _Results per page_. How many items are fetched per page (optional)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $scroll_id Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page so each successive request to the same scroll_id return a new page. (optional)
+     * @param  int $rpp _Results per page_. How many items are fetched per page/request. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function itemIndexAsyncWithHttpInfo($hashid, $name, $scroll_id = null, $rpp = null)
     {
-        $returnType = '\Swagger\Client\Model\Scroll';
+        $returnType = '\Swagger\Client\Model\Scroller';
         $request = $this->itemIndexRequest($hashid, $name, $scroll_id, $rpp);
 
         return $this->client
@@ -880,10 +843,10 @@ class ItemsApi
     /**
      * Create request for operation 'itemIndex'
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $scroll_id Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page. (optional)
-     * @param  int $rpp _Results per page_. How many items are fetched per page (optional)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $scroll_id Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page so each successive request to the same scroll_id return a new page. (optional)
+     * @param  int $rpp _Results per page_. How many items are fetched per page/request. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1013,11 +976,11 @@ class ItemsApi
     /**
      * Operation itemShow
      *
-     * Get an item
+     * Gets an item from the index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -1032,11 +995,11 @@ class ItemsApi
     /**
      * Operation itemShowWithHttpInfo
      *
-     * Get an item
+     * Gets an item from the index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -1109,11 +1072,11 @@ class ItemsApi
     /**
      * Operation itemShowAsync
      *
-     * Get an item
+     * Gets an item from the index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1131,11 +1094,11 @@ class ItemsApi
     /**
      * Operation itemShowAsyncWithHttpInfo
      *
-     * Get an item
+     * Gets an item from the index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1185,9 +1148,9 @@ class ItemsApi
     /**
      * Create request for operation 'itemShow'
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1323,11 +1286,11 @@ class ItemsApi
     /**
      * Operation itemTempCreate
      *
-     * Creates an item in the temporal index
+     * Creates an item in the temporal index.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  map[string,object] $body body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -1342,11 +1305,11 @@ class ItemsApi
     /**
      * Operation itemTempCreateWithHttpInfo
      *
-     * Creates an item in the temporal index
+     * Creates an item in the temporal index.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -1419,11 +1382,11 @@ class ItemsApi
     /**
      * Operation itemTempCreateAsync
      *
-     * Creates an item in the temporal index
+     * Creates an item in the temporal index.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1441,11 +1404,11 @@ class ItemsApi
     /**
      * Operation itemTempCreateAsyncWithHttpInfo
      *
-     * Creates an item in the temporal index
+     * Creates an item in the temporal index.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1495,9 +1458,9 @@ class ItemsApi
     /**
      * Create request for operation 'itemTempCreate'
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1628,38 +1591,37 @@ class ItemsApi
     /**
      * Operation itemTempDelete
      *
-     * Deletes an item in the temporal index
+     * Deletes an item in the temporal index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object
+     * @return void
      */
     public function itemTempDelete($hashid, $name, $item_id)
     {
-        list($response) = $this->itemTempDeleteWithHttpInfo($hashid, $name, $item_id);
-        return $response;
+        $this->itemTempDeleteWithHttpInfo($hashid, $name, $item_id);
     }
 
     /**
      * Operation itemTempDeleteWithHttpInfo
      *
-     * Deletes an item in the temporal index
+     * Deletes an item in the temporal index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
     public function itemTempDeleteWithHttpInfo($hashid, $name, $item_id)
     {
-        $returnType = 'object';
+        $returnType = '';
         $request = $this->itemTempDeleteRequest($hashid, $name, $item_id);
 
         try {
@@ -1690,32 +1652,10 @@ class ItemsApi
                 );
             }
 
-            $responseBody = $response->getBody();
-            if ($returnType === '\SplFileObject') {
-                $content = $responseBody; //stream goes to serializer
-            } else {
-                $content = $responseBody->getContents();
-                if (!in_array($returnType, ['string','integer','bool'])) {
-                    $content = json_decode($content);
-                }
-            }
-
-            return [
-                ObjectSerializer::deserialize($content, $returnType, []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
+            return [null, $statusCode, $response->getHeaders()];
 
         } catch (ApiException $e) {
             switch ($e->getCode()) {
-                case 204:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        'object',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1724,11 +1664,11 @@ class ItemsApi
     /**
      * Operation itemTempDeleteAsync
      *
-     * Deletes an item in the temporal index
+     * Deletes an item in the temporal index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1746,39 +1686,25 @@ class ItemsApi
     /**
      * Operation itemTempDeleteAsyncWithHttpInfo
      *
-     * Deletes an item in the temporal index
+     * Deletes an item in the temporal index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function itemTempDeleteAsyncWithHttpInfo($hashid, $name, $item_id)
     {
-        $returnType = 'object';
+        $returnType = '';
         $request = $this->itemTempDeleteRequest($hashid, $name, $item_id);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
-                    $responseBody = $response->getBody();
-                    if ($returnType === '\SplFileObject') {
-                        $content = $responseBody; //stream goes to serializer
-                    } else {
-                        $content = $responseBody->getContents();
-                        if ($returnType !== 'string') {
-                            $content = json_decode($content);
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, $returnType, []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
+                    return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
                 function ($exception) {
                     $response = $exception->getResponse();
@@ -1800,9 +1726,9 @@ class ItemsApi
     /**
      * Create request for operation 'itemTempDelete'
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1866,11 +1792,11 @@ class ItemsApi
 
         if ($multipart) {
             $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json']
+                []
             );
         } else {
             $headers = $this->headerSelector->selectHeaders(
-                ['application/json'],
+                [],
                 []
             );
         }
@@ -1938,11 +1864,11 @@ class ItemsApi
     /**
      * Operation itemTempShow
      *
-     * Get an item from the temporal index
+     * Gets an item from the temporal index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -1957,11 +1883,11 @@ class ItemsApi
     /**
      * Operation itemTempShowWithHttpInfo
      *
-     * Get an item from the temporal index
+     * Gets an item from the temporal index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -2034,11 +1960,11 @@ class ItemsApi
     /**
      * Operation itemTempShowAsync
      *
-     * Get an item from the temporal index
+     * Gets an item from the temporal index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2056,11 +1982,11 @@ class ItemsApi
     /**
      * Operation itemTempShowAsyncWithHttpInfo
      *
-     * Get an item from the temporal index
+     * Gets an item from the temporal index.
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2110,9 +2036,9 @@ class ItemsApi
     /**
      * Create request for operation 'itemTempShow'
      *
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -2248,12 +2174,12 @@ class ItemsApi
     /**
      * Operation itemTempUpdate
      *
-     * Partially updates an item in the temporal index
+     * Partially updates an item in the temporal index.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  map[string,object] $body body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -2268,12 +2194,12 @@ class ItemsApi
     /**
      * Operation itemTempUpdateWithHttpInfo
      *
-     * Partially updates an item in the temporal index
+     * Partially updates an item in the temporal index.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -2346,12 +2272,12 @@ class ItemsApi
     /**
      * Operation itemTempUpdateAsync
      *
-     * Partially updates an item in the temporal index
+     * Partially updates an item in the temporal index.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2369,12 +2295,12 @@ class ItemsApi
     /**
      * Operation itemTempUpdateAsyncWithHttpInfo
      *
-     * Partially updates an item in the temporal index
+     * Partially updates an item in the temporal index.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2424,10 +2350,10 @@ class ItemsApi
     /**
      * Create request for operation 'itemTempUpdate'
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -2572,12 +2498,12 @@ class ItemsApi
     /**
      * Operation itemUpdate
      *
-     * Partially updates an item.
+     * Partially updates an item in the index.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  map[string,object] $body body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -2592,12 +2518,12 @@ class ItemsApi
     /**
      * Operation itemUpdateWithHttpInfo
      *
-     * Partially updates an item.
+     * Partially updates an item in the index.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -2670,12 +2596,12 @@ class ItemsApi
     /**
      * Operation itemUpdateAsync
      *
-     * Partially updates an item.
+     * Partially updates an item in the index.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2693,12 +2619,12 @@ class ItemsApi
     /**
      * Operation itemUpdateAsyncWithHttpInfo
      *
-     * Partially updates an item.
+     * Partially updates an item in the index.
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2748,10 +2674,10 @@ class ItemsApi
     /**
      * Create request for operation 'itemUpdate'
      *
-     * @param  map[string,object] $body Item fields (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
-     * @param  string $item_id Item unique identifier (required)
+     * @param  map[string,object] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
+     * @param  string $item_id Item unique identifier inside an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -2896,11 +2822,11 @@ class ItemsApi
     /**
      * Operation itemsBulkCreate
      *
-     * Creates items in bulk
+     * Creates a bulk of item in the index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\ItemsIdsInner[] $body body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -2915,11 +2841,11 @@ class ItemsApi
     /**
      * Operation itemsBulkCreateWithHttpInfo
      *
-     * Creates items in bulk
+     * Creates a bulk of item in the index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\ItemsIdsInner[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -2992,11 +2918,11 @@ class ItemsApi
     /**
      * Operation itemsBulkCreateAsync
      *
-     * Creates items in bulk
+     * Creates a bulk of item in the index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\ItemsIdsInner[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3014,11 +2940,11 @@ class ItemsApi
     /**
      * Operation itemsBulkCreateAsyncWithHttpInfo
      *
-     * Creates items in bulk
+     * Creates a bulk of item in the index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\ItemsIdsInner[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3068,9 +2994,9 @@ class ItemsApi
     /**
      * Create request for operation 'itemsBulkCreate'
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\ItemsIdsInner[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -3201,11 +3127,11 @@ class ItemsApi
     /**
      * Operation itemsBulkDelete
      *
-     * Deletes items in bulk
+     * Deletes a bulk of items from the index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -3220,11 +3146,11 @@ class ItemsApi
     /**
      * Operation itemsBulkDeleteWithHttpInfo
      *
-     * Deletes items in bulk
+     * Deletes a bulk of items from the index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -3297,11 +3223,11 @@ class ItemsApi
     /**
      * Operation itemsBulkDeleteAsync
      *
-     * Deletes items in bulk
+     * Deletes a bulk of items from the index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3319,11 +3245,11 @@ class ItemsApi
     /**
      * Operation itemsBulkDeleteAsyncWithHttpInfo
      *
-     * Deletes items in bulk
+     * Deletes a bulk of items from the index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3373,9 +3299,9 @@ class ItemsApi
     /**
      * Create request for operation 'itemsBulkDelete'
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -3506,11 +3432,11 @@ class ItemsApi
     /**
      * Operation itemsBulkUpdate
      *
-     * Partial updates items in bulk
+     * Partial updates a bulk of items in the index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -3525,11 +3451,11 @@ class ItemsApi
     /**
      * Operation itemsBulkUpdateWithHttpInfo
      *
-     * Partial updates items in bulk
+     * Partial updates a bulk of items in the index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -3602,11 +3528,11 @@ class ItemsApi
     /**
      * Operation itemsBulkUpdateAsync
      *
-     * Partial updates items in bulk
+     * Partial updates a bulk of items in the index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3624,11 +3550,11 @@ class ItemsApi
     /**
      * Operation itemsBulkUpdateAsyncWithHttpInfo
      *
-     * Partial updates items in bulk
+     * Partial updates a bulk of items in the index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3678,9 +3604,9 @@ class ItemsApi
     /**
      * Create request for operation 'itemsBulkUpdate'
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -3811,11 +3737,11 @@ class ItemsApi
     /**
      * Operation itemsTempBulkCreate
      *
-     * Creates items in bulk in the temporal index
+     * Creates a bulk of items in the temporal index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -3830,11 +3756,11 @@ class ItemsApi
     /**
      * Operation itemsTempBulkCreateWithHttpInfo
      *
-     * Creates items in bulk in the temporal index
+     * Creates a bulk of items in the temporal index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -3907,11 +3833,11 @@ class ItemsApi
     /**
      * Operation itemsTempBulkCreateAsync
      *
-     * Creates items in bulk in the temporal index
+     * Creates a bulk of items in the temporal index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3929,11 +3855,11 @@ class ItemsApi
     /**
      * Operation itemsTempBulkCreateAsyncWithHttpInfo
      *
-     * Creates items in bulk in the temporal index
+     * Creates a bulk of items in the temporal index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3983,9 +3909,9 @@ class ItemsApi
     /**
      * Create request for operation 'itemsTempBulkCreate'
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -4116,11 +4042,11 @@ class ItemsApi
     /**
      * Operation itemsTempBulkDelete
      *
-     * Deletes items in bulk in the temporal index
+     * Deletes items in bulk in the temporal index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\ItemsIdsInner[] $body body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -4135,11 +4061,11 @@ class ItemsApi
     /**
      * Operation itemsTempBulkDeleteWithHttpInfo
      *
-     * Deletes items in bulk in the temporal index
+     * Deletes items in bulk in the temporal index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\ItemsIdsInner[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -4212,11 +4138,11 @@ class ItemsApi
     /**
      * Operation itemsTempBulkDeleteAsync
      *
-     * Deletes items in bulk in the temporal index
+     * Deletes items in bulk in the temporal index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\ItemsIdsInner[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4234,11 +4160,11 @@ class ItemsApi
     /**
      * Operation itemsTempBulkDeleteAsyncWithHttpInfo
      *
-     * Deletes items in bulk in the temporal index
+     * Deletes items in bulk in the temporal index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\ItemsIdsInner[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4288,9 +4214,9 @@ class ItemsApi
     /**
      * Create request for operation 'itemsTempBulkDelete'
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\ItemsIdsInner[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -4421,11 +4347,11 @@ class ItemsApi
     /**
      * Operation itemsTempBulkUpdate
      *
-     * Partial updates items in bulk in the temporal index
+     * Partial updates a bulk of items in the temporal index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -4440,11 +4366,11 @@ class ItemsApi
     /**
      * Operation itemsTempBulkUpdateWithHttpInfo
      *
-     * Partial updates items in bulk in the temporal index
+     * Partial updates a bulk of items in the temporal index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -4517,11 +4443,11 @@ class ItemsApi
     /**
      * Operation itemsTempBulkUpdateAsync
      *
-     * Partial updates items in bulk in the temporal index
+     * Partial updates a bulk of items in the temporal index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4539,11 +4465,11 @@ class ItemsApi
     /**
      * Operation itemsTempBulkUpdateAsyncWithHttpInfo
      *
-     * Partial updates items in bulk in the temporal index
+     * Partial updates a bulk of items in the temporal index.
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4593,9 +4519,9 @@ class ItemsApi
     /**
      * Create request for operation 'itemsTempBulkUpdate'
      *
-     * @param  \Swagger\Client\Model\Item[] $body Bulk data (required)
-     * @param  string $hashid Search engine identifier (hashid) (required)
-     * @param  string $name Name of the Index (required)
+     * @param  \Swagger\Client\Model\Item[] $body (required)
+     * @param  string $hashid Hashid of a search engine. This is the search engine unique identifier. (required)
+     * @param  string $name Name of an index. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

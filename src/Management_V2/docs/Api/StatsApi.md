@@ -4,26 +4,23 @@ All URIs are relative to *https://{search_zone}-api.doofinder.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**bannersClicks**](StatsApi.md#bannersclicks) | **GET** /api/v2/stats/banners/clicks | Get the total amount of clicks banners have got
-[**bannersDisplay**](StatsApi.md#bannersdisplay) | **GET** /api/v2/stats/banners/displays | Get the total amount of displays banners have got
+[**bannersClicks**](StatsApi.md#bannersclicks) | **GET** /api/v2/stats/banners/clicks | Get the total amount of clicks over banners.
+[**bannersDisplay**](StatsApi.md#bannersdisplay) | **GET** /api/v2/stats/banners/displays | Gets how many times a banner has been shown.
 [**checkoutsByDate**](StatsApi.md#checkoutsbydate) | **GET** /api/v2/stats/checkouts | Get the checkouts by dates
 [**clicksByDate**](StatsApi.md#clicksbydate) | **GET** /api/v2/stats/clicks | Get the clicks by dates
-[**clicksByQuery**](StatsApi.md#clicksbyquery) | **GET** /api/v2/stats/clicks/by-query/{query} | Get the products clicked given a certain query
-[**clicksTop**](StatsApi.md#clickstop) | **GET** /api/v2/stats/clicks/top | Get the most common clicks
-[**initsByDate**](StatsApi.md#initsbydate) | **GET** /api/v2/stats/inits | Get the sessions started by dates
-[**metrics**](StatsApi.md#metrics) | **GET** /api/v2/stats/metrics | Get the search engines usage.
-[**redirects**](StatsApi.md#redirects) | **GET** /api/v2/stats/redirects | Get the total amount of redirects done
+[**clicksByQuery**](StatsApi.md#clicksbyquery) | **GET** /api/v2/stats/clicks/by-query/{query} | Get the products clicked given a certain query term.
+[**clicksTop**](StatsApi.md#clickstop) | **GET** /api/v2/stats/clicks/top | Get the most common clicks.
+[**initsByDate**](StatsApi.md#initsbydate) | **GET** /api/v2/stats/inits | Get the search sessions by dates.
+[**redirects**](StatsApi.md#redirects) | **GET** /api/v2/stats/redirects | Get the total amount of redirections done.
 [**searchesByClick**](StatsApi.md#searchesbyclick) | **GET** /api/v2/stats/clicks/{dfid}/searches/top | Get the top searches that got a product clicked
 [**searchesByDate**](StatsApi.md#searchesbydate) | **GET** /api/v2/stats/searches | Get the searches by dates
-[**searchesTop**](StatsApi.md#searchestop) | **GET** /api/v2/stats/searches/top | Get the most common searches
+[**searchesTop**](StatsApi.md#searchestop) | **GET** /api/v2/stats/searches/top | Get the most common searches.
 [**usage**](StatsApi.md#usage) | **GET** /api/v2/stats/usage | Get the search engines usage.
 
 # **bannersClicks**
-> object bannersClicks($hashid, $to, $from, $tz, $id, $device, $interval, $format)
+> \Swagger\Client\Model\StatsBannersResult bannersClicks($from, $to, $hashid, $id, $tz, $device, $format)
 
-Get the total amount of clicks banners have got
-
-Gets how many times a banner has been clicked
+Get the total amount of clicks over banners.
 
 ### Example
 ```php
@@ -43,17 +40,16 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
     new GuzzleHttp\Client(),
     $config
 );
+$from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
+$to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$id = 56; // int | ID of the banner.
-$device = "device_example"; // string | Device filter, by default is all
-$interval = "1d"; // string | Time interval for aggregations
+$id = 56; // int | Unique id of the banner.
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
 
 try {
-    $result = $apiInstance->bannersClicks($hashid, $to, $from, $tz, $id, $device, $interval, $format);
+    $result = $apiInstance->bannersClicks($from, $to, $hashid, $id, $tz, $device, $format);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StatsApi->bannersClicks: ', $e->getMessage(), PHP_EOL;
@@ -65,18 +61,17 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
+ **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **id** | **int**| ID of the banner. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
+ **id** | **int**| Unique id of the banner. | [optional]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\StatsBannersResult**](../Model/StatsBannersResult.md)
 
 ### Authorization
 
@@ -90,11 +85,9 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **bannersDisplay**
-> object bannersDisplay($hashid, $to, $from, $tz, $id, $device, $interval, $format)
+> \Swagger\Client\Model\StatsBannersResult bannersDisplay($from, $to, $hashid, $id, $tz, $device, $format)
 
-Get the total amount of displays banners have got
-
-Gets how many times a banner has been shown
+Gets how many times a banner has been shown.
 
 ### Example
 ```php
@@ -114,17 +107,16 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
     new GuzzleHttp\Client(),
     $config
 );
+$from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
+$to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$id = 56; // int | ID of the banner.
-$device = "device_example"; // string | Device filter, by default is all
-$interval = "1d"; // string | Time interval for aggregations
+$id = 56; // int | Unique id of the banner.
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
 
 try {
-    $result = $apiInstance->bannersDisplay($hashid, $to, $from, $tz, $id, $device, $interval, $format);
+    $result = $apiInstance->bannersDisplay($from, $to, $hashid, $id, $tz, $device, $format);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StatsApi->bannersDisplay: ', $e->getMessage(), PHP_EOL;
@@ -136,18 +128,17 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
+ **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **id** | **int**| ID of the banner. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
+ **id** | **int**| Unique id of the banner. | [optional]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\StatsBannersResult**](../Model/StatsBannersResult.md)
 
 ### Authorization
 
@@ -161,11 +152,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **checkoutsByDate**
-> object checkoutsByDate($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format)
+> \Swagger\Client\Model\StatsTimeResult checkoutsByDate($from, $to, $hashid, $tz, $device, $interval, $format)
 
 Get the checkouts by dates
 
-Gets a total of the checkouts aggregated in a time period, separated by dates
+Gets the total of checkouts in a time period aggregated by day intervals
 
 ### Example
 ```php
@@ -185,19 +176,16 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
     new GuzzleHttp\Client(),
     $config
 );
+$from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
+$to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$device = "device_example"; // string | Device filter, by default is all
-$custom_results_id = "custom_results_id_example"; // string | Filter by custom results
-$query_name = "query_name_example"; // string | Type of query to filter by
-$total_hits = 56; // int | Filter by total hits
-$interval = "1d"; // string | Time interval for aggregations
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$device = "device_example"; // string | Filter by kind of device.
+$interval = "1d"; // string | Time interval for aggregations.
 $format = "json"; // string | Indicates which response format should be used
 
 try {
-    $result = $apiInstance->checkoutsByDate($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format);
+    $result = $apiInstance->checkoutsByDate($from, $to, $hashid, $tz, $device, $interval, $format);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StatsApi->checkoutsByDate: ', $e->getMessage(), PHP_EOL;
@@ -209,20 +197,17 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
+ **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **custom_results_id** | **string**| Filter by custom results | [optional]
- **query_name** | **string**| Type of query to filter by | [optional]
- **total_hits** | **int**| Filter by total hits | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **device** | **string**| Filter by kind of device. | [optional]
+ **interval** | **string**| Time interval for aggregations. | [optional] [default to 1d]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\StatsTimeResult**](../Model/StatsTimeResult.md)
 
 ### Authorization
 
@@ -236,11 +221,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **clicksByDate**
-> object clicksByDate($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format)
+> \Swagger\Client\Model\StatsTimeResult clicksByDate($from, $to, $hashid, $tz, $device, $interval, $format, $custom_results_id)
 
 Get the clicks by dates
 
-Gets a total of the clicks aggregated in a time period, separated by dates
+Gets the total of clicks in a time period aggregated by day intervals
 
 ### Example
 ```php
@@ -260,19 +245,17 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
     new GuzzleHttp\Client(),
     $config
 );
+$from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
+$to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$device = "device_example"; // string | Device filter, by default is all
-$custom_results_id = "custom_results_id_example"; // string | Filter by custom results
-$query_name = "query_name_example"; // string | Type of query to filter by
-$total_hits = 56; // int | Filter by total hits
-$interval = "1d"; // string | Time interval for aggregations
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$device = "device_example"; // string | Filter by kind of device.
+$interval = "1d"; // string | Time interval for aggregations.
 $format = "json"; // string | Indicates which response format should be used
+$custom_results_id = "custom_results_id_example"; // string | Filter by some custom result.
 
 try {
-    $result = $apiInstance->clicksByDate($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format);
+    $result = $apiInstance->clicksByDate($from, $to, $hashid, $tz, $device, $interval, $format, $custom_results_id);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StatsApi->clicksByDate: ', $e->getMessage(), PHP_EOL;
@@ -284,20 +267,18 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
+ **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **custom_results_id** | **string**| Filter by custom results | [optional]
- **query_name** | **string**| Type of query to filter by | [optional]
- **total_hits** | **int**| Filter by total hits | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **device** | **string**| Filter by kind of device. | [optional]
+ **interval** | **string**| Time interval for aggregations. | [optional] [default to 1d]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
+ **custom_results_id** | **string**| Filter by some custom result. | [optional]
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\StatsTimeResult**](../Model/StatsTimeResult.md)
 
 ### Authorization
 
@@ -311,11 +292,9 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **clicksByQuery**
-> object clicksByQuery($hashid, $query, $to, $from, $tz, $device, $interval, $format)
+> \Swagger\Client\Model\InlineResponse200 clicksByQuery($from, $to, $hashid, $query, $tz, $device, $format)
 
-Get the products clicked given a certain query
-
-Get the products clicked given a certain query
+Get the products clicked given a certain query term.
 
 ### Example
 ```php
@@ -335,17 +314,16 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
     new GuzzleHttp\Client(),
     $config
 );
+$from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
+$to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
 $query = "query_example"; // string | Search query term
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$device = "device_example"; // string | Device filter, by default is all
-$interval = "1d"; // string | Time interval for aggregations
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
 
 try {
-    $result = $apiInstance->clicksByQuery($hashid, $query, $to, $from, $tz, $device, $interval, $format);
+    $result = $apiInstance->clicksByQuery($from, $to, $hashid, $query, $tz, $device, $format);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StatsApi->clicksByQuery: ', $e->getMessage(), PHP_EOL;
@@ -357,18 +335,17 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
+ **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
  **query** | **string**| Search query term |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\InlineResponse200**](../Model/InlineResponse200.md)
 
 ### Authorization
 
@@ -382,11 +359,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **clicksTop**
-> object clicksTop($hashid, $to, $from, $tz, $device, $interval, $query, $format)
+> \Swagger\Client\Model\InlineResponse2001 clicksTop($from, $to, $hashid, $tz, $device, $format, $query)
 
-Get the most common clicks
+Get the most common clicks.
 
-Gets a top of the clicks in a time period
+Gets the top clicked items in a time period.
 
 ### Example
 ```php
@@ -406,17 +383,16 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
     new GuzzleHttp\Client(),
     $config
 );
+$from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
+$to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$device = "device_example"; // string | Device filter, by default is all
-$interval = "1d"; // string | Time interval for aggregations
-$query = "query_example"; // string | Filter by query done.
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
+$query = "query_example"; // string | Search query term.
 
 try {
-    $result = $apiInstance->clicksTop($hashid, $to, $from, $tz, $device, $interval, $query, $format);
+    $result = $apiInstance->clicksTop($from, $to, $hashid, $tz, $device, $format, $query);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StatsApi->clicksTop: ', $e->getMessage(), PHP_EOL;
@@ -428,18 +404,17 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
+ **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
- **query** | **string**| Filter by query done. | [optional]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
+ **query** | **string**| Search query term. | [optional]
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\InlineResponse2001**](../Model/InlineResponse2001.md)
 
 ### Authorization
 
@@ -453,11 +428,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **initsByDate**
-> object initsByDate($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format)
+> \Swagger\Client\Model\StatsTimeResult initsByDate($from, $to, $hashid, $tz, $device, $interval, $format)
 
-Get the sessions started by dates
+Get the search sessions by dates.
 
-Gets a total of the sessions started aggregated in a time period, separated by dates
+Gets the total of search sessions in a time period aggregated by day intervals
 
 ### Example
 ```php
@@ -477,19 +452,16 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
     new GuzzleHttp\Client(),
     $config
 );
+$from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
+$to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$device = "device_example"; // string | Device filter, by default is all
-$custom_results_id = "custom_results_id_example"; // string | Filter by custom results
-$query_name = "query_name_example"; // string | Type of query to filter by
-$total_hits = 56; // int | Filter by total hits
-$interval = "1d"; // string | Time interval for aggregations
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$device = "device_example"; // string | Filter by kind of device.
+$interval = "1d"; // string | Time interval for aggregations.
 $format = "json"; // string | Indicates which response format should be used
 
 try {
-    $result = $apiInstance->initsByDate($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $total_hits, $interval, $format);
+    $result = $apiInstance->initsByDate($from, $to, $hashid, $tz, $device, $interval, $format);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StatsApi->initsByDate: ', $e->getMessage(), PHP_EOL;
@@ -501,89 +473,17 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
+ **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **custom_results_id** | **string**| Filter by custom results | [optional]
- **query_name** | **string**| Type of query to filter by | [optional]
- **total_hits** | **int**| Filter by total hits | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **device** | **string**| Filter by kind of device. | [optional]
+ **interval** | **string**| Time interval for aggregations. | [optional] [default to 1d]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
 ### Return type
 
-**object**
-
-### Authorization
-
-[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
-
-# **metrics**
-> object metrics($hashid, $to, $from, $tz, $device, $interval, $format)
-
-Get the search engines usage.
-
-Gets the search engines usage, close to the current minute, but slow.
-
-### Example
-```php
-<?php
-require_once(__DIR__ . '/vendor/autoload.php');
-// Configure API key authorization: api_token
-$config = Swagger\Client\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Swagger\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');// Configure API key authorization: jwt_token
-$config = Swagger\Client\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Swagger\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
-
-$apiInstance = new Swagger\Client\Api\StatsApi(
-    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
-    // This is optional, `GuzzleHttp\Client` will be used as default.
-    new GuzzleHttp\Client(),
-    $config
-);
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$device = "device_example"; // string | Device filter, by default is all
-$interval = "1d"; // string | Time interval for aggregations
-$format = "json"; // string | Indicates which response format should be used
-
-try {
-    $result = $apiInstance->metrics($hashid, $to, $from, $tz, $device, $interval, $format);
-    print_r($result);
-} catch (Exception $e) {
-    echo 'Exception when calling StatsApi->metrics: ', $e->getMessage(), PHP_EOL;
-}
-?>
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
- **format** | **string**| Indicates which response format should be used | [optional] [default to json]
-
-### Return type
-
-**object**
+[**\Swagger\Client\Model\StatsTimeResult**](../Model/StatsTimeResult.md)
 
 ### Authorization
 
@@ -597,11 +497,9 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **redirects**
-> object redirects($hashid, $to, $from, $tz, $id, $device, $interval, $format)
+> \Swagger\Client\Model\StatsRedirectsResult redirects($from, $to, $hashid, $id, $tz, $device, $format)
 
-Get the total amount of redirects done
-
-Gets how many times there's been a redirect
+Get the total amount of redirections done.
 
 ### Example
 ```php
@@ -621,17 +519,16 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
     new GuzzleHttp\Client(),
     $config
 );
+$from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
+$to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$id = 56; // int | ID of the redirection.
-$device = "device_example"; // string | Device filter, by default is all
-$interval = "1d"; // string | Time interval for aggregations
+$id = 56; // int | Unique id of the redirection.
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
 
 try {
-    $result = $apiInstance->redirects($hashid, $to, $from, $tz, $id, $device, $interval, $format);
+    $result = $apiInstance->redirects($from, $to, $hashid, $id, $tz, $device, $format);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StatsApi->redirects: ', $e->getMessage(), PHP_EOL;
@@ -643,18 +540,17 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
+ **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **id** | **int**| ID of the redirection. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
+ **id** | **int**| Unique id of the redirection. | [optional]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\StatsRedirectsResult**](../Model/StatsRedirectsResult.md)
 
 ### Authorization
 
@@ -668,7 +564,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **searchesByClick**
-> object searchesByClick($hashid, $dfid, $to, $from, $tz, $device, $interval, $total_hits, $format)
+> \Swagger\Client\Model\StatsTopSearchesResult searchesByClick($from, $to, $hashid, $dfid, $tz, $device, $format)
 
 Get the top searches that got a product clicked
 
@@ -692,18 +588,16 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
     new GuzzleHttp\Client(),
     $config
 );
+$from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
+$to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
 $dfid = "dfid_example"; // string | Doofinder ID to filter by
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$device = "device_example"; // string | Device filter, by default is all
-$interval = "1d"; // string | Time interval for aggregations
-$total_hits = 56; // int | Filter by total hits
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
 
 try {
-    $result = $apiInstance->searchesByClick($hashid, $dfid, $to, $from, $tz, $device, $interval, $total_hits, $format);
+    $result = $apiInstance->searchesByClick($from, $to, $hashid, $dfid, $tz, $device, $format);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StatsApi->searchesByClick: ', $e->getMessage(), PHP_EOL;
@@ -715,19 +609,17 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
+ **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
  **dfid** | **string**| Doofinder ID to filter by |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
- **total_hits** | **int**| Filter by total hits | [optional]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\StatsTopSearchesResult**](../Model/StatsTopSearchesResult.md)
 
 ### Authorization
 
@@ -741,11 +633,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **searchesByDate**
-> object searchesByDate($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $source, $total_hits, $interval, $format)
+> \Swagger\Client\Model\StatsTimeResult searchesByDate($from, $to, $hashid, $tz, $device, $interval, $format, $custom_results_id, $query_name, $source, $total_hits)
 
 Get the searches by dates
 
-Gets a total of the searches in a time period, separated by dates
+Gets the total of searches in a time period aggregated by day intervals
 
 ### Example
 ```php
@@ -765,20 +657,20 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
     new GuzzleHttp\Client(),
     $config
 );
+$from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
+$to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$device = "device_example"; // string | Device filter, by default is all
-$custom_results_id = "custom_results_id_example"; // string | Filter by custom results
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$device = "device_example"; // string | Filter by kind of device.
+$interval = "1d"; // string | Time interval for aggregations.
+$format = "json"; // string | Indicates which response format should be used
+$custom_results_id = "custom_results_id_example"; // string | Filter by some custom result.
 $query_name = "query_name_example"; // string | Type of query to filter by
 $source = "source_example"; // string | Filter by search source.
-$total_hits = 56; // int | Filter by total hits
-$interval = "1d"; // string | Time interval for aggregations
-$format = "json"; // string | Indicates which response format should be used
+$total_hits = 56; // int | Filter by the number of search results.
 
 try {
-    $result = $apiInstance->searchesByDate($hashid, $to, $from, $tz, $device, $custom_results_id, $query_name, $source, $total_hits, $interval, $format);
+    $result = $apiInstance->searchesByDate($from, $to, $hashid, $tz, $device, $interval, $format, $custom_results_id, $query_name, $source, $total_hits);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StatsApi->searchesByDate: ', $e->getMessage(), PHP_EOL;
@@ -790,21 +682,21 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
+ **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **custom_results_id** | **string**| Filter by custom results | [optional]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **device** | **string**| Filter by kind of device. | [optional]
+ **interval** | **string**| Time interval for aggregations. | [optional] [default to 1d]
+ **format** | **string**| Indicates which response format should be used | [optional] [default to json]
+ **custom_results_id** | **string**| Filter by some custom result. | [optional]
  **query_name** | **string**| Type of query to filter by | [optional]
  **source** | **string**| Filter by search source. | [optional]
- **total_hits** | **int**| Filter by total hits | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
- **format** | **string**| Indicates which response format should be used | [optional] [default to json]
+ **total_hits** | **int**| Filter by the number of search results. | [optional]
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\StatsTimeResult**](../Model/StatsTimeResult.md)
 
 ### Authorization
 
@@ -818,11 +710,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **searchesTop**
-> object searchesTop($hashid, $to, $from, $tz, $device, $interval, $total_hits, $query_name, $exclude, $format)
+> \Swagger\Client\Model\StatsTopSearchesResult searchesTop($from, $to, $hashid, $tz, $device, $format, $query_name, $total_hits, $exclude)
 
-Get the most common searches
+Get the most common searches.
 
-Gets a top of the searches in a time period
+Gets a top of the searches in a time period.
 
 ### Example
 ```php
@@ -842,19 +734,18 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
     new GuzzleHttp\Client(),
     $config
 );
+$from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
+$to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$device = "device_example"; // string | Device filter, by default is all
-$interval = "1d"; // string | Time interval for aggregations
-$total_hits = 56; // int | Filter by total hits
-$query_name = "query_name_example"; // string | Type of query to filter by
-$exclude = new \stdClass; // object | Exclude filters
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
+$query_name = "query_name_example"; // string | Type of query to filter by
+$total_hits = 56; // int | Filter by the number of search results.
+$exclude = new \stdClass; // object | Exclude filters
 
 try {
-    $result = $apiInstance->searchesTop($hashid, $to, $from, $tz, $device, $interval, $total_hits, $query_name, $exclude, $format);
+    $result = $apiInstance->searchesTop($from, $to, $hashid, $tz, $device, $format, $query_name, $total_hits, $exclude);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StatsApi->searchesTop: ', $e->getMessage(), PHP_EOL;
@@ -866,20 +757,19 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
+ **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
- **total_hits** | **int**| Filter by total hits | [optional]
- **query_name** | **string**| Type of query to filter by | [optional]
- **exclude** | [**object**](../Model/.md)| Exclude filters | [optional]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
+ **query_name** | **string**| Type of query to filter by | [optional]
+ **total_hits** | **int**| Filter by the number of search results. | [optional]
+ **exclude** | [**object**](../Model/.md)| Exclude filters | [optional]
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\StatsTopSearchesResult**](../Model/StatsTopSearchesResult.md)
 
 ### Authorization
 
@@ -893,11 +783,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **usage**
-> object usage($hashid, $to, $from, $tz, $device, $interval, $type, $format)
+> \Swagger\Client\Model\StatsTimeResult usage($from, $to, $hashid, $type, $format)
 
 Get the search engines usage.
 
-Gets the search engines usage, up until previous day, fast call.
+Gets the search engines usage during a period.  It sums the query and API requests made to the service. Since usage is computed on UTC time, there is no need to specify the timezone in this endpoint.
 
 ### Example
 ```php
@@ -917,17 +807,14 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
     new GuzzleHttp\Client(),
     $config
 );
+$from = "from_example"; // string | Start date of the interval in the format of YYYYMMDD.
+$to = "to_example"; // string | End date of the interval in the format of YYYYMMDD.
 $hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$to = "to_example"; // string | Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default.
-$from = "from_example"; // string | Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date.
-$tz = "tz_example"; // string | Timezone for the given dates, by default assumes UTC.
-$device = "device_example"; // string | Device filter, by default is all
-$interval = "1d"; // string | Time interval for aggregations
 $type = "type_example"; // string | Filter by the given usage type.
 $format = "json"; // string | Indicates which response format should be used
 
 try {
-    $result = $apiInstance->usage($hashid, $to, $from, $tz, $device, $interval, $type, $format);
+    $result = $apiInstance->usage($from, $to, $hashid, $type, $format);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StatsApi->usage: ', $e->getMessage(), PHP_EOL;
@@ -939,18 +826,15 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **from** | **string**| Start date of the interval in the format of YYYYMMDD. |
+ **to** | **string**| End date of the interval in the format of YYYYMMDD. |
  **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **to** | **string**| Date end of the interval in the format of UNIX timestamp or YYYYMMDD. Today, by default. | [optional]
- **from** | **string**| Date start of the interval in the format of UNIX timestamp or YYYYMMDD. By default, 10 days from current date. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. | [optional]
- **device** | **string**| Device filter, by default is all | [optional]
- **interval** | **string**| Time interval for aggregations | [optional] [default to 1d]
  **type** | **string**| Filter by the given usage type. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
 ### Return type
 
-**object**
+[**\Swagger\Client\Model\StatsTimeResult**](../Model/StatsTimeResult.md)
 
 ### Authorization
 
