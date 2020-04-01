@@ -3,5 +3,5 @@
 
 <!-- MarkdownTOC depth="4" autolink="true" bracket="round" -->
 
-- [Management Client Documentation](README_MANAGEMENT.md)
-- [Search Client Documentation](README_SEARCH.md)
+- [Management Client Documentation](src/Management/README_MANAGEMENT.md)
+- [Search Client Documentation](src/Search/README_SEARCH.md)
