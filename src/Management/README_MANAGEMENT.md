@@ -39,7 +39,7 @@ Then run `composer install`
 Download the files and include `autoload.php`:
 
 ```php
-    require_once('/path/to/vendor/autoload.php');
+    require_once('/path/to/SwaggerClient-php/vendor/autoload.php');
 ```
 
 ## Tests
@@ -63,6 +63,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 $config = Swagger\Client\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
 // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 // $config = Swagger\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
+// Configure API key authorization: jwt_token
+$config = Swagger\Client\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = Swagger\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
 
 $apiInstance = new Swagger\Client\Api\IndicesApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
@@ -70,8 +74,8 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Unique id of a search engine.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->getReindexingStatus($hashid, $name);
@@ -95,11 +99,11 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = new \Swagger\Client\Model\Index(); // \Swagger\Client\Model\Index | Index data
-$searchengine_hashid = "searchengine_hashid_example"; // string | Search engine identifier (hashid)
+$body = new \Swagger\Client\Model\Index(); // \Swagger\Client\Model\Index | 
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 
 try {
-    $result = $apiInstance->indexCreate($body, $searchengine_hashid);
+    $result = $apiInstance->indexCreate($body, $hashid);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling IndicesApi->indexCreate: ', $e->getMessage(), PHP_EOL;
@@ -120,12 +124,11 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$searchengine_hashid = "searchengine_hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Unique id of a search engine.
+$name = "name_example"; // string | Name of an index.
 
 try {
-    $result = $apiInstance->indexDelete($searchengine_hashid, $name);
-    print_r($result);
+    $apiInstance->indexDelete($hashid, $name);
 } catch (Exception $e) {
     echo 'Exception when calling IndicesApi->indexDelete: ', $e->getMessage(), PHP_EOL;
 }
@@ -145,10 +148,10 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$searchengine_hashid = "searchengine_hashid_example"; // string | Search engine identifier (hashid)
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 
 try {
-    $result = $apiInstance->indexIndex($searchengine_hashid);
+    $result = $apiInstance->indexIndex($hashid);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling IndicesApi->indexIndex: ', $e->getMessage(), PHP_EOL;
@@ -169,11 +172,11 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$searchengine_hashid = "searchengine_hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Unique id of a search engine.
+$name = "name_example"; // string | Name of an index.
 
 try {
-    $result = $apiInstance->indexShow($searchengine_hashid, $name);
+    $result = $apiInstance->indexShow($hashid, $name);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling IndicesApi->indexShow: ', $e->getMessage(), PHP_EOL;
@@ -194,12 +197,12 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = new \Swagger\Client\Model\UpdateIndex(); // \Swagger\Client\Model\UpdateIndex | Index data
-$searchengine_hashid = "searchengine_hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$body = new \Swagger\Client\Model\IndexUpdate(); // \Swagger\Client\Model\IndexUpdate | 
+$hashid = "hashid_example"; // string | Unique id of a search engine.
+$name = "name_example"; // string | Name of an index.
 
 try {
-    $result = $apiInstance->indexUpdate($body, $searchengine_hashid, $name);
+    $result = $apiInstance->indexUpdate($body, $hashid, $name);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling IndicesApi->indexUpdate: ', $e->getMessage(), PHP_EOL;
@@ -220,8 +223,8 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Unique id of a search engine.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->reindexToTemp($hashid, $name);
@@ -245,8 +248,8 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Unique id of a search engine.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->replaceByTemp($hashid, $name);
@@ -270,8 +273,8 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Unique id of a search engine.
+$name = "name_example"; // string | Name of an index.
 
 try {
     $result = $apiInstance->temporaryIndexCreate($hashid, $name);
@@ -295,12 +298,11 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Search engine identifier (hashid)
-$name = "name_example"; // string | Name of the Index
+$hashid = "hashid_example"; // string | Unique id of a search engine.
+$name = "name_example"; // string | Name of an index.
 
 try {
-    $result = $apiInstance->temporaryIndexDelete($hashid, $name);
-    print_r($result);
+    $apiInstance->temporaryIndexDelete($hashid, $name);
 } catch (Exception $e) {
     echo 'Exception when calling IndicesApi->temporaryIndexDelete: ', $e->getMessage(), PHP_EOL;
 }
@@ -314,69 +316,88 @@ All URIs are relative to *https://{search_zone}-api.doofinder.com*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *IndicesApi* | [**getReindexingStatus**](docs/Api/IndicesApi.md#getreindexingstatus) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/_reindex_to_temp/ | Return the status of the current reindexing task.
-*IndicesApi* | [**indexCreate**](docs/Api/IndicesApi.md#indexcreate) | **POST** /api/v2/search_engines/{searchengine_hashid}/indices | Create an index
-*IndicesApi* | [**indexDelete**](docs/Api/IndicesApi.md#indexdelete) | **DELETE** /api/v2/search_engines/{searchengine_hashid}/indices/{name} | Delete an Index
-*IndicesApi* | [**indexIndex**](docs/Api/IndicesApi.md#indexindex) | **GET** /api/v2/search_engines/{searchengine_hashid}/indices | List indices
-*IndicesApi* | [**indexShow**](docs/Api/IndicesApi.md#indexshow) | **GET** /api/v2/search_engines/{searchengine_hashid}/indices/{name} | Get an Index
-*IndicesApi* | [**indexUpdate**](docs/Api/IndicesApi.md#indexupdate) | **PATCH** /api/v2/search_engines/{searchengine_hashid}/indices/{name} | Update an index
+*IndicesApi* | [**indexCreate**](docs/Api/IndicesApi.md#indexcreate) | **POST** /api/v2/search_engines/{hashid}/indices | Creates an index.
+*IndicesApi* | [**indexDelete**](docs/Api/IndicesApi.md#indexdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name} | Deletes an Index.
+*IndicesApi* | [**indexIndex**](docs/Api/IndicesApi.md#indexindex) | **GET** /api/v2/search_engines/{hashid}/indices | Lists all indices.
+*IndicesApi* | [**indexShow**](docs/Api/IndicesApi.md#indexshow) | **GET** /api/v2/search_engines/{hashid}/indices/{name} | Gets an Index.
+*IndicesApi* | [**indexUpdate**](docs/Api/IndicesApi.md#indexupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name} | Updates an index.
 *IndicesApi* | [**reindexToTemp**](docs/Api/IndicesApi.md#reindextotemp) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/_reindex_to_temp/ | Reindex the content of the real index into the temporary one.
 *IndicesApi* | [**replaceByTemp**](docs/Api/IndicesApi.md#replacebytemp) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/_replace_by_temp/ | Replace the real index with the temporary one.
-*IndicesApi* | [**temporaryIndexCreate**](docs/Api/IndicesApi.md#temporaryindexcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/ | Creates a temporary index
+*IndicesApi* | [**temporaryIndexCreate**](docs/Api/IndicesApi.md#temporaryindexcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/ | Creates a temporary index.
 *IndicesApi* | [**temporaryIndexDelete**](docs/Api/IndicesApi.md#temporaryindexdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/temp/ | Deletes the temporary index.
 *ItemsApi* | [**itemCreate**](docs/Api/ItemsApi.md#itemcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/items/ | Creates an item.
-*ItemsApi* | [**itemDelete**](docs/Api/ItemsApi.md#itemdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/items/{item_id} | Deletes an item.
-*ItemsApi* | [**itemIndex**](docs/Api/ItemsApi.md#itemindex) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/items/ | Scrolls through all items
-*ItemsApi* | [**itemShow**](docs/Api/ItemsApi.md#itemshow) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/items/{item_id} | Get an item
-*ItemsApi* | [**itemTempCreate**](docs/Api/ItemsApi.md#itemtempcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/ | Creates an item in the temporal index
-*ItemsApi* | [**itemTempDelete**](docs/Api/ItemsApi.md#itemtempdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/{item_id} | Deletes an item in the temporal index
-*ItemsApi* | [**itemTempShow**](docs/Api/ItemsApi.md#itemtempshow) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/{item_id} | Get an item from the temporal index
-*ItemsApi* | [**itemTempUpdate**](docs/Api/ItemsApi.md#itemtempupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/{item_id} | Partially updates an item in the temporal index
-*ItemsApi* | [**itemUpdate**](docs/Api/ItemsApi.md#itemupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/items/{item_id} | Partially updates an item.
-*ItemsApi* | [**itemsBulkCreate**](docs/Api/ItemsApi.md#itemsbulkcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Creates items in bulk
-*ItemsApi* | [**itemsBulkDelete**](docs/Api/ItemsApi.md#itemsbulkdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Deletes items in bulk
-*ItemsApi* | [**itemsBulkUpdate**](docs/Api/ItemsApi.md#itemsbulkupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Partial updates items in bulk
-*ItemsApi* | [**itemsTempBulkCreate**](docs/Api/ItemsApi.md#itemstempbulkcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Creates items in bulk in the temporal index
-*ItemsApi* | [**itemsTempBulkDelete**](docs/Api/ItemsApi.md#itemstempbulkdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Deletes items in bulk in the temporal index
-*ItemsApi* | [**itemsTempBulkUpdate**](docs/Api/ItemsApi.md#itemstempbulkupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Partial updates items in bulk in the temporal index
-*SearchEnginesApi* | [**process**](docs/Api/SearchEnginesApi.md#process) | **POST** /api/v2/search_engines/{searchengine_hashid}/_process | Process Search Engine Data Sources
-*SearchEnginesApi* | [**processStatus**](docs/Api/SearchEnginesApi.md#processstatus) | **GET** /api/v2/search_engines/{searchengine_hashid}/_process | 
-*SearchEnginesApi* | [**searchEngineCreate**](docs/Api/SearchEnginesApi.md#searchenginecreate) | **POST** /api/v2/search_engines | Create new search engine
-*SearchEnginesApi* | [**searchEngineDelete**](docs/Api/SearchEnginesApi.md#searchenginedelete) | **DELETE** /api/v2/search_engines/{hashid} | Delete a search engine
-*SearchEnginesApi* | [**searchEngineList**](docs/Api/SearchEnginesApi.md#searchenginelist) | **GET** /api/v2/search_engines | List search engines
-*SearchEnginesApi* | [**searchEngineShow**](docs/Api/SearchEnginesApi.md#searchengineshow) | **GET** /api/v2/search_engines/{hashid} | Get a search engine
-*SearchEnginesApi* | [**searchEngineUpdate**](docs/Api/SearchEnginesApi.md#searchengineupdate) | **PATCH** /api/v2/search_engines/{hashid} | Update a search engine
-*StatsApi* | [**bannersClicks**](docs/Api/StatsApi.md#bannersclicks) | **GET** /api/v2/stats/banners/clicks | Get the total amount of clicks banners have got
-*StatsApi* | [**bannersDisplay**](docs/Api/StatsApi.md#bannersdisplay) | **GET** /api/v2/stats/banners/displays | Get the total amount of displays banners have got
-*StatsApi* | [**checkoutsByDate**](docs/Api/StatsApi.md#checkoutsbydate) | **GET** /api/v2/stats/checkouts | Get the checkouts by dates
+*ItemsApi* | [**itemDelete**](docs/Api/ItemsApi.md#itemdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/items/{item_id} | Deletes an item from the index.
+*ItemsApi* | [**itemIndex**](docs/Api/ItemsApi.md#itemindex) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/items/ | Scrolls through all index items
+*ItemsApi* | [**itemShow**](docs/Api/ItemsApi.md#itemshow) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/items/{item_id} | Gets an item from the index.
+*ItemsApi* | [**itemTempCreate**](docs/Api/ItemsApi.md#itemtempcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/ | Creates an item in the temporal index.
+*ItemsApi* | [**itemTempDelete**](docs/Api/ItemsApi.md#itemtempdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/{item_id} | Deletes an item in the temporal index.
+*ItemsApi* | [**itemTempShow**](docs/Api/ItemsApi.md#itemtempshow) | **GET** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/{item_id} | Gets an item from the temporal index.
+*ItemsApi* | [**itemTempUpdate**](docs/Api/ItemsApi.md#itemtempupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/{item_id} | Partially updates an item in the temporal index.
+*ItemsApi* | [**itemUpdate**](docs/Api/ItemsApi.md#itemupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/items/{item_id} | Partially updates an item in the index.
+*ItemsApi* | [**itemsBulkCreate**](docs/Api/ItemsApi.md#itemsbulkcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Creates a bulk of item in the index.
+*ItemsApi* | [**itemsBulkDelete**](docs/Api/ItemsApi.md#itemsbulkdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Deletes a bulk of items from the index.
+*ItemsApi* | [**itemsBulkUpdate**](docs/Api/ItemsApi.md#itemsbulkupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Partial updates a bulk of items in the index.
+*ItemsApi* | [**itemsTempBulkCreate**](docs/Api/ItemsApi.md#itemstempbulkcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Creates a bulk of items in the temporal index.
+*ItemsApi* | [**itemsTempBulkDelete**](docs/Api/ItemsApi.md#itemstempbulkdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Deletes items in bulk in the temporal index.
+*ItemsApi* | [**itemsTempBulkUpdate**](docs/Api/ItemsApi.md#itemstempbulkupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Partial updates a bulk of items in the temporal index.
+*SearchEnginesApi* | [**process**](docs/Api/SearchEnginesApi.md#process) | **POST** /api/v2/search_engines/{hashid}/_process | Process all search engine&#x27;s data sources.
+*SearchEnginesApi* | [**processStatus**](docs/Api/SearchEnginesApi.md#processstatus) | **GET** /api/v2/search_engines/{hashid}/_process | Gets the status of the process task.
+*SearchEnginesApi* | [**searchEngineCreate**](docs/Api/SearchEnginesApi.md#searchenginecreate) | **POST** /api/v2/search_engines | Creates a new search engine.
+*SearchEnginesApi* | [**searchEngineDelete**](docs/Api/SearchEnginesApi.md#searchenginedelete) | **DELETE** /api/v2/search_engines/{hashid} | Deletes a search engine.
+*SearchEnginesApi* | [**searchEngineList**](docs/Api/SearchEnginesApi.md#searchenginelist) | **GET** /api/v2/search_engines | Lists search engines.
+*SearchEnginesApi* | [**searchEngineShow**](docs/Api/SearchEnginesApi.md#searchengineshow) | **GET** /api/v2/search_engines/{hashid} | Gets a search engine.
+*SearchEnginesApi* | [**searchEngineUpdate**](docs/Api/SearchEnginesApi.md#searchengineupdate) | **PATCH** /api/v2/search_engines/{hashid} | Updates a search engine.
+*StatsApi* | [**bannersClicks**](docs/Api/StatsApi.md#bannersclicks) | **GET** /api/v2/stats/banners/clicks | Gets the total amount of clicks performed in banners.
+*StatsApi* | [**bannersDisplay**](docs/Api/StatsApi.md#bannersdisplay) | **GET** /api/v2/stats/banners/displays | Gets how many times a banner has been displayed.
+*StatsApi* | [**checkoutsByDate**](docs/Api/StatsApi.md#checkoutsbydate) | **GET** /api/v2/stats/checkouts | Gets the checkouts by dates
 *StatsApi* | [**clicksByDate**](docs/Api/StatsApi.md#clicksbydate) | **GET** /api/v2/stats/clicks | Get the clicks by dates
-*StatsApi* | [**clicksByQuery**](docs/Api/StatsApi.md#clicksbyquery) | **GET** /api/v2/stats/clicks/by-query/{query} | Get the products clicked given a certain query
-*StatsApi* | [**clicksTop**](docs/Api/StatsApi.md#clickstop) | **GET** /api/v2/stats/clicks/top | Get the most common clicks
-*StatsApi* | [**initsByDate**](docs/Api/StatsApi.md#initsbydate) | **GET** /api/v2/stats/inits | Get the sessions started by dates
-*StatsApi* | [**metrics**](docs/Api/StatsApi.md#metrics) | **GET** /api/v2/stats/metrics | Get the search engines usage.
-*StatsApi* | [**redirects**](docs/Api/StatsApi.md#redirects) | **GET** /api/v2/stats/redirects | Get the total amount of redirects done
+*StatsApi* | [**clicksByQuery**](docs/Api/StatsApi.md#clicksbyquery) | **GET** /api/v2/stats/clicks/by-query/{query} | Get the products clicked given a certain query term.
+*StatsApi* | [**clicksTop**](docs/Api/StatsApi.md#clickstop) | **GET** /api/v2/stats/clicks/top | Get the most common clicks.
+*StatsApi* | [**initsByDate**](docs/Api/StatsApi.md#initsbydate) | **GET** /api/v2/stats/inits | Get the search sessions by dates.
+*StatsApi* | [**redirects**](docs/Api/StatsApi.md#redirects) | **GET** /api/v2/stats/redirects | Get the total amount of redirections done.
 *StatsApi* | [**searchesByClick**](docs/Api/StatsApi.md#searchesbyclick) | **GET** /api/v2/stats/clicks/{dfid}/searches/top | Get the top searches that got a product clicked
 *StatsApi* | [**searchesByDate**](docs/Api/StatsApi.md#searchesbydate) | **GET** /api/v2/stats/searches | Get the searches by dates
-*StatsApi* | [**searchesTop**](docs/Api/StatsApi.md#searchestop) | **GET** /api/v2/stats/searches/top | Get the most common searches
+*StatsApi* | [**searchesTop**](docs/Api/StatsApi.md#searchestop) | **GET** /api/v2/stats/searches/top | Get the most common searches.
 *StatsApi* | [**usage**](docs/Api/StatsApi.md#usage) | **GET** /api/v2/stats/usage | Get the search engines usage.
 
 ## Documentation For Models
 
- - [BulkOperation](docs/Model/BulkOperation.md)
+ - [BulkRequest](docs/Model/BulkRequest.md)
  - [BulkResult](docs/Model/BulkResult.md)
  - [BulkResultResults](docs/Model/BulkResultResults.md)
  - [DataSource](docs/Model/DataSource.md)
  - [DataSources](docs/Model/DataSources.md)
+ - [Hashid](docs/Model/Hashid.md)
  - [Index](docs/Model/Index.md)
+ - [IndexUpdate](docs/Model/IndexUpdate.md)
  - [Indices](docs/Model/Indices.md)
+ - [InlineResponse200](docs/Model/InlineResponse200.md)
+ - [InlineResponse2001](docs/Model/InlineResponse2001.md)
  - [Item](docs/Model/Item.md)
  - [Items](docs/Model/Items.md)
- - [NewSearchEngine](docs/Model/NewSearchEngine.md)
- - [Scroll](docs/Model/Scroll.md)
+ - [ItemsIds](docs/Model/ItemsIds.md)
+ - [ItemsIdsInner](docs/Model/ItemsIdsInner.md)
+ - [OneOfDataSourceOptions](docs/Model/OneOfDataSourceOptions.md)
+ - [OneOfDataSourceUrl](docs/Model/OneOfDataSourceUrl.md)
+ - [OneOfIndexUpdateOptions](docs/Model/OneOfIndexUpdateOptions.md)
+ - [OneOfhashid](docs/Model/OneOfhashid.md)
+ - [OneOfqueryName](docs/Model/OneOfqueryName.md)
+ - [ProcessingTask](docs/Model/ProcessingTask.md)
+ - [QueryName](docs/Model/QueryName.md)
+ - [ReindexingTask](docs/Model/ReindexingTask.md)
+ - [Scroller](docs/Model/Scroller.md)
  - [SearchEngine](docs/Model/SearchEngine.md)
  - [SearchEngines](docs/Model/SearchEngines.md)
- - [TaskResponse](docs/Model/TaskResponse.md)
- - [UpdateDataSource](docs/Model/UpdateDataSource.md)
- - [UpdateIndex](docs/Model/UpdateIndex.md)
+ - [StatsBannersResult](docs/Model/StatsBannersResult.md)
+ - [StatsBannersResultResults](docs/Model/StatsBannersResultResults.md)
+ - [StatsClicksResult](docs/Model/StatsClicksResult.md)
+ - [StatsClicksResultInner](docs/Model/StatsClicksResultInner.md)
+ - [StatsRedirectsResult](docs/Model/StatsRedirectsResult.md)
+ - [StatsRedirectsResultResults](docs/Model/StatsRedirectsResultResults.md)
+ - [StatsTimeResult](docs/Model/StatsTimeResult.md)
+ - [StatsTimeResultResults](docs/Model/StatsTimeResultResults.md)
+ - [StatsTopSearchesResult](docs/Model/StatsTopSearchesResult.md)
+ - [StatsTopSearchesResultResults](docs/Model/StatsTopSearchesResultResults.md)
 
 ## Documentation For Authorization
 

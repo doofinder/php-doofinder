@@ -40,7 +40,7 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -56,7 +56,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -100,7 +100,7 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     $config
 );
 $body = new \Swagger\Client\Model\Index(); // \Swagger\Client\Model\Index | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 
 try {
     $result = $apiInstance->indexCreate($body, $hashid);
@@ -116,7 +116,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**\Swagger\Client\Model\Index**](../Model/Index.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
 
 ### Return type
 
@@ -158,7 +158,7 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -173,7 +173,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -216,7 +216,7 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 
 try {
     $result = $apiInstance->indexIndex($hashid);
@@ -231,7 +231,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
 
 ### Return type
 
@@ -273,7 +273,7 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -289,7 +289,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -333,7 +333,7 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     $config
 );
 $body = new \Swagger\Client\Model\IndexUpdate(); // \Swagger\Client\Model\IndexUpdate | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -350,7 +350,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**\Swagger\Client\Model\IndexUpdate**](../Model/IndexUpdate.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -393,7 +393,7 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -409,7 +409,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -452,7 +452,7 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -468,7 +468,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -511,7 +511,7 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -527,7 +527,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -570,7 +570,7 @@ $apiInstance = new Swagger\Client\Api\IndicesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -585,7 +585,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type

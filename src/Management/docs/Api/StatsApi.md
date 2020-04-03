@@ -4,9 +4,9 @@ All URIs are relative to *https://{search_zone}-api.doofinder.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**bannersClicks**](StatsApi.md#bannersclicks) | **GET** /api/v2/stats/banners/clicks | Get the total amount of clicks over banners.
-[**bannersDisplay**](StatsApi.md#bannersdisplay) | **GET** /api/v2/stats/banners/displays | Gets how many times a banner has been shown.
-[**checkoutsByDate**](StatsApi.md#checkoutsbydate) | **GET** /api/v2/stats/checkouts | Get the checkouts by dates
+[**bannersClicks**](StatsApi.md#bannersclicks) | **GET** /api/v2/stats/banners/clicks | Gets the total amount of clicks performed in banners.
+[**bannersDisplay**](StatsApi.md#bannersdisplay) | **GET** /api/v2/stats/banners/displays | Gets how many times a banner has been displayed.
+[**checkoutsByDate**](StatsApi.md#checkoutsbydate) | **GET** /api/v2/stats/checkouts | Gets the checkouts by dates
 [**clicksByDate**](StatsApi.md#clicksbydate) | **GET** /api/v2/stats/clicks | Get the clicks by dates
 [**clicksByQuery**](StatsApi.md#clicksbyquery) | **GET** /api/v2/stats/clicks/by-query/{query} | Get the products clicked given a certain query term.
 [**clicksTop**](StatsApi.md#clickstop) | **GET** /api/v2/stats/clicks/top | Get the most common clicks.
@@ -20,7 +20,7 @@ Method | HTTP request | Description
 # **bannersClicks**
 > \Swagger\Client\Model\StatsBannersResult bannersClicks($from, $to, $hashid, $id, $tz, $device, $format)
 
-Get the total amount of clicks over banners.
+Gets the total amount of clicks performed in banners.
 
 ### Example
 ```php
@@ -42,9 +42,9 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
 );
 $from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
+$hashid = new \Swagger\Client\Model\Hashid(); // \Swagger\Client\Model\Hashid | Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...]
 $id = 56; // int | Unique id of the banner.
-$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset.
 $device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
 
@@ -63,9 +63,9 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
+ **hashid** | [**\Swagger\Client\Model\Hashid**](../Model/.md)| Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] |
  **id** | **int**| Unique id of the banner. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. | [optional] [default to +00:00]
  **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
@@ -87,7 +87,7 @@ Name | Type | Description  | Notes
 # **bannersDisplay**
 > \Swagger\Client\Model\StatsBannersResult bannersDisplay($from, $to, $hashid, $id, $tz, $device, $format)
 
-Gets how many times a banner has been shown.
+Gets how many times a banner has been displayed.
 
 ### Example
 ```php
@@ -109,9 +109,9 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
 );
 $from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
+$hashid = new \Swagger\Client\Model\Hashid(); // \Swagger\Client\Model\Hashid | Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...]
 $id = 56; // int | Unique id of the banner.
-$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset.
 $device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
 
@@ -130,9 +130,9 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
+ **hashid** | [**\Swagger\Client\Model\Hashid**](../Model/.md)| Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] |
  **id** | **int**| Unique id of the banner. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. | [optional] [default to +00:00]
  **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
@@ -154,7 +154,7 @@ Name | Type | Description  | Notes
 # **checkoutsByDate**
 > \Swagger\Client\Model\StatsTimeResult checkoutsByDate($from, $to, $hashid, $tz, $device, $interval, $format)
 
-Get the checkouts by dates
+Gets the checkouts by dates
 
 Gets the total of checkouts in a time period aggregated by day intervals
 
@@ -178,8 +178,8 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
 );
 $from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$hashid = new \Swagger\Client\Model\Hashid(); // \Swagger\Client\Model\Hashid | Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...]
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset.
 $device = "device_example"; // string | Filter by kind of device.
 $interval = "1d"; // string | Time interval for aggregations.
 $format = "json"; // string | Indicates which response format should be used
@@ -199,8 +199,8 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **hashid** | [**\Swagger\Client\Model\Hashid**](../Model/.md)| Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] |
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. | [optional] [default to +00:00]
  **device** | **string**| Filter by kind of device. | [optional]
  **interval** | **string**| Time interval for aggregations. | [optional] [default to 1d]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
@@ -247,8 +247,8 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
 );
 $from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$hashid = new \Swagger\Client\Model\Hashid(); // \Swagger\Client\Model\Hashid | Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...]
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset.
 $device = "device_example"; // string | Filter by kind of device.
 $interval = "1d"; // string | Time interval for aggregations.
 $format = "json"; // string | Indicates which response format should be used
@@ -269,8 +269,8 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **hashid** | [**\Swagger\Client\Model\Hashid**](../Model/.md)| Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] |
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. | [optional] [default to +00:00]
  **device** | **string**| Filter by kind of device. | [optional]
  **interval** | **string**| Time interval for aggregations. | [optional] [default to 1d]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
@@ -316,9 +316,9 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
 );
 $from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
+$hashid = new \Swagger\Client\Model\Hashid(); // \Swagger\Client\Model\Hashid | Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...]
 $query = "query_example"; // string | Search query term
-$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset.
 $device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
 
@@ -337,9 +337,9 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
+ **hashid** | [**\Swagger\Client\Model\Hashid**](../Model/.md)| Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] |
  **query** | **string**| Search query term |
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. | [optional] [default to +00:00]
  **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
@@ -385,8 +385,8 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
 );
 $from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$hashid = new \Swagger\Client\Model\Hashid(); // \Swagger\Client\Model\Hashid | Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...]
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset.
 $device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
 $query = "query_example"; // string | Search query term.
@@ -406,8 +406,8 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **hashid** | [**\Swagger\Client\Model\Hashid**](../Model/.md)| Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] |
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. | [optional] [default to +00:00]
  **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
  **query** | **string**| Search query term. | [optional]
@@ -454,8 +454,8 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
 );
 $from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$hashid = new \Swagger\Client\Model\Hashid(); // \Swagger\Client\Model\Hashid | Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...]
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset.
 $device = "device_example"; // string | Filter by kind of device.
 $interval = "1d"; // string | Time interval for aggregations.
 $format = "json"; // string | Indicates which response format should be used
@@ -475,8 +475,8 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **hashid** | [**\Swagger\Client\Model\Hashid**](../Model/.md)| Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] |
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. | [optional] [default to +00:00]
  **device** | **string**| Filter by kind of device. | [optional]
  **interval** | **string**| Time interval for aggregations. | [optional] [default to 1d]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
@@ -521,9 +521,9 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
 );
 $from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
+$hashid = new \Swagger\Client\Model\Hashid(); // \Swagger\Client\Model\Hashid | Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...]
 $id = 56; // int | Unique id of the redirection.
-$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset.
 $device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
 
@@ -542,9 +542,9 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
+ **hashid** | [**\Swagger\Client\Model\Hashid**](../Model/.md)| Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] |
  **id** | **int**| Unique id of the redirection. | [optional]
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. | [optional] [default to +00:00]
  **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
@@ -590,9 +590,9 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
 );
 $from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
+$hashid = new \Swagger\Client\Model\Hashid(); // \Swagger\Client\Model\Hashid | Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...]
 $dfid = "dfid_example"; // string | Doofinder ID to filter by
-$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset.
 $device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
 
@@ -611,9 +611,9 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
+ **hashid** | [**\Swagger\Client\Model\Hashid**](../Model/.md)| Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] |
  **dfid** | **string**| Doofinder ID to filter by |
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. | [optional] [default to +00:00]
  **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 
@@ -659,13 +659,13 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
 );
 $from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$hashid = new \Swagger\Client\Model\Hashid(); // \Swagger\Client\Model\Hashid | Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...]
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset.
 $device = "device_example"; // string | Filter by kind of device.
 $interval = "1d"; // string | Time interval for aggregations.
 $format = "json"; // string | Indicates which response format should be used
 $custom_results_id = "custom_results_id_example"; // string | Filter by some custom result.
-$query_name = "query_name_example"; // string | Type of query to filter by
+$query_name = new \Swagger\Client\Model\QueryName(); // \Swagger\Client\Model\QueryName | Type of query to filter by
 $source = "source_example"; // string | Filter by search source.
 $total_hits = 56; // int | Filter by the number of search results.
 
@@ -684,13 +684,13 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **hashid** | [**\Swagger\Client\Model\Hashid**](../Model/.md)| Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] |
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. | [optional] [default to +00:00]
  **device** | **string**| Filter by kind of device. | [optional]
  **interval** | **string**| Time interval for aggregations. | [optional] [default to 1d]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
  **custom_results_id** | **string**| Filter by some custom result. | [optional]
- **query_name** | **string**| Type of query to filter by | [optional]
+ **query_name** | [**\Swagger\Client\Model\QueryName**](../Model/.md)| Type of query to filter by | [optional]
  **source** | **string**| Filter by search source. | [optional]
  **total_hits** | **int**| Filter by the number of search results. | [optional]
 
@@ -736,11 +736,11 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
 );
 $from = "from_example"; // string | Start date of the interval in the format of UNIX timestamp or YYYYMMDD.
 $to = "to_example"; // string | End date of the interval in the format of UNIX timestamp or YYYYMMDD.
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
-$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00).
+$hashid = new \Swagger\Client\Model\Hashid(); // \Swagger\Client\Model\Hashid | Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...]
+$tz = "+00:00"; // string | Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset.
 $device = "device_example"; // string | Filter by kind of device.
 $format = "json"; // string | Indicates which response format should be used
-$query_name = "query_name_example"; // string | Type of query to filter by
+$query_name = new \Swagger\Client\Model\QueryName(); // \Swagger\Client\Model\QueryName | Type of query to filter by
 $total_hits = 56; // int | Filter by the number of search results.
 $exclude = new \stdClass; // object | Exclude filters
 
@@ -759,11 +759,11 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **from** | **string**| Start date of the interval in the format of UNIX timestamp or YYYYMMDD. |
  **to** | **string**| End date of the interval in the format of UNIX timestamp or YYYYMMDD. |
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
- **tz** | **string**| Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). | [optional] [default to +00:00]
+ **hashid** | [**\Swagger\Client\Model\Hashid**](../Model/.md)| Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] |
+ **tz** | **string**| Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. | [optional] [default to +00:00]
  **device** | **string**| Filter by kind of device. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
- **query_name** | **string**| Type of query to filter by | [optional]
+ **query_name** | [**\Swagger\Client\Model\QueryName**](../Model/.md)| Type of query to filter by | [optional]
  **total_hits** | **int**| Filter by the number of search results. | [optional]
  **exclude** | [**object**](../Model/.md)| Exclude filters | [optional]
 
@@ -787,7 +787,7 @@ Name | Type | Description  | Notes
 
 Get the search engines usage.
 
-Gets the search engines usage during a period.  It sums the query and API requests made to the service. Since usage is computed on UTC time, there is no need to specify the timezone in this endpoint.
+Gets the search engines usage during a period.  It sums the query and API requests made to the service. Since usage is computed in UTC time, there is no need to specify the timezone in this endpoint.
 
 ### Example
 ```php
@@ -809,7 +809,7 @@ $apiInstance = new Swagger\Client\Api\StatsApi(
 );
 $from = "from_example"; // string | Start date of the interval in the format of YYYYMMDD.
 $to = "to_example"; // string | End date of the interval in the format of YYYYMMDD.
-$hashid = "hashid_example"; // string | HashID of the search engine to query or a list in the format [hashid1,hashid2,...]
+$hashid = new \Swagger\Client\Model\Hashid(); // \Swagger\Client\Model\Hashid | Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...]
 $type = "type_example"; // string | Filter by the given usage type.
 $format = "json"; // string | Indicates which response format should be used
 
@@ -828,7 +828,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **from** | **string**| Start date of the interval in the format of YYYYMMDD. |
  **to** | **string**| End date of the interval in the format of YYYYMMDD. |
- **hashid** | **string**| HashID of the search engine to query or a list in the format [hashid1,hashid2,...] |
+ **hashid** | [**\Swagger\Client\Model\Hashid**](../Model/.md)| Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] |
  **type** | **string**| Filter by the given usage type. | [optional]
  **format** | **string**| Indicates which response format should be used | [optional] [default to json]
 

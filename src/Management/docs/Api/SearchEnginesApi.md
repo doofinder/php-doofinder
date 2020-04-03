@@ -37,7 +37,7 @@ $apiInstance = new Swagger\Client\Api\SearchEnginesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 
 try {
     $result = $apiInstance->process($hashid);
@@ -52,7 +52,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
 
 ### Return type
 
@@ -92,7 +92,7 @@ $apiInstance = new Swagger\Client\Api\SearchEnginesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 
 try {
     $result = $apiInstance->processStatus($hashid);
@@ -107,7 +107,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
 
 ### Return type
 
@@ -129,7 +129,7 @@ Name | Type | Description  | Notes
 
 Creates a new search engine.
 
-Creates a new search engine with the data provided. It is not possible to execute searches against the new search engine as it does not have any index yet. You need to create an index belonging to the new search engine in order to be able to make searches.
+Creates a new search engine with the provided data. It is not possible to run searches against the new search engine as it does not have any index yet. You must create an index belonging to the new search engine in order to be able to make searches.
 
 ### Example
 ```php
@@ -206,7 +206,7 @@ $apiInstance = new Swagger\Client\Api\SearchEnginesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 
 try {
     $apiInstance->searchEngineDelete($hashid);
@@ -220,7 +220,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
 
 ### Return type
 
@@ -315,7 +315,7 @@ $apiInstance = new Swagger\Client\Api\SearchEnginesApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 
 try {
     $result = $apiInstance->searchEngineShow($hashid);
@@ -330,7 +330,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
 
 ### Return type
 
@@ -373,7 +373,7 @@ $apiInstance = new Swagger\Client\Api\SearchEnginesApi(
     $config
 );
 $body = new \Swagger\Client\Model\SearchEngine(); // \Swagger\Client\Model\SearchEngine | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 
 try {
     $result = $apiInstance->searchEngineUpdate($body, $hashid);
@@ -389,7 +389,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**\Swagger\Client\Model\SearchEngine**](../Model/SearchEngine.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
 
 ### Return type
 

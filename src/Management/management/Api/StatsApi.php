@@ -12,7 +12,7 @@
 /**
  * Doofinder Management API
  *
- * # Introduction  Doofinder's management API allows you to perform some of the administrative tasks you can do on your search engines using the doofinder control panel, directly from your code.  # Basics  ## Endpoint  All requests should be done with `https` protocol in our API location.  `https://{search_zone}-api.doofinder.com`  where `{search_zone}` depends on your location, is the geographic zone your search engine is located at. i.e.: eu1. Also, indicates which host to use in your API calls.  ## Authentication  We provide two methods of authentication for our API. In any of these you need a management API key that you could obtain in our [management control panel](https://www.doofinder.com/admin).  You can generate it in your user account -> API Keys.  Example of a generated API Key: `eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### API Token  You can authenticate with the previous API key in header as a Token. The correct way to authenticate is to send a HTTP Header with the name `Authorization` and the value `Token <API Key>`  For example, for the key shown above:  `Authorization: Token eu1-ab46030xza33960aac71a10248489b6c26172f07`  ### JWT Token (Draft)  Also you can authenticate with a [JSON Web Token](https://jwt.io) generating JWT keys with your API Key. To authenticate using JWT you need to send a HTTP Header with the name `Authorization` and the value `Bearer <JWT token>`.  For example, with the key shown above:  `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk`  ## Conventions  Along most of the code samples you will find placeholders for some common variable values. They are:  - `{hashid}`: The search engine's unique id. i.e.: d8fdeab7fce96a19d3fc7b0ca7a1e98b - `{index}`: When storing items, they're always stored under a certain \"index\". i.e.: product. - `{token}`: Your personal authentication token obtained in the control panel. - `{uid}`: The Id of a Doofinder User  # Objects  ## Search Engines  A Search Engine is a set of multiple Indices, and some options to configure them. It must contain at least one indice.  A Search Engine can be uniquely identified by the parameter called `hashid`.  A Search Engine can be processed, which means the process of reading the data from the Data Sources (usually an url), indexing the data in a temporary index and finally build the index ready for use.  ## Indices  An Index is a collection of Items, the same way a Search Engine is a collection of Indices. It has options that define the schema used for Items, Data Sources that define where to get the data, and some searching options.  Each Index may also have one temporary index. A temporary index shares the same options of its main index. There are operations to manage temporary indices like create, delete, reindex, etc. The usual flow for a temporary index is create one, index items on it and replace the main index with the temporary one. This way you can reindex your whole data having zero downtime of the search service.  ## Data Sources  A Data Source defines a source of items for indexing. There are many kinds but they are basically a location for taking items for indexing and the most common is just an url with a file. These are the sources that are read when calling a Search Engine processing. An Index does not need a Data Source if you index the items directly using the API.  ## Items  Items are the objects stored in an Index, and the ones returned after executing a search. Items may have an schema (a collection of fields) depending on their Index preset. This way a `product` item has price, category, etc.
+ * # Introduction  Doofinder's management API allows you to perform some of the administrative tasks you can do on your search engines using the Doofinder control panel, directly from your code.  # Basics  ## Endpoint  All requests should be done via `https` to the right endpoint:  ``` https://{search-zone}-api.doofinder.com ```  Where `{search-zone}` is the code of the datacenter where your search engines are located.  For instance:  ``` https://eu1-api.doofinder.com https://us1-api.doofinder.com ```  ## Authentication  To authenticate you need a management API key. If you don't have one you can generate it in the Doofinder Admin by going to your Account and then to API Keys.  A valid API key looks like this:  ``` ab46030xza33960aac71a10248489b6c26172f07 ```  ### API Token  You can authenticate with the previous API key in header as a Token. The correct way to authenticate is to send a HTTP Header with the name `Authorization` and the value `Token {api-key}`  I.e.:  ``` Authorization: Token ab46030xza33960aac71a10248489b6c26172f07 ```  ### JWT Token (Draft)  If you prefer you can authenticate with a [JSON Web Token](https://jwt.io). The token must be signed with an API management key and there are some claims required in the JWT payload. These claims are:    * `iat` (issued at): Creation datetime timestamp, i.e. the moment when the JWT was created.    * `exp` (expiration time): Expiration datetime timestamp, i.e. the moment when the JWT is going to expire and will no longer be valid. The time span between issued and expiration dates must be shorter than a week.    * `name`: Your user code. It is your unique identifier as doofinder user. You can find this code in your profile page in the Doofinder's administration panel.  To authenticate using JWT you must send a HTTP header with the name `Authorization` and the value `Bearer {JWT-token}`.  I.e.:  ``` Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk ```  ## Conventions  Along most of the code samples you will find placeholders for some common variable values. They are:    * `{hashid}`: The search engine's unique id. e.g.: d8fdeab7fce96a19d3fc7b0ca7a1e98b.    * `{index}`: When storing items, they're always stored under a certain _index_. e.g.: product.    * `{token}`: Your personal authentication token obtained in the control panel.    * `{uid}`: The unique identificator of a Doofinder User.  # Objects  ## Search Engines  A **search engine**:  - Consists of a set of indices and options to configure them. - Must contain at least one index. - Can be uniquely identified by a hash we call `hashid`. - Can be _processed_, which involves reading the data from the provided data sources (usually URLs), indexing the data in temporary indices and finally make the indices ready for use.  ## Indices  An **index**:  - Is a set of **data items** and options to describe those items, the description of the **data sources** to get them and the way they can be searched. - May have one (and only one) temporary index. A temporary index shares the same options of the main index. There are operations to manage temporary indices like create, delete, reindex, etc.  The usual flow for an index is to create a temporary index, index items on it and replace the main index with the temporary one.  This way you can reindex your whole data having zero downtime of the search service.  ## Data Sources  A **data source**:  - Defines the location for retrieving items for indexing and the most common is just a file URL. - Is accessed when the search engine is being processed.  An index does not need a data source if you index the items directly using the API.  ## Items  Items:  - Are the objects stored in an index. - Are returned as search results. - May have different schemas (collections of fields) depending on their index **preset** (if any). There are some default presets, being `product` the most usual, which describes items with a price, category, etc.
  *
  * OpenAPI spec version: 2.0
  * Contact: support@doofinder.com
@@ -89,13 +89,13 @@ class StatsApi
     /**
      * Operation bannersClicks
      *
-     * Get the total amount of clicks over banners.
+     * Gets the total amount of clicks performed in banners.
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the banner. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -112,13 +112,13 @@ class StatsApi
     /**
      * Operation bannersClicksWithHttpInfo
      *
-     * Get the total amount of clicks over banners.
+     * Gets the total amount of clicks performed in banners.
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the banner. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -193,13 +193,13 @@ class StatsApi
     /**
      * Operation bannersClicksAsync
      *
-     * Get the total amount of clicks over banners.
+     * Gets the total amount of clicks performed in banners.
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the banner. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -219,13 +219,13 @@ class StatsApi
     /**
      * Operation bannersClicksAsyncWithHttpInfo
      *
-     * Get the total amount of clicks over banners.
+     * Gets the total amount of clicks performed in banners.
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the banner. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -279,9 +279,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the banner. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -423,13 +423,13 @@ class StatsApi
     /**
      * Operation bannersDisplay
      *
-     * Gets how many times a banner has been shown.
+     * Gets how many times a banner has been displayed.
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the banner. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -446,13 +446,13 @@ class StatsApi
     /**
      * Operation bannersDisplayWithHttpInfo
      *
-     * Gets how many times a banner has been shown.
+     * Gets how many times a banner has been displayed.
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the banner. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -527,13 +527,13 @@ class StatsApi
     /**
      * Operation bannersDisplayAsync
      *
-     * Gets how many times a banner has been shown.
+     * Gets how many times a banner has been displayed.
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the banner. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -553,13 +553,13 @@ class StatsApi
     /**
      * Operation bannersDisplayAsyncWithHttpInfo
      *
-     * Gets how many times a banner has been shown.
+     * Gets how many times a banner has been displayed.
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the banner. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -613,9 +613,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the banner. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -757,12 +757,12 @@ class StatsApi
     /**
      * Operation checkoutsByDate
      *
-     * Get the checkouts by dates
+     * Gets the checkouts by dates
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -780,12 +780,12 @@ class StatsApi
     /**
      * Operation checkoutsByDateWithHttpInfo
      *
-     * Get the checkouts by dates
+     * Gets the checkouts by dates
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -861,12 +861,12 @@ class StatsApi
     /**
      * Operation checkoutsByDateAsync
      *
-     * Get the checkouts by dates
+     * Gets the checkouts by dates
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -887,12 +887,12 @@ class StatsApi
     /**
      * Operation checkoutsByDateAsyncWithHttpInfo
      *
-     * Get the checkouts by dates
+     * Gets the checkouts by dates
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -947,8 +947,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -1095,8 +1095,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -1119,8 +1119,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -1201,8 +1201,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -1228,8 +1228,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -1285,8 +1285,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -1438,9 +1438,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $query Search query term (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -1461,9 +1461,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $query Search query term (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -1542,9 +1542,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $query Search query term (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -1568,9 +1568,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $query Search query term (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -1624,9 +1624,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $query Search query term (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -1782,8 +1782,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      * @param  string $query Search query term. (optional)
@@ -1805,8 +1805,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      * @param  string $query Search query term. (optional)
@@ -1886,8 +1886,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      * @param  string $query Search query term. (optional)
@@ -1912,8 +1912,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      * @param  string $query Search query term. (optional)
@@ -1968,8 +1968,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      * @param  string $query Search query term. (optional)
@@ -2116,8 +2116,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -2139,8 +2139,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -2220,8 +2220,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -2246,8 +2246,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -2302,8 +2302,8 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
@@ -2450,9 +2450,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the redirection. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -2473,9 +2473,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the redirection. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -2554,9 +2554,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the redirection. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -2580,9 +2580,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the redirection. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -2636,9 +2636,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  int $id Unique id of the redirection. (optional)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -2784,9 +2784,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $dfid Doofinder ID to filter by (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -2807,9 +2807,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $dfid Doofinder ID to filter by (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -2888,9 +2888,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $dfid Doofinder ID to filter by (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -2914,9 +2914,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $dfid Doofinder ID to filter by (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -2970,9 +2970,9 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $dfid Doofinder ID to filter by (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -3128,13 +3128,13 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      * @param  string $custom_results_id Filter by some custom result. (optional)
-     * @param  string $query_name Type of query to filter by (optional)
+     * @param  \Swagger\Client\Model\QueryName $query_name Type of query to filter by (optional)
      * @param  string $source Filter by search source. (optional)
      * @param  int $total_hits Filter by the number of search results. (optional)
      *
@@ -3155,13 +3155,13 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      * @param  string $custom_results_id Filter by some custom result. (optional)
-     * @param  string $query_name Type of query to filter by (optional)
+     * @param  \Swagger\Client\Model\QueryName $query_name Type of query to filter by (optional)
      * @param  string $source Filter by search source. (optional)
      * @param  int $total_hits Filter by the number of search results. (optional)
      *
@@ -3240,13 +3240,13 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      * @param  string $custom_results_id Filter by some custom result. (optional)
-     * @param  string $query_name Type of query to filter by (optional)
+     * @param  \Swagger\Client\Model\QueryName $query_name Type of query to filter by (optional)
      * @param  string $source Filter by search source. (optional)
      * @param  int $total_hits Filter by the number of search results. (optional)
      *
@@ -3270,13 +3270,13 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      * @param  string $custom_results_id Filter by some custom result. (optional)
-     * @param  string $query_name Type of query to filter by (optional)
+     * @param  \Swagger\Client\Model\QueryName $query_name Type of query to filter by (optional)
      * @param  string $source Filter by search source. (optional)
      * @param  int $total_hits Filter by the number of search results. (optional)
      *
@@ -3330,13 +3330,13 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $interval Time interval for aggregations. (optional, default to 1d)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      * @param  string $custom_results_id Filter by some custom result. (optional)
-     * @param  string $query_name Type of query to filter by (optional)
+     * @param  \Swagger\Client\Model\QueryName $query_name Type of query to filter by (optional)
      * @param  string $source Filter by search source. (optional)
      * @param  int $total_hits Filter by the number of search results. (optional)
      *
@@ -3498,11 +3498,11 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
-     * @param  string $query_name Type of query to filter by (optional)
+     * @param  \Swagger\Client\Model\QueryName $query_name Type of query to filter by (optional)
      * @param  int $total_hits Filter by the number of search results. (optional)
      * @param  object $exclude Exclude filters (optional)
      *
@@ -3523,11 +3523,11 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
-     * @param  string $query_name Type of query to filter by (optional)
+     * @param  \Swagger\Client\Model\QueryName $query_name Type of query to filter by (optional)
      * @param  int $total_hits Filter by the number of search results. (optional)
      * @param  object $exclude Exclude filters (optional)
      *
@@ -3606,11 +3606,11 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
-     * @param  string $query_name Type of query to filter by (optional)
+     * @param  \Swagger\Client\Model\QueryName $query_name Type of query to filter by (optional)
      * @param  int $total_hits Filter by the number of search results. (optional)
      * @param  object $exclude Exclude filters (optional)
      *
@@ -3634,11 +3634,11 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
-     * @param  string $query_name Type of query to filter by (optional)
+     * @param  \Swagger\Client\Model\QueryName $query_name Type of query to filter by (optional)
      * @param  int $total_hits Filter by the number of search results. (optional)
      * @param  object $exclude Exclude filters (optional)
      *
@@ -3692,11 +3692,11 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of UNIX timestamp or YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
-     * @param  string $tz Timezone for the given dates, by default assumes UTC. Time zones may be specified as an ISO 8601 UTC offset (e.g. +01:00 or -08:00). (optional, default to +00:00)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
+     * @param  string $tz Timezone for the given dates, by default assumes UTC. Timezones may be specified as an ISO 8601 UTC offset. (optional, default to +00:00)
      * @param  string $device Filter by kind of device. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
-     * @param  string $query_name Type of query to filter by (optional)
+     * @param  \Swagger\Client\Model\QueryName $query_name Type of query to filter by (optional)
      * @param  int $total_hits Filter by the number of search results. (optional)
      * @param  object $exclude Exclude filters (optional)
      *
@@ -3850,7 +3850,7 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $type Filter by the given usage type. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -3871,7 +3871,7 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $type Filter by the given usage type. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -3950,7 +3950,7 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $type Filter by the given usage type. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -3974,7 +3974,7 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $type Filter by the given usage type. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *
@@ -4028,7 +4028,7 @@ class StatsApi
      *
      * @param  string $from Start date of the interval in the format of YYYYMMDD. (required)
      * @param  string $to End date of the interval in the format of YYYYMMDD. (required)
-     * @param  string $hashid HashID of the search engine to query or a list in the format [hashid1,hashid2,...] (required)
+     * @param  \Swagger\Client\Model\Hashid $hashid Unique id of the search engine. Can be a list of ids in the format [hashid1,hashid2,...] (required)
      * @param  string $type Filter by the given usage type. (optional)
      * @param  string $format Indicates which response format should be used (optional, default to json)
      *

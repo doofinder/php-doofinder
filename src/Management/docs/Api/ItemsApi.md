@@ -46,7 +46,7 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     $config
 );
 $body = new \Swagger\Client\Model\map(); // map[string,object] | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -63,7 +63,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**map[string,object]**](../Model/map.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -106,9 +106,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
-$item_id = "item_id_example"; // string | Item unique identifier inside an index.
+$item_id = "item_id_example"; // string | Unique identifier of an item inside an index.
 
 try {
     $apiInstance->itemDelete($hashid, $name, $item_id);
@@ -122,9 +122,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
- **item_id** | **string**| Item unique identifier inside an index. |
+ **item_id** | **string**| Unique identifier of an item inside an index. |
 
 ### Return type
 
@@ -166,7 +166,7 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 $scroll_id = "scroll_id_example"; // string | Unique identifier for the scroll. The scroll saves a \"pointer\" to the last fetched page so each successive request to the same scroll_id return a new page.
 $rpp = 56; // int | _Results per page_. How many items are fetched per page/request.
@@ -184,7 +184,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
  **scroll_id** | **string**| Unique identifier for the scroll. The scroll saves a \&quot;pointer\&quot; to the last fetched page so each successive request to the same scroll_id return a new page. | [optional]
  **rpp** | **int**| _Results per page_. How many items are fetched per page/request. | [optional]
@@ -229,9 +229,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
-$item_id = "item_id_example"; // string | Item unique identifier inside an index.
+$item_id = "item_id_example"; // string | Unique identifier of an item inside an index.
 
 try {
     $result = $apiInstance->itemShow($hashid, $name, $item_id);
@@ -246,9 +246,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
- **item_id** | **string**| Item unique identifier inside an index. |
+ **item_id** | **string**| Unique identifier of an item inside an index. |
 
 ### Return type
 
@@ -291,7 +291,7 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     $config
 );
 $body = new \Swagger\Client\Model\map(); // map[string,object] | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -308,7 +308,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**map[string,object]**](../Model/map.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -351,9 +351,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
-$item_id = "item_id_example"; // string | Item unique identifier inside an index.
+$item_id = "item_id_example"; // string | Unique identifier of an item inside an index.
 
 try {
     $apiInstance->itemTempDelete($hashid, $name, $item_id);
@@ -367,9 +367,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
- **item_id** | **string**| Item unique identifier inside an index. |
+ **item_id** | **string**| Unique identifier of an item inside an index. |
 
 ### Return type
 
@@ -411,9 +411,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
-$item_id = "item_id_example"; // string | Item unique identifier inside an index.
+$item_id = "item_id_example"; // string | Unique identifier of an item inside an index.
 
 try {
     $result = $apiInstance->itemTempShow($hashid, $name, $item_id);
@@ -428,9 +428,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
- **item_id** | **string**| Item unique identifier inside an index. |
+ **item_id** | **string**| Unique identifier of an item inside an index. |
 
 ### Return type
 
@@ -473,9 +473,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     $config
 );
 $body = new \Swagger\Client\Model\map(); // map[string,object] | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
-$item_id = "item_id_example"; // string | Item unique identifier inside an index.
+$item_id = "item_id_example"; // string | Unique identifier of an item inside an index.
 
 try {
     $result = $apiInstance->itemTempUpdate($body, $hashid, $name, $item_id);
@@ -491,9 +491,9 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**map[string,object]**](../Model/map.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
- **item_id** | **string**| Item unique identifier inside an index. |
+ **item_id** | **string**| Unique identifier of an item inside an index. |
 
 ### Return type
 
@@ -536,9 +536,9 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     $config
 );
 $body = new \Swagger\Client\Model\map(); // map[string,object] | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
-$item_id = "item_id_example"; // string | Item unique identifier inside an index.
+$item_id = "item_id_example"; // string | Unique identifier of an item inside an index.
 
 try {
     $result = $apiInstance->itemUpdate($body, $hashid, $name, $item_id);
@@ -554,9 +554,9 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**map[string,object]**](../Model/map.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
- **item_id** | **string**| Item unique identifier inside an index. |
+ **item_id** | **string**| Unique identifier of an item inside an index. |
 
 ### Return type
 
@@ -599,7 +599,7 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     $config
 );
 $body = array(new \Swagger\Client\Model\ItemsIdsInner()); // \Swagger\Client\Model\ItemsIdsInner[] | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -616,7 +616,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**\Swagger\Client\Model\ItemsIdsInner[]**](../Model/ItemsIdsInner.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -660,7 +660,7 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     $config
 );
 $body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -677,7 +677,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -721,7 +721,7 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     $config
 );
 $body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -738,7 +738,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -782,7 +782,7 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     $config
 );
 $body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -799,7 +799,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -843,7 +843,7 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     $config
 );
 $body = array(new \Swagger\Client\Model\ItemsIdsInner()); // \Swagger\Client\Model\ItemsIdsInner[] | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -860,7 +860,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**\Swagger\Client\Model\ItemsIdsInner[]**](../Model/ItemsIdsInner.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
@@ -904,7 +904,7 @@ $apiInstance = new Swagger\Client\Api\ItemsApi(
     $config
 );
 $body = array(new \Swagger\Client\Model\Item()); // \Swagger\Client\Model\Item[] | 
-$hashid = "hashid_example"; // string | Hashid of a search engine. This is the search engine unique identifier.
+$hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
 try {
@@ -921,7 +921,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**\Swagger\Client\Model\Item[]**](../Model/Item.md)|  |
- **hashid** | **string**| Hashid of a search engine. This is the search engine unique identifier. |
+ **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
 ### Return type
