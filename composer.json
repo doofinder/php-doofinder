@@ -47,7 +47,7 @@
   "autoload": {
     "psr-4": {
       "Doofinder\\Api\\": "src/",
-      "Swagger\\Client\\" : "src/Management_V2/management/"
+      "DoofinderManagement\\" : "src/Management/"
     }
   }
 }
