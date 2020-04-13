@@ -47,7 +47,8 @@
   "autoload": {
     "psr-4": {
       "Doofinder\\Api\\": "src/",
-      "DoofinderManagement\\" : "src/Management/"
+      "Doofinder\\Management\\" : "src/Management/",
+      "DoofinderManagement\\" : "src/Management/PhpClient/"
     }
   }
 }
