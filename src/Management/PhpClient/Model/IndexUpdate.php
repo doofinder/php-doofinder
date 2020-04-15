@@ -57,7 +57,7 @@ class IndexUpdate implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'options' => 'OneOfIndexUpdateOptions'    ];
+        'options' => '\DoofinderManagement\Model\OneOfIndexUpdateOptions'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization

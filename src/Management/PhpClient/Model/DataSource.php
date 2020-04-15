@@ -57,9 +57,9 @@ class DataSource implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'options' => 'OneOfDataSourceOptions',
+        'options' => '\DoofinderManagement\Model\OneOfDataSourceOptions',
 'type' => 'string',
-'url' => 'OneOfDataSourceUrl'    ];
+'url' => '\DoofinderManagement\Model\OneOfDataSourceUrl'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
