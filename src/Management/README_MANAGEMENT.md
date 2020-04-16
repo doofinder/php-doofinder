@@ -34,6 +34,8 @@ To install the bindings via [Composer](http://getcomposer.org/), add the followi
 
 Then run `composer install`
 
+And then run `composer dump-autoload`
+
 ### Manual Installation
 
 Download the files and include `autoload.php`:
