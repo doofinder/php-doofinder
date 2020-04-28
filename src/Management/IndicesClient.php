@@ -8,21 +8,24 @@
 namespace Doofinder\Management;
 
 use DoofinderManagement\Api\IndicesApi;
+use DoofinderManagement\Configuration;
 use GuzzleHttp\Client;
 
 
 class IndicesClient {
-    public $config = null;
+    public $credentials = null;
     public $api = null;
   
     /**
      * Create a new IndicesClient instance
      * 
-     * @param DoofinderManagement\Configuration $config instance previously created (required)
+     * @param Array $credentials. (required)
      * @return IndicesClient instance created
      */
-    public function __construct($config) {
-      $this->config = $config;
+    public function __construct($credentials) {
+      $this->credentials = $credentials;
+      $config = Configuration::getDefaultConfiguration()->setApiKey('Authorization', $credentials["token"]);
+      $config = Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Token');
       $this->api = new IndicesApi(
         new Client(),
         $config

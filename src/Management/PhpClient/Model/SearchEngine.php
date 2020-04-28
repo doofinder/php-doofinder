@@ -59,7 +59,7 @@ class SearchEngine implements ModelInterface, ArrayAccess
     protected static $swaggerTypes = [
         'hashid' => 'string',
 'inactive' => 'bool',
-'indices' => '\DoofinderManagement\Model\Indices',
+'indices' => 'object',
 'language' => 'string',
 'name' => 'string',
 'search_server' => 'string',

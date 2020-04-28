@@ -947,7 +947,7 @@ class IndicesApi
      */
     public function indexIndexWithHttpInfo($hashid)
     {
-        $returnType = '\DoofinderManagement\Model\Indices';
+        $returnType = 'object';
         $request = $this->indexIndexRequest($hashid);
 
         try {
@@ -1041,7 +1041,7 @@ class IndicesApi
      */
     public function indexIndexAsyncWithHttpInfo($hashid)
     {
-        $returnType = '\DoofinderManagement\Model\Indices';
+        $returnType = 'object';
         $request = $this->indexIndexRequest($hashid);
 
         return $this->client

@@ -8,21 +8,24 @@
 namespace Doofinder\Management;
 
 use DoofinderManagement\Api\SearchEnginesApi;
+use DoofinderManagement\Configuration;
 use GuzzleHttp\Client;
 
 
 class SearchEngineClient {
-    public $config = null;
+    public $credentials = null;
     public $api = null;
   
     /**
      * Create a new SearchEngineClient instance
      * 
-     * @param DoofinderManagement\Configuration $config instance previously created. (required)
+     * @param Array $credentials. (required)
      * @return serchEngineClient instance created.
      */
-    public function __construct($config) {
-      $this->config = $config;
+    public function __construct($credentials) {
+      $this->credentials = $credentials;
+      $config = Configuration::getDefaultConfiguration()->setApiKey('Authorization', $credentials["token"]);
+      $config = Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Token');
       $this->api = new SearchEnginesApi(
         new Client(),
         $config

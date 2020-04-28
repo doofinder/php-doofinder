@@ -116,7 +116,7 @@ class SearchEnginesApi
      */
     public function processWithHttpInfo($hashid)
     {
-        $returnType = '\DoofinderManagement\Model\ProcessingTask';
+        $returnType = 'object';
         $request = $this->processRequest($hashid);
 
         try {
@@ -168,7 +168,7 @@ class SearchEnginesApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\DoofinderManagement\Model\ProcessingTask',
+                        'object',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -210,7 +210,7 @@ class SearchEnginesApi
      */
     public function processAsyncWithHttpInfo($hashid)
     {
-        $returnType = '\DoofinderManagement\Model\ProcessingTask';
+        $returnType = 'object';
         $request = $this->processRequest($hashid);
 
         return $this->client
@@ -388,7 +388,7 @@ class SearchEnginesApi
      */
     public function processStatusWithHttpInfo($hashid)
     {
-        $returnType = '\DoofinderManagement\Model\ProcessingTask';
+        $returnType = 'object';
         $request = $this->processStatusRequest($hashid);
 
         try {
@@ -440,7 +440,7 @@ class SearchEnginesApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\DoofinderManagement\Model\ProcessingTask',
+                        'object',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -482,7 +482,7 @@ class SearchEnginesApi
      */
     public function processStatusAsyncWithHttpInfo($hashid)
     {
-        $returnType = '\DoofinderManagement\Model\ProcessingTask';
+        $returnType = 'object';
         $request = $this->processStatusRequest($hashid);
 
         return $this->client
@@ -1160,7 +1160,7 @@ class SearchEnginesApi
      */
     public function searchEngineListWithHttpInfo()
     {
-        $returnType = '\DoofinderManagement\Model\SearchEngines';
+        $returnType = 'object';
         $request = $this->searchEngineListRequest();
 
         try {
@@ -1212,7 +1212,7 @@ class SearchEnginesApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\DoofinderManagement\Model\SearchEngines',
+                        'object',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1252,7 +1252,7 @@ class SearchEnginesApi
      */
     public function searchEngineListAsyncWithHttpInfo()
     {
-        $returnType = '\DoofinderManagement\Model\SearchEngines';
+        $returnType = 'object';
         $request = $this->searchEngineListRequest();
 
         return $this->client
