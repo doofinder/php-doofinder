@@ -146,7 +146,7 @@ We edit some models that includes reference to OneOfNameOfModel models. Swagger 
 
 References like `OneOfDataSourceOptions` had to be set as `\DoofinderManagement\Model\OneOfDataSourceOptions`.
 
-### OneOf model references
+### Return type of methods
 We change return type of methods that must return an array of objects. Now, the return type of those methods is `'object'`.
 
 ## Documentation For Authorization
