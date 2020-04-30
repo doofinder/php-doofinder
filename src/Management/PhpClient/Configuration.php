@@ -80,14 +80,14 @@ class Configuration
      *
      * @var string
      */
-    protected $host = 'http://localhost:4001';
+    protected $host = 'https://eu1-api.doofinder.com';
 
     /**
      * User agent of the HTTP request, set to "PHP-Swagger" by default
      *
      * @var string
      */
-    protected $userAgent = 'Swagger-Codegen/1.0.0/php';
+    protected $userAgent = 'doofinder-api-client/php';
 
     /**
      * Debug switch (default set to false)

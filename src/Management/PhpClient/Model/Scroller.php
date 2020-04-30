@@ -57,7 +57,7 @@ class Scroller implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'items' => '\DoofinderManagement\Model\Items',
+        'items' => 'object',
 'scroll_id' => 'string',
 'total' => 'int'    ];
 

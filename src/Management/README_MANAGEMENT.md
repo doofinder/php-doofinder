@@ -43,21 +43,22 @@ Please follow the [installation procedure](#installation--usage) and then run th
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-// Configure API key authorization: api_token
-$config = DoofinderManagement\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = DoofinderManagement\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
-
 // Create a new instance of SearchEngineClient wrapper.
-$api = new Doofinder\Management\SearchEngineClient($config);
+$client = new Doofinder\Management\ManagementClient();
+// Configure API key authorization: api_token
+$client->setApiKey("YOUR_API_KEY");
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $client->setBearerToken("YOUR_API_KEY");
+
+### Example
 
 $hashid = "hashid_example"; // string | Unique id of a search engine.
 
 try {
-    $result = $api->getSearchEngine($hashid);
+    $result = $client->getSearchEngine($hashid);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling SearchEngineClient->getSearchEngine: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling ManagementClient->getSearchEngine: ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
@@ -65,40 +66,40 @@ try {
 
 ## Documentation for Client's Methods
 
-Class | Method | Description
+Method | Description | Return type
 ------------ | ------------- | -------------
-*IndicesClient* | [**returnReindexingStatus**] | Return the status of the current reindexing task.
-*IndicesClient* | [**createIndex**] | Creates an index.
-*IndicesClient* | [**deleteIndex**] | Deletes an Index.
-*IndicesClient* | [**listIndices**] | Lists all indices.
-*IndicesClient* | [**getIndex**] | Gets an Index.
-*IndicesClient* | [**updateIndex**] | Updates an index.
-*IndicesClient* | [**reindex**] | Reindex the content of the real index into the temporary one.
-*IndicesClient* | [**replace**] | Replace the real index with the temporary one.
-*IndicesClient* | [**createTemporaryIndex**] | Creates a temporary index.
-*IndicesClient* | [**deleteTemporaryIndex**] | Deletes the temporary index.
-*ItemsClient* | [**createItem**] | Creates an item.
-*ItemsClient* | [**deleteItem**] | Deletes an item from the index.
-*ItemsClient* | [**scrollsItems**] | Scrolls through all index items
-*ItemsClient* | [**getItem**] | Gets an item from the index.
-*ItemsClient* | [**createTempItem**] | Creates an item in the temporal index.
-*ItemsClient* | [**deleteTempItem**] | Deletes an item in the temporal index.
-*ItemsClient* | [**getTempItem**] | Gets an item from the temporal index.
-*ItemsClient* | [**updateTempItem**] | Partially updates an item in the temporal index.
-*ItemsClient* | [**updateItem**] | Partially updates an item in the index.
-*ItemsClient* | [**createBulk**] | Creates a bulk of item in the index.
-*ItemsClient* | [**deleteBulk**] | Deletes a bulk of items from the index.
-*ItemsClient* | [**updateBulk**] | Partial updates a bulk of items in the index.
-*ItemsClient* | [**createTempBulk**] | Creates a bulk of items in the temporal index.
-*ItemsClient* | [**deleteTempBulk**] | Deletes items in bulk in the temporal index.
-*ItemsClient* | [**updateTempBulk**] | Partial updates a bulk of items in the temporal index.
-*SearchEngineClient* | [**processSearchEngine**] | Process all search engine&#x27;s data sources.
-*SearchEngineClient* | [**getProcessStatus**] | Gets the status of the process task.
-*SearchEngineClient* | [**createSearchEngine**] | Creates a new search engine.
-*SearchEngineClient* | [**deleteSearchEngine**] | Deletes a search engine.
-*SearchEngineClient* | [**listSearchEngines**] | Lists search engines.
-*SearchEngineClient* | [**getSearchEngine**] | Gets a search engine.
-*SearchEngineClient* | [**updateSearchEngine**] | Updates a search engine.
+[**returnReindexingStatus**] | Return the status of the current reindexing task. | \DoofinderManagement\Model\ReindexingTask Object.
+[**createIndex**] | Creates an index. | \DoofinderManagement\Model\Index Object.
+[**deleteIndex**] | Deletes an Index. | Void.
+[**listIndices**] | Lists all indices. | \DoofinderManagement\Model\Indices Array.
+[**getIndex**] | Gets an Index. | \DoofinderManagement\Model\Index Object.
+[**updateIndex**] | Updates an index. | \DoofinderManagement\Model\Index Object.
+[**reindex**] | Reindex the content of the real index into the temporary one. | Object.
+[**replace**] | Replace the real index with the temporary one. | Object.
+[**createTemporaryIndex**] | Creates a temporary index. | Object.
+[**deleteTemporaryIndex**] | Deletes the temporary index. | Object.
+[**createItem**] | Creates an item. | \DoofinderManagement\Model\Item Object.
+[**deleteItem**] | Deletes an item from the index. | Void.
+[**scrollsItems**] | Scrolls through all index items | \DoofinderManagement\Model\Scroller Array.
+[**getItem**] | Gets an item from the index. | \DoofinderManagement\Model\Item Object.
+[**createTempItem**] | Creates an item in the temporal index. | \DoofinderManagement\Model\Item Object.
+[**deleteTempItem**] | Deletes an item in the temporal index. | Void.
+[**getTempItem**] | Gets an item from the temporal index. | \DoofinderManagement\Model\Item Object.
+[**updateTempItem**] | Partially updates an item in the temporal index. | \DoofinderManagement\Model\Item Object.
+[**updateItem**] | Partially updates an item in the index. | \DoofinderManagement\Model\Item Object.
+[**createBulk**] | Creates a bulk of item in the index. | \DoofinderManagement\Model\BulkResult Array.
+[**deleteBulk**] | Deletes a bulk of items from the index. | \DoofinderManagement\Model\BulkResult Array.
+[**updateBulk**] | Partial updates a bulk of items in the index. | \DoofinderManagement\Model\BulkResult Array.
+[**createTempBulk**] | Creates a bulk of items in the temporal index. | \DoofinderManagement\Model\BulkResult Array.
+[**deleteTempBulk**] | Deletes items in bulk in the temporal index. | \DoofinderManagement\Model\BulkResult Array.
+[**updateTempBulk**] | Partial updates a bulk of items in the temporal index. | \DoofinderManagement\Model\BulkResult Array.
+[**processSearchEngine**] | Process all search engine&#x27;s data sources. | \DoofinderManagement\Model\ProcessingTask Object.
+[**getProcessStatus**] | Gets the status of the process task. | \DoofinderManagement\Model\ProcessingTask Object.
+[**createSearchEngine**] | Creates a new search engine. | \DoofinderManagement\Model\SearchEngine Object.
+[**deleteSearchEngine**] | Deletes a search engine. | Void.
+[**listSearchEngines**] | Lists search engines. | \DoofinderManagement\Model\SearchEngines Array.
+[**getSearchEngine**] | Gets a search engine. | \DoofinderManagement\Model\SearchEngine Object
+[**updateSearchEngine**] | Updates a search engine. | \DoofinderManagement\Model\SearchEngine Object
 
 ## Documentation For Models
 
@@ -140,8 +141,13 @@ Class | Method | Description
  - [StatsTopSearchesResultResults](PhpClient/docs/Model/StatsTopSearchesResultResults.md)
 
 ## Changes in code generated by Swagger codegen
-
+### OneOf model references
 We edit some models that includes reference to OneOfNameOfModel models. Swagger generated a wrong route to this models so it results into a 404 error.
+
+References like `OneOfDataSourceOptions` had to be set as `\DoofinderManagement\Model\OneOfDataSourceOptions`.
+
+### OneOf model references
+We change return type of methods that must return an array of objects. Now, the return type of those methods is `'object'`.
 
 ## Documentation For Authorization
 
