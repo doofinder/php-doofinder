@@ -2,7 +2,7 @@
 spl_autoload_register('autoload_doofinder_classes');
 
 function autoload_doofinder_classes($className) {
-  $libraryPrefix = 'Doofinder\\Api\\';
+  $libraryPrefix = 'Doofinder\\';
   $libraryDirectory = __DIR__ . '/src/';
 
   $len = strlen($libraryPrefix);
