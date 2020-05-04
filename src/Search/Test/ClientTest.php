@@ -1,11 +1,11 @@
 <?php
 
-namespace Doofinder\Api\Test;
+namespace Doofinder\Search\Test;
 
 use \phpmock\phpunit\PHPMock;
 
 
-use Doofinder\Api\Search\Client;
+use Doofinder\Search\Client;
 
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +18,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     $this->searchUrl = "https://eu1-search.doofinder.com/5/search";
     $this->optionsUrl = "https://eu1-search.doofinder.com/5/options";
     $this->statsUrl = "https://eu1-search.doofinder.com/5/stats";
-    $nameSpace = 'Doofinder\API\Search';
+    $nameSpace = 'Doofinder\Search';
     $this->curl_init = $this->getFunctionMock($nameSpace, "curl_init");
     $this->curl_setopt = $this->getFunctionMock($nameSpace, "curl_setopt");
     $this->curl_getinfo = $this->getFunctionMock($nameSpace, "curl_getinfo");

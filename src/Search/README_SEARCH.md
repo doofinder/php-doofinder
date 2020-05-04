@@ -21,8 +21,8 @@
     - [The Doofinder metrics](#the-doofinder-metrics)
     - [The special 'banner' and 'redirect' results properties](#the-special-banner-and-redirect-results-properties)
     - [API reference](#api-reference)
-        - [`\Doofinder\Api\Search\Client`](#%5Cdoofinder%5Capi%5Csearch%5Cclient)
-        - [`\Doofinder\Api\Search\Results`](#%5Cdoofinder%5Capi%5Csearch%5Cresults)
+        - [`\Doofinder\Search\Client`](#%5Cdoofinder%5Capi%5Csearch%5Cclient)
+        - [`\Doofinder\Search\Results`](#%5Cdoofinder%5Capi%5Csearch%5Cresults)
     - [One quick example](#one-quick-example)
 
 <!-- /MarkdownTOC -->
@@ -39,7 +39,7 @@ Just include the provided `autoload.php` file and use:
 
 ```php
 require_once('path/to/php-doofinder/autoload.php');
-$client = new \Doofinder\Api\Search\Client(HASHID, API_KEY);
+$client = new \Doofinder\Search\Client(HASHID, API_KEY);
 ```
 
 ### Using Composer
@@ -56,8 +56,7 @@ If you're already using composer your autoload.php file will be updated. If not,
 <?php
 require_once dirname(__FILE__).'/vendor/autoload.php';
 
-use \Doofinder\Api\Search\Client as SearchClient;
-use \Doofinder\Api\Management\Client as ManagementClient;
+use \Doofinder\Search\Client as SearchClient;
 
 $client = new SearchClient(HASHID, API_KEY);
 ```
@@ -73,7 +72,7 @@ define('HASHID', '6a9gbc4dcx735x123b1e0198gf92e6e9');
 define('API_KEY', 'eu1-384fdag73c7ff0a59g589xf9f4083bxb9727f9c3')
 
 // Set hashid and API Key
-$client = new \Doofinder\Api\Search\Client(HASHID, API_KEY);
+$client = new \Doofinder\Search\Client(HASHID, API_KEY);
 
 // You can specify filters
 $client->setFilter('brand', array('nike', 'converse')); // brand must be 'nike' or 'converse' AND ...
@@ -206,7 +205,7 @@ You can use it to build links to search results:
 Gets information from the PHP request globals and initialises the client with search parameters (query, page, filters, rpp).
 
 ```php
-$client = new \Doofinder\Api\Search\Client(HASHID, API_KEY);
+$client = new \Doofinder\Search\Client(HASHID, API_KEY);
 $client->fromQuerystring();
 $results = $client->query();
 ```
@@ -215,7 +214,7 @@ You can do the same in the constructor by passing `true` as the third parameter.
 
 ```php
 <?php
-$client = new \Doofinder\Api\Search\Client(HASHID, API_KEY, true);
+$client = new \Doofinder\Search\Client(HASHID, API_KEY, true);
 $results = $client->query();
 ```
 
@@ -328,7 +327,7 @@ $results = $client->query($query, $page, array(
 ### Extra Constructor Options
 
 ```php
-$client = new \Doofinder\Api\Search\Client(
+$client = new \Doofinder\Search\Client(
   HASHID,
   API_KEY,
   true, // Whether to import request parameters or not (default: false)
@@ -383,7 +382,7 @@ if($redirect){
 
 ### API reference
 
-#### `\Doofinder\Api\Search\Client`
+#### `\Doofinder\Search\Client`
 
 ```php
 $client->query($query, $page, $options);                     // Perform search
@@ -418,7 +417,7 @@ $client->registerRedirection($redirectionId, $query, $link); // Register a redir
 
 ```
 
-#### `\Doofinder\Api\Search\Results`
+#### `\Doofinder\Search\Results`
 
 ```php
 $results->getProperty($propertyName); // Get the property $propertyName
@@ -440,7 +439,7 @@ $results->status;                     // Account status info. 'success', 'exhaus
   define('HASHID', '6a9gbc4dcx735x123b1e0198gf92e6e9');
   define('API_KEY', 'eu1-384fdag73c7ff0a59g589xf9f4083bxb9727f9c3')
 
-  $client = new \Doofinder\Api\Search\Client(HASHID, API_KEY, true);
+  $client = new \Doofinder\Search\Client(HASHID, API_KEY, true);
   // if no dfParam_query, fetch all the results, to fetch all possible facets
   $results = $client->query(null, null, array('transformer'=>'dflayer'));
 ?>

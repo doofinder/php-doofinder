@@ -1,8 +1,8 @@
 <?php
 
-namespace Doofinder\Api\Test;
+namespace Doofinder\Search\Test;
 
-use Doofinder\Api\Search\Results;
+use Doofinder\Search\Results;
 
 class ResultsTest extends \PHPUnit_Framework_TestCase
 {

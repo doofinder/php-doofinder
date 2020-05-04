@@ -21,13 +21,13 @@
  * under the License.
  */
 
-namespace Doofinder\Api\Search;
+namespace Doofinder\Search;
 
-use Doofinder\Api\Search\Results;
-use Doofinder\Api\Search\Error;
+use Doofinder\Search\Results;
+use Doofinder\Search\Error;
 
 /**
- * Doofinder\Api\Client
+ * Doofinder\Search\Client
  *
  * Basic client to perform requests to Doofinder search servers.
  */
