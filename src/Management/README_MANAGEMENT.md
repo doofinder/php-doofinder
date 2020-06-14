@@ -7,7 +7,7 @@ For more information, please visit [https://doofinder.com/support](https://app.d
 
 ## Requirements
 
-PHP 7.3 and later
+PHP 5.6 and later
 
 ## Installation & Usage
 ### Composer
@@ -45,6 +45,8 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 // Create a new instance of SearchEngineClient wrapper.
 $client = new Doofinder\Management\ManagementClient();
+// Configure your host. May be "eu1-search.doofinder.com" or "us1-api.doofinder.com".
+$client->setHost("YOUR_HOST");
 // Configure API key authorization: api_token
 $client->setApiKey("YOUR_API_KEY");
 // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed

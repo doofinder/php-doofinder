@@ -27,7 +27,7 @@ class ManagementClient {
      * Create a new ManagementClient instance
      * 
      * @param Array $credentials. (required)
-     * @return serchEngineClient instance created.
+     * @return ManagementClient instance created.
      */
     public function __construct() {
       $this->config = Configuration::getDefaultConfiguration();
@@ -61,6 +61,10 @@ class ManagementClient {
     public function setBearerToken($value) {
         $this->config->setApiKey('Authorization', $value);
         $this->config->setApiKeyPrefix('Authorization', 'Bearer');
+    }
+
+    public function setHost($host) {
+        $this->config->setHost($host);
     }
 
     /**
