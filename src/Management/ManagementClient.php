@@ -18,6 +18,8 @@ use GuzzleHttp\Client;
 class ManagementClient {
     protected $config = null;
     protected $client = null;
+    protected $host = null;
+    protected $token = null;
 
     protected $searchEnginesClient = null;
     protected $ItemsClient = null;
@@ -29,10 +31,12 @@ class ManagementClient {
      * @param Array $credentials. (required)
      * @return ManagementClient instance created.
      */
-    public function __construct() {
+    public function __construct($host, $token) {
       $this->config = Configuration::getDefaultConfiguration();
       $this->client = new Client();
-      
+      $this->setHost($host);
+      $this->setApiKey($token);
+
       $this->searchEngineClient = new SearchEnginesApi(
         $this->client,
         $this->config

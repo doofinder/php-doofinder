@@ -43,12 +43,14 @@ Please follow the [installation procedure](#installation--usage) and then run th
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-// Create a new instance of SearchEngineClient wrapper.
-$client = new Doofinder\Management\ManagementClient();
-// Configure your host. May be "eu1-search.doofinder.com" or "us1-api.doofinder.com".
-$client->setHost("YOUR_HOST");
-// Configure API key authorization: api_token
-$client->setApiKey("YOUR_API_KEY");
+// Create a new instance of ManagementClient wrapper. Pass your host and token as parameters
+$client = new Doofinder\Management\ManagementClient("YOUR_HOST", "YOUR_API_KEY");
+
+// You can change those values later:
+// $client->setHost("YOUR_HOST");
+
+// $client->setApiKey("YOUR_API_KEY");
+
 // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 // $client->setBearerToken("YOUR_API_KEY");
 
