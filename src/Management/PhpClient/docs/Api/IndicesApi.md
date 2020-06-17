@@ -65,14 +65,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **indexCreate**
 > \DoofinderManagement\Model\Index indexCreate($body, $hashid)
@@ -124,14 +124,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: application/json
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **indexDelete**
 > indexDelete($hashid, $name)
@@ -182,14 +182,14 @@ void (empty response body)
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: Not defined
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **indexIndex**
 > \DoofinderManagement\Model\Indices indexIndex($hashid)
@@ -239,14 +239,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **indexShow**
 > \DoofinderManagement\Model\Index indexShow($hashid, $name)
@@ -298,14 +298,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **indexUpdate**
 > \DoofinderManagement\Model\Index indexUpdate($body, $hashid, $name)
@@ -359,14 +359,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: application/json
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **reindexToTemp**
 > object reindexToTemp($hashid, $name)
@@ -418,14 +418,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **replaceByTemp**
 > object replaceByTemp($hashid, $name)
@@ -477,14 +477,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **temporaryIndexCreate**
 > object temporaryIndexCreate($hashid, $name)
@@ -536,14 +536,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **temporaryIndexDelete**
 > temporaryIndexDelete($hashid, $name)
@@ -594,12 +594,12 @@ void (empty response body)
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: Not defined
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 

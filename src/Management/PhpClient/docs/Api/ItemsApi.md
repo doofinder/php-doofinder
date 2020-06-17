@@ -16,9 +16,11 @@ Method | HTTP request | Description
 [**itemsBulkCreate**](ItemsApi.md#itemsbulkcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Creates a bulk of item in the index.
 [**itemsBulkDelete**](ItemsApi.md#itemsbulkdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Deletes a bulk of items from the index.
 [**itemsBulkUpdate**](ItemsApi.md#itemsbulkupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/items/_bulk | Partial updates a bulk of items in the index.
+[**itemsMget**](ItemsApi.md#itemsmget) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/items/_mget | Retrieves a list of items.
 [**itemsTempBulkCreate**](ItemsApi.md#itemstempbulkcreate) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Creates a bulk of items in the temporal index.
 [**itemsTempBulkDelete**](ItemsApi.md#itemstempbulkdelete) | **DELETE** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Deletes items in bulk in the temporal index.
 [**itemsTempBulkUpdate**](ItemsApi.md#itemstempbulkupdate) | **PATCH** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_bulk | Partial updates a bulk of items in the temporal index.
+[**itemsTempMget**](ItemsApi.md#itemstempmget) | **POST** /api/v2/search_engines/{hashid}/indices/{name}/temp/items/_mget | Retrieves a list of items.
 
 # **itemCreate**
 > \DoofinderManagement\Model\Item itemCreate($body, $hashid, $name)
@@ -72,14 +74,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: application/json
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemDelete**
 > itemDelete($hashid, $name, $item_id)
@@ -132,14 +134,14 @@ void (empty response body)
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: Not defined
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemIndex**
 > \DoofinderManagement\Model\Scroller itemIndex($hashid, $name, $scroll_id, $rpp)
@@ -195,14 +197,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemShow**
 > \DoofinderManagement\Model\Item itemShow($hashid, $name, $item_id)
@@ -256,14 +258,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemTempCreate**
 > \DoofinderManagement\Model\Item itemTempCreate($body, $hashid, $name)
@@ -317,14 +319,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: application/json
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemTempDelete**
 > itemTempDelete($hashid, $name, $item_id)
@@ -377,14 +379,14 @@ void (empty response body)
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: Not defined
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemTempShow**
 > \DoofinderManagement\Model\Item itemTempShow($hashid, $name, $item_id)
@@ -438,14 +440,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemTempUpdate**
 > \DoofinderManagement\Model\Item itemTempUpdate($body, $hashid, $name, $item_id)
@@ -501,14 +503,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: application/json
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemUpdate**
 > \DoofinderManagement\Model\Item itemUpdate($body, $hashid, $name, $item_id)
@@ -564,14 +566,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: application/json
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemsBulkCreate**
 > \DoofinderManagement\Model\BulkResult itemsBulkCreate($body, $hashid, $name)
@@ -625,14 +627,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: application/json
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemsBulkDelete**
 > \DoofinderManagement\Model\BulkResult itemsBulkDelete($body, $hashid, $name)
@@ -659,7 +661,7 @@ $apiInstance = new DoofinderManagement\Api\ItemsApi(
     new GuzzleHttp\Client(),
     $config
 );
-$body = array(new \DoofinderManagement\Model\Item()); // \DoofinderManagement\Model\Item[] | 
+$body = array(new \DoofinderManagement\Model\ItemsIdsInner()); // \DoofinderManagement\Model\ItemsIdsInner[] | 
 $hashid = "hashid_example"; // string | Unique id of a search engine.
 $name = "name_example"; // string | Name of an index.
 
@@ -676,7 +678,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**\DoofinderManagement\Model\Item[]**](../Model/Item.md)|  |
+ **body** | [**\DoofinderManagement\Model\ItemsIdsInner[]**](../Model/ItemsIdsInner.md)|  |
  **hashid** | **string**| Unique id of a search engine. |
  **name** | **string**| Name of an index. |
 
@@ -686,14 +688,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: application/json
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemsBulkUpdate**
 > \DoofinderManagement\Model\BulkResult itemsBulkUpdate($body, $hashid, $name)
@@ -747,14 +749,75 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: application/json
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
+
+# **itemsMget**
+> \DoofinderManagement\Model\MGETResponse itemsMget($body, $hashid, $name)
+
+Retrieves a list of items.
+
+Retrieves a list of items in a single operation given their ids.
+
+### Example
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+// Configure API key authorization: api_token
+$config = DoofinderManagement\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = DoofinderManagement\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');// Configure API key authorization: jwt_token
+$config = DoofinderManagement\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = DoofinderManagement\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
+
+$apiInstance = new DoofinderManagement\Api\ItemsApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$body = array(new \DoofinderManagement\Model\ItemsIdsInner()); // \DoofinderManagement\Model\ItemsIdsInner[] | 
+$hashid = "hashid_example"; // string | Unique id of a search engine.
+$name = "name_example"; // string | Name of an index.
+
+try {
+    $result = $apiInstance->itemsMget($body, $hashid, $name);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ItemsApi->itemsMget: ', $e->getMessage(), PHP_EOL;
+}
+?>
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **body** | [**\DoofinderManagement\Model\ItemsIdsInner[]**](../Model/ItemsIdsInner.md)|  |
+ **hashid** | **string**| Unique id of a search engine. |
+ **name** | **string**| Name of an index. |
+
+### Return type
+
+[**\DoofinderManagement\Model\MGETResponse**](../Model/MGETResponse.md)
+
+### Authorization
+
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemsTempBulkCreate**
 > \DoofinderManagement\Model\BulkResult itemsTempBulkCreate($body, $hashid, $name)
@@ -808,14 +871,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: application/json
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemsTempBulkDelete**
 > \DoofinderManagement\Model\BulkResult itemsTempBulkDelete($body, $hashid, $name)
@@ -869,14 +932,14 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: application/json
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **itemsTempBulkUpdate**
 > \DoofinderManagement\Model\BulkResult itemsTempBulkUpdate($body, $hashid, $name)
@@ -930,12 +993,73 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[api_token](../../../README_MANAGEMENT.md#api_token), [jwt_token](../../../README_MANAGEMENT.md#jwt_token)
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
 
 ### HTTP request headers
 
  - **Content-Type**: application/json
  - **Accept**: application/json
 
-[[Back to top]](#) [[Back to API list]](../../../README_MANAGEMENT.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README_MANAGEMENT.md#documentation-for-models) [[Back to README]](../../../README_MANAGEMENT.md)
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
+
+# **itemsTempMget**
+> \DoofinderManagement\Model\MGETResponse itemsTempMget($body, $hashid, $name)
+
+Retrieves a list of items.
+
+Retrieves a list of items in a single operation given their ids.
+
+### Example
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+// Configure API key authorization: api_token
+$config = DoofinderManagement\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = DoofinderManagement\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');// Configure API key authorization: jwt_token
+$config = DoofinderManagement\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = DoofinderManagement\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
+
+$apiInstance = new DoofinderManagement\Api\ItemsApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$body = array(new \DoofinderManagement\Model\ItemsIdsInner()); // \DoofinderManagement\Model\ItemsIdsInner[] | 
+$hashid = "hashid_example"; // string | Unique id of a search engine.
+$name = "name_example"; // string | Name of an index.
+
+try {
+    $result = $apiInstance->itemsTempMget($body, $hashid, $name);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ItemsApi->itemsTempMget: ', $e->getMessage(), PHP_EOL;
+}
+?>
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **body** | [**\DoofinderManagement\Model\ItemsIdsInner[]**](../Model/ItemsIdsInner.md)|  |
+ **hashid** | **string**| Unique id of a search engine. |
+ **name** | **string**| Name of an index. |
+
+### Return type
+
+[**\DoofinderManagement\Model\MGETResponse**](../Model/MGETResponse.md)
+
+### Authorization
+
+[api_token](../../README.md#api_token), [jwt_token](../../README.md#jwt_token)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 

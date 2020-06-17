@@ -1,6 +1,6 @@
 <?php
 /**
- * StatsTopSearchesResult
+ * AnyOfDataSourceUrl
  *
  * PHP version 5
  *
@@ -32,15 +32,14 @@ use \ArrayAccess;
 use \DoofinderManagement\ObjectSerializer;
 
 /**
- * StatsTopSearchesResult Class Doc Comment
+ * AnyOfDataSourceUrl Class Doc Comment
  *
  * @category Class
- * @description Stats results for top searches.
  * @package  DoofinderManagement
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
-class StatsTopSearchesResult implements ModelInterface, ArrayAccess
+class AnyOfDataSourceUrl implements ModelInterface, ArrayAccess
 {
     const DISCRIMINATOR = null;
 
@@ -49,7 +48,7 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
       *
       * @var string
       */
-    protected static $swaggerModelName = 'StatsTopSearchesResult';
+    protected static $swaggerModelName = 'AnyOfDataSourceUrl';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -57,9 +56,7 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'results' => '\DoofinderManagement\Model\StatsTopSearchesResultResults[]',
-'total' => 'int',
-'total_count' => 'int'    ];
+            ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
@@ -67,9 +64,7 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'results' => null,
-'total' => null,
-'total_count' => null    ];
+            ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -98,9 +93,7 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'results' => 'results',
-'total' => 'total',
-'total_count' => 'total_count'    ];
+            ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -108,9 +101,7 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'results' => 'setResults',
-'total' => 'setTotal',
-'total_count' => 'setTotalCount'    ];
+            ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -118,9 +109,7 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'results' => 'getResults',
-'total' => 'getTotal',
-'total_count' => 'getTotalCount'    ];
+            ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -180,9 +169,6 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
      */
     public function __construct(array $data = null)
     {
-        $this->container['results'] = isset($data['results']) ? $data['results'] : null;
-        $this->container['total'] = isset($data['total']) ? $data['total'] : null;
-        $this->container['total_count'] = isset($data['total_count']) ? $data['total_count'] : null;
     }
 
     /**
@@ -208,78 +194,6 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
         return count($this->listInvalidProperties()) === 0;
     }
 
-
-    /**
-     * Gets results
-     *
-     * @return \DoofinderManagement\Model\StatsTopSearchesResultResults[]
-     */
-    public function getResults()
-    {
-        return $this->container['results'];
-    }
-
-    /**
-     * Sets results
-     *
-     * @param \DoofinderManagement\Model\StatsTopSearchesResultResults[] $results results
-     *
-     * @return $this
-     */
-    public function setResults($results)
-    {
-        $this->container['results'] = $results;
-
-        return $this;
-    }
-
-    /**
-     * Gets total
-     *
-     * @return int
-     */
-    public function getTotal()
-    {
-        return $this->container['total'];
-    }
-
-    /**
-     * Sets total
-     *
-     * @param int $total total
-     *
-     * @return $this
-     */
-    public function setTotal($total)
-    {
-        $this->container['total'] = $total;
-
-        return $this;
-    }
-
-    /**
-     * Gets total_count
-     *
-     * @return int
-     */
-    public function getTotalCount()
-    {
-        return $this->container['total_count'];
-    }
-
-    /**
-     * Sets total_count
-     *
-     * @param int $total_count total_count
-     *
-     * @return $this
-     */
-    public function setTotalCount($total_count)
-    {
-        $this->container['total_count'] = $total_count;
-
-        return $this;
-    }
     /**
      * Returns true if offset exists. False otherwise.
      *

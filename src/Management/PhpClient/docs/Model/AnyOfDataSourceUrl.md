@@ -1,4 +1,4 @@
-# BulkRequest
+# AnyOfDataSourceUrl
 
 ## Properties
 Name | Type | Description | Notes

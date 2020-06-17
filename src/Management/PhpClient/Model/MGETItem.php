@@ -1,6 +1,6 @@
 <?php
 /**
- * StatsTopSearchesResult
+ * MGETItem
  *
  * PHP version 5
  *
@@ -32,15 +32,14 @@ use \ArrayAccess;
 use \DoofinderManagement\ObjectSerializer;
 
 /**
- * StatsTopSearchesResult Class Doc Comment
+ * MGETItem Class Doc Comment
  *
  * @category Class
- * @description Stats results for top searches.
  * @package  DoofinderManagement
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
-class StatsTopSearchesResult implements ModelInterface, ArrayAccess
+class MGETItem implements ModelInterface, ArrayAccess
 {
     const DISCRIMINATOR = null;
 
@@ -49,7 +48,7 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
       *
       * @var string
       */
-    protected static $swaggerModelName = 'StatsTopSearchesResult';
+    protected static $swaggerModelName = 'MGET Item';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -57,9 +56,9 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'results' => '\DoofinderManagement\Model\StatsTopSearchesResultResults[]',
-'total' => 'int',
-'total_count' => 'int'    ];
+        'found' => 'bool',
+'id' => 'string',
+'item' => '\DoofinderManagement\Model\Item'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
@@ -67,9 +66,9 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'results' => null,
-'total' => null,
-'total_count' => null    ];
+        'found' => null,
+'id' => null,
+'item' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -98,9 +97,9 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'results' => 'results',
-'total' => 'total',
-'total_count' => 'total_count'    ];
+        'found' => 'found',
+'id' => 'id',
+'item' => 'item'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -108,9 +107,9 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'results' => 'setResults',
-'total' => 'setTotal',
-'total_count' => 'setTotalCount'    ];
+        'found' => 'setFound',
+'id' => 'setId',
+'item' => 'setItem'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -118,9 +117,9 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'results' => 'getResults',
-'total' => 'getTotal',
-'total_count' => 'getTotalCount'    ];
+        'found' => 'getFound',
+'id' => 'getId',
+'item' => 'getItem'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -180,9 +179,9 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
      */
     public function __construct(array $data = null)
     {
-        $this->container['results'] = isset($data['results']) ? $data['results'] : null;
-        $this->container['total'] = isset($data['total']) ? $data['total'] : null;
-        $this->container['total_count'] = isset($data['total_count']) ? $data['total_count'] : null;
+        $this->container['found'] = isset($data['found']) ? $data['found'] : null;
+        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
+        $this->container['item'] = isset($data['item']) ? $data['item'] : null;
     }
 
     /**
@@ -210,73 +209,73 @@ class StatsTopSearchesResult implements ModelInterface, ArrayAccess
 
 
     /**
-     * Gets results
+     * Gets found
      *
-     * @return \DoofinderManagement\Model\StatsTopSearchesResultResults[]
+     * @return bool
      */
-    public function getResults()
+    public function getFound()
     {
-        return $this->container['results'];
+        return $this->container['found'];
     }
 
     /**
-     * Sets results
+     * Sets found
      *
-     * @param \DoofinderManagement\Model\StatsTopSearchesResultResults[] $results results
+     * @param bool $found Indicates if the item was found or not.
      *
      * @return $this
      */
-    public function setResults($results)
+    public function setFound($found)
     {
-        $this->container['results'] = $results;
+        $this->container['found'] = $found;
 
         return $this;
     }
 
     /**
-     * Gets total
+     * Gets id
      *
-     * @return int
+     * @return string
      */
-    public function getTotal()
+    public function getId()
     {
-        return $this->container['total'];
+        return $this->container['id'];
     }
 
     /**
-     * Sets total
+     * Sets id
      *
-     * @param int $total total
+     * @param string $id Item id
      *
      * @return $this
      */
-    public function setTotal($total)
+    public function setId($id)
     {
-        $this->container['total'] = $total;
+        $this->container['id'] = $id;
 
         return $this;
     }
 
     /**
-     * Gets total_count
+     * Gets item
      *
-     * @return int
+     * @return \DoofinderManagement\Model\Item
      */
-    public function getTotalCount()
+    public function getItem()
     {
-        return $this->container['total_count'];
+        return $this->container['item'];
     }
 
     /**
-     * Sets total_count
+     * Sets item
      *
-     * @param int $total_count total_count
+     * @param \DoofinderManagement\Model\Item $item item
      *
      * @return $this
      */
-    public function setTotalCount($total_count)
+    public function setItem($item)
     {
-        $this->container['total_count'] = $total_count;
+        $this->container['item'] = $item;
 
         return $this;
     }
