@@ -198,8 +198,38 @@ $index_body = '{
 
 $client->createIndex($hashid, $index_body);
 
-// Process all search engine's data sources.
-$client->processSearchEngine($hashid) {
+// Create an item
+$index_name = "product";
+$item_body = '{
+    "id": "1234",
+    "link": "http://www.example.com/Cadillac/PM-265985.html",
+    "image_link": "http://www.example.com/images/Cadillac-426176-95.jpg",
+    "availability": "in stock",
+    "description": "Lorem ipsum",
+    "title": "Cadillac"
+  }';
+
+$client->createItem($hashid, $index_name, $item_body);
+
+// Create a bulk of items
+$index_name = "product";
+$nulk_body = '[{
+    "id": "1234",
+    "link": "http://www.example.com/Cadillac/PM-265985.html",
+    "image_link": "http://www.example.com/images/Cadillac-426176-95.jpg",
+    "availability": "in stock",
+    "description": "Lorem ipsum",
+    "title": "Cadillac"
+  },{
+    "id": "1235",
+    "link": "http://www.example.com/Hummer/PM-265985.html",
+    "image_link": "http://www.example.com/images/Hummer-426176-95.jpg",
+    "availability": "in stock",
+    "description": "Lorem ipsum",
+    "title": "Hummer"
+  }]';
+
+$client->createBulk($hashid, $index_name, $nulk_body);
 
 
 ```
