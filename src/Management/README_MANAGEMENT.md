@@ -179,26 +179,26 @@ $client->getSearchEngine($hashid);
 
 // Create an Index
 // Indice example body
-$index_body = '{ 
-    "options": {
-    "exclude_out_of_stock_items": false,
-    "group_variants": false
-    },
-    "datasources": [
-    {
-    "options": { },
-    "type": "file",
-    "url": ""
-    }
-    ],
-    "name": "test_client_1",
-    "preset": "product"
+$index_body = '{
+"options": {
+"exclude_out_of_stock_items": false,
+"group_variants": false
+},
+"datasources": [
+{
+"options": {
+    "url": "https://yourserver/your_data_feed.xml"
+ },
+"type": "file"
+}
+],
+"name": "product",
+"preset": "product"
 }';
 
 $client->createIndex($hashid, $index_body);
 
 // Process all search engine's data sources.
-
 $client->processSearchEngine($hashid) {
 
 
