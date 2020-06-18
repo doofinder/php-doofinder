@@ -249,7 +249,7 @@ class ObjectSerializer
         } elseif ($class === 'object') {
             settype($data, 'array');
             return $data;
-        } elseif (is_array($data)) {
+        } elseif (is_array($data) or $class === '\DoofinderManagement\Model\Item') {
             $data = (object)$data;
            return $data;
         } elseif ($class === '\DateTime') {
