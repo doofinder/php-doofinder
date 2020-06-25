@@ -246,12 +246,12 @@ class ObjectSerializer
                 $values[] = self::deserialize($value, $subClass, null);
             }
             return $values;
-        } elseif ($class === 'object') {
+        } elseif ($class === 'object' or is_array($data)) {
             settype($data, 'array');
             return $data;
-        } elseif (is_array($data) or $class === '\DoofinderManagement\Model\Item') {
+        } elseif ($class === '\DoofinderManagement\Model\Item') {
             $data = (object)$data;
-           return $data;
+            return $data;
         } elseif ($class === '\DateTime') {
             // Some API's return an invalid, empty string as a
             // date-time property. DateTime::__construct() will return
