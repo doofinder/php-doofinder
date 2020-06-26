@@ -243,10 +243,10 @@ This will generate a new php client with some fixes inside some models.
 ### Models that extends from ArrayAccess
 The method deserialize() of ObjectSerializer class does not check array type data. There is a problem with the class Item too that swagger can not deserialize so we have to add the conditional like below:
 ```
-} elseif ($class === 'object') {
+} elseif ($class === 'object' or is_array($data)) {  // Add this conditional to return an array type data
     settype($data, 'array');
     return $data;
-} elseif (is_array($data) or $class === '\DoofinderManagement\Model\Item') { //This is the conditional
+} elseif ($class === '\DoofinderManagement\Model\Item') { // Add this conditional to return Item objects
     $data = (object)$data;
     return $data;
 } elseif ($class === '\DateTime') {
