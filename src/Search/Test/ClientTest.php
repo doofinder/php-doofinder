@@ -56,7 +56,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
   }
 
   public function testBasicHeadersSent() {
-    $this->curl_exec->expects($this->any())->willReturn(json_encode(array()));
+    $this->curl_exec->expects($this->any())->willReturn(json_encode($this->_searchResponse()));
     $this->curl_setopt->expects($this->any())->willReturnCallback(
       function($session, $option, $value) {
         if ($option == CURLOPT_HTTPHEADER) {
@@ -64,14 +64,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         }
       }
     );
-    $this->client->options($this->hashid);
-  }
-
-  public function testOptionsCall() {
-    $url = $this->_url("/options/{$this->hashid}");
-    $this->curl_exec->expects($this->any())->willReturn(json_encode(array()));
-    $this->curl_init->expects($this->once())->with($url)->willReturn(332);
-    $this->client->options($this->hashid);
+    $this->client->search(['hashid' => $this->hashid]);
   }
 
   public function testBasicQuery() {
@@ -210,7 +203,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals($this->client->qs(['prefix' => 'df_']), $serialization);
   }
 
-  public function testLoad()
+  public function testSearchParams()
   {
     $response = ['total' => 44, 'page' => 1, 'query'  => 'ab', 'query_name' => 'baba'];
     $_REQUEST = [
@@ -226,11 +219,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
     $this->curl_init->expects($this->once())->with($url);
     // unserialize client
     $client = new Client('eu1-search.doofinder.com', 'testApiToken');
-    $params = $client->load($_REQUEST);
+    $params = $client->searchParams($_REQUEST);
     $client->search($params);  // do the query
   }
 
-  public function testLoadWithCustomPrefix() {
+  public function testSearchParamsWithCustomPrefix() {
     $response = ['total' => 44, 'page' => 1, 'query'  => 'ab', 'query_name' => 'baba'];
     $_REQUEST = [
       'df_query' => 'ab',
@@ -245,7 +238,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
     $this->curl_init->expects($this->once())->with($url);
     // unserialize client
     $client = new Client('eu1-search.doofinder.com', 'testApiToken');
-    $params = $client->load($_REQUEST, ['prefix' => 'df_']);
+    $params = $client->searchParams($_REQUEST, ['prefix' => 'df_']);
     $client->search($params);  // do the query
   }
 
