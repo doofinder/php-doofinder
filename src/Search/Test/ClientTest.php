@@ -355,4 +355,72 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
     $this->curl_init->expects($this->once())->with($url)->willReturn(334);
     $this->assertTrue($this->client->registerRedirection('SESSID', $this->hashid, 'test_id', 'https://www.google.com', ['query' => 'abc']));
   }
+
+  public function testAddToCart(){
+    $url = $this->_url('/stats/add-to-cart', [
+      'session_id' => 'SESSID',
+      'hashid' => $this->hashid,
+      'item_id' => 'test_id',
+      'amount' => 2,
+    ]);
+    $this->curl_exec->expects($this->any())->willReturn(json_encode('OK'));
+    $this->curl_init->expects($this->once())->with($url)->willReturn(334);
+    $this->assertTrue($this->client->addToCart('SESSID', $this->hashid, 'test_id', 2));
+  }
+
+  public function testAddToCartWithOptions(){
+    $url = $this->_url('/stats/add-to-cart', [
+      'session_id' => 'SESSID',
+      'hashid' => $this->hashid,
+      'item_id' => 'test_id',
+      'amount' => 2,
+      'datatype' => 'product',
+      'custom_results_id' => 'test_id',
+    ]);
+    $this->curl_exec->expects($this->any())->willReturn(json_encode('OK'));
+    $this->curl_init->expects($this->once())->with($url)->willReturn(334);
+    $this->assertTrue($this->client->addToCart('SESSID', $this->hashid, 'test_id', 2, [
+      'datatype' => 'product',
+      'custom_results_id' => 'test_id',
+    ]));
+  }
+
+  public function testRemoveFromCart(){
+    $url = $this->_url('/stats/remove-from-cart', [
+      'session_id' => 'SESSID',
+      'hashid' => $this->hashid,
+      'item_id' => 'test_id',
+      'amount' => 2,
+    ]);
+    $this->curl_exec->expects($this->any())->willReturn(json_encode('OK'));
+    $this->curl_init->expects($this->once())->with($url)->willReturn(334);
+    $this->assertTrue($this->client->removeFromCart('SESSID', $this->hashid, 'test_id', 2));
+  }
+
+  public function testRemoveFromCartWithOptions(){
+    $url = $this->_url('/stats/remove-from-cart', [
+      'session_id' => 'SESSID',
+      'hashid' => $this->hashid,
+      'item_id' => 'test_id',
+      'amount' => 2,
+      'datatype' => 'product',
+      'custom_results_id' => 'test_id',
+    ]);
+    $this->curl_exec->expects($this->any())->willReturn(json_encode('OK'));
+    $this->curl_init->expects($this->once())->with($url)->willReturn(334);
+    $this->assertTrue($this->client->removeFromCart('SESSID', $this->hashid, 'test_id', 2, [
+      'datatype' => 'product',
+      'custom_results_id' => 'test_id',
+    ]));
+  }
+
+  public function testClearCart(){
+    $url = $this->_url('/stats/clear-cart', [
+      'session_id' => 'SESSID',
+      'hashid' => $this->hashid,
+    ]);
+    $this->curl_exec->expects($this->any())->willReturn(json_encode('OK'));
+    $this->curl_init->expects($this->once())->with($url)->willReturn(334);
+    $this->assertTrue($this->client->clearCart('SESSID', $this->hashid));
+  }
 }

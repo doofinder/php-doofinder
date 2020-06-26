@@ -429,8 +429,8 @@ class Client {
 
   /**
    * options:
-   * - datatype
-   * - custom_results_id
+   * - datatype?
+   * - custom_results_id?
    */
   public function addToCart($sessionId, $hashid, $itemId, $amount, $options = []) {
     $params = array_merge([
@@ -462,7 +462,7 @@ class Client {
       'session_id' => $sessionId,
       'hashid' => $hashid,
     ];
-    return $this->_request('/stats/remove-from-cart', $params) == self::OK;
+    return $this->_request('/stats/clear-cart', $params) == self::OK;
   }
 
   /**
