@@ -32,21 +32,17 @@ use Doofinder\Search\Error;
  * Basic client to perform requests to Doofinder search servers.
  */
 class Client {
-  const DEFAULT_RPP = 10;
+  const RPP = 10;
   const OK = '"OK"';
 
   private $_baseUrl = null;
-  private $_hashid = null;
   private $_token = null;
 
   private $_customHeaders = array();
   private $_searchParams = array();
+  private $_lastPage = 0;
 
-  private $_page = 1;
-  private $_total = null;
-
-  public function __construct($hashid, $server, $token) {
-    $this->_hashid = $hashid;
+  public function __construct($server, $token) {
     if (!preg_match('/^https?:/', $server)) {
       $this->_baseUrl = sprintf('https://%s/5', $server);
     } else {
@@ -65,25 +61,27 @@ class Client {
     $prefix = $serializationOptions['prefix'];
     $queryParameter = $serializationOptions['queryParameter'];
 
+    $searchParams = [];
+
     foreach ($params as $key => $value) {
       if ($key === $prefix.$queryParameter) {
-        $this->_searchParams['query'] = $value;
+        $searchParams['query'] = $value;
       } else if ($key = $this->_unprefixParam($key, $prefix)) {
-        $this->_searchParams[$key] = $value;
+        $searchParams[$key] = $value;
       }
     }
 
-    return $this->_searchParams;
+    return $searchParams;
   }
 
   /**
    * Dump current search params to an assoc array.
    */
-  public function dump($page = null, $options = array()) {
+  public function dump($options = array()) {
     $serializationOptions = $this->_buildSerializationOptions($options);
     $prefix = $serializationOptions['prefix'];
     $queryParameter = $serializationOptions['queryParameter'];
-    $params = array();
+    $params = [];
 
     foreach ($this->_searchParams as $key => $value) {
       if ($key === 'query') {
@@ -93,8 +91,8 @@ class Client {
       }
     }
 
-    if (!is_null($page)) {
-      $params[$prefix . 'page'] = $page;
+    if (isset($serializationOptions['page'])) {
+      $params[$prefix . 'page'] = $serializationOptions['page'];
     }
 
     return $params;
@@ -106,8 +104,8 @@ class Client {
    * 'serialize' the object's state to querystring params
    * @param int $page the pagenumber. defaults to the current page
    */
-  public function qs($page = null, $options = array()){
-    $params = $this->dump($page, $options);
+  public function qs($options = array()){
+    $params = $this->dump($options);
     return http_build_query($params, '', '&');
   }
 
@@ -128,6 +126,7 @@ class Client {
   private function _unprefixParam($name, $prefix = '') {
     $unprefixPattern = '/^'.$prefix.'/';
     $doofinderParams = array(
+      'hashid', 'query',
       'page', 'rpp', 'timeout', 'types',
       'filter', 'query_name', 'transformer',
       'sort', 'exclude'
@@ -150,7 +149,14 @@ class Client {
   }
 
   private function _getRequestUrl($entryPoint, $params = array()) {
-    return sprintf('%s/%s?%s', $this->_baseUrl, $entryPoint, http_build_query($this->_sanitize($params), '', '&'));
+    $url = $this->_baseUrl.$entryPoint;
+
+    if (count($params)) {
+      $params = http_build_query($this->_sanitize($params), '', '&');
+      $url .= "?".$params;
+    }
+
+    return $url;
   }
 
   private function _getRequestHeaders(){
@@ -165,9 +171,6 @@ class Client {
   }
 
   private function _request($entryPoint, $params = array()){
-    // TODO: in the future this class shouldn't be tied to hashid
-    $params['hashid'] = $this->_hashid;
-
     $url = $this->_getRequestUrl($entryPoint, $params);
     $headers = $this->_getRequestHeaders();
 
@@ -188,8 +191,8 @@ class Client {
     }
   }
 
-  public function options() {
-    return $this->_request('options/'.$this->_hashid);
+  public function options($hashid) {
+    return $this->_request('/options/'.$hashid);
   }
 
   /**
@@ -208,139 +211,58 @@ class Client {
    *        - any other param will be sent as a request parameter
    * @return DoofinderResults results
    */
-  public function search($query = null, $page = null, $extraParams = array()) {
-    if (!is_null($query)) {
-      $this->_searchParams['query'] = $query;
-    } else {
-      unset($this->_searchParams['query']);
+  public function search($searchParams = array()) {
+    $params = array_merge_recursive([], $searchParams);
+
+    if (!isset($params['page'])) {
+      $params['page'] = 1;
     }
 
-    if (!is_null($page)) {
-      $this->_searchParams['page'] = intval($page);
-    } else {
-      $this->_searchParams['page'] = 1;
+    if (!isset($params['query_name']) && (!isset($params['query']) || !$params['query'])) {
+      $params['query_name'] = 'match_all';
     }
 
-    if ($this->_searchParams['page'] === 1) {
-      unset($this->_searchParams['query_name']);
-    }
+    $results = new Results($this->_request('/search', $params));
+    $total = $results->getProperty('total');
+    $rpp = $results->getProperty('results_per_page');
 
-    if (!trim($this->getSearchParam('query', ''))){
-      $this->_searchParams['query_name'] = 'match_all';
-    }
-
-    foreach ($extraParams as $key => $value) {
-      $this->_searchParams[$key] = $value;
-    }
-
-    $results = new Results($this->_request('/search', $this->dump()));
-    $this->_searchParams['query'] = $results->getProperty('query');
-    $this->_searchParams['query_name'] = $results->getProperty('query_name');
-    $this->_total = $results->getProperty('total');
+    $this->_searchParams = array_merge($params, [
+      'query_name' => $results->getProperty('query_name')
+    ]);
+    $this->_lastPage = ceil($total / $rpp);
 
     return $results;
   }
 
   /**
-   * hasNextPage
+   * nextPage
    *
-   * @return boolean true if there is another page of results
+   * obtain the results for the next page
+   * @return DoofinderResults if there are results.
+   * @return null otherwise
    */
-  public function hasNextPage(){
-    return $this->getPage() < $this->getLastPage();
+  public function getNextPage() {
+    if ($this->_searchParams['page'] < $this->_lastPage) {
+      $this->_searchParams['page'] += 1;
+      return $this->search($this->_searchParams);
+    } else {
+      return null;
+    }
   }
 
   /**
-   * hasPreviousPage
+   * previousPage
    *
-   * @return true if there is a previous page of results
+   * obtain results for the previous page
+   * @return DoofinderResults
+   * @return null otherwise
    */
-  public function hasPreviousPage(){
-    return $this->getPage() > 1;
-  }
-
-  /**
-   * getPage
-   *
-   * obtain the current page number
-   * @return int the page number
-   */
-  public function getPage(){
-    return $this->getSearchParam('page', 1);
-  }
-
-  // Filters
-
-  public function getFilters() {
-    return $this->_getFilters('filter');
-  }
-
-  public function hasFilter($name) {
-    return $this->_hasFilter('filter', $name);
-  }
-
-  public function getFilter($name) {
-    return $this->_getFilter('filter', $name);
-  }
-
-  public function setFilter($name, $value) {
-    $this->_setFilter('filter', $name, $value);
-  }
-
-  public function removeFilter($name) {
-    $this->_removeFilter('filter', $name);
-  }
-
-  // Exclusions
-
-  public function getExclusionFilters() {
-    return $this->_getFilters('exclude');
-  }
-
-  public function hasExclusionFilter($name) {
-    return $this->_hasFilter('exclude', $name);
-  }
-
-  public function getExclusionFilter($name) {
-    return $this->_getFilter('exclude', $name);
-  }
-
-  public function setExclusionFilter($name, $value) {
-    $this->_setFilter('exclude', $name, $value);
-  }
-
-  public function removeExclusionFilter($name) {
-    $this->_removeFilter('exclude', $name);
-  }
-
-  // Private stuff for filters
-
-  private function _getFilters($bucket) {
-    return (array) $this->_searchParams[$bucket];
-  }
-
-  private function _hasFilter($bucket, $name) {
-    return isset($this->_searchParams[$bucket][$name]);
-  }
-
-  private function _getFilter($bucket, $name) {
-    return $this->_hasFilter($bucket, $name) ? $this->_searchParams[$bucket][$name] : null;
-  }
-
-  private function _setFilter($bucket, $name, $value) {
-    $this->_searchParams[$bucket][$name] = (array) $value;
-  }
-
-  private function _removeFilter($bucket, $name) {
-    unset($this->_searchParams[$bucket][$name]);
-  }
-
-  // sorting
-
-  public function setSorting($sortingList = array()) {
-    foreach ($sortingList as $sorting) {
-      list($field, $direction) = $sorting;
-      $this->_searchParams['sort'][] = array($field => $direction);
+  public function getPreviousPage() {
+    if ($this->_searchParams['page'] > 1) {
+      $this->_searchParams['page'] -= 1;
+      return $this->search($this->_searchParams);
+    } else {
+      return null;
     }
   }
 
@@ -378,41 +300,6 @@ class Client {
     return array_key_exists($key, $this->_searchParams) ? $this->_searchParams[$key] : $default;
   }
 
-  /**
-   * nextPage
-   *
-   * obtain the results for the next page
-   * @return DoofinderResults if there are results.
-   * @return null otherwise
-   */
-  public function nextPage() {
-    return $this->hasNextPage() ? $this->search($this->getSearchParam('query', ''), $this->getPage() + 1) : null;
-  }
-
-  /**
-   * previousPage
-   *
-   * obtain results for the previous page
-   * @return DoofinderResults
-   * @return null otherwise
-   */
-  public function previousPage() {
-    return $this->hasPreviousPage() ? $this->search($this->getSearchParam('query', ''), $this->getPage() - 1) : null;
-  }
-
-  /**
-   * getLastPage
-   *
-   * @return integer the number of pages
-   */
-  public function getLastPage() {
-    return ceil($this->_total / $this->getRpp());
-  }
-
-  public function getRpp() {
-    return $this->getSearchParam('rpp', self::DEFAULT_RPP);
-  }
-
   // Stats
 
   public function createSessionId() {
@@ -426,8 +313,12 @@ class Client {
    * Starts a session in doofinder search server
    * @return boolean True if it was successfully registered.
    */
-  public function registerSession($sessionId){
-    return $this->_request('/stats/init', array('session_id' => $sessionId)) == self::OK;
+  public function registerSession($sessionId, $hashid){
+    $params = array(
+      'session_id' => $sessionId,
+      'hashid' => $hashid,
+    );
+    return $this->_request('/stats/init', $params) == self::OK;
   }
 
   /**
@@ -438,7 +329,11 @@ class Client {
    *
    * - session_id
    * - hashid (included by _request)
-   * - dfid or id + datatype
+   * - dfid or id
+   *
+   * options:
+   *
+   * - datatype? required if id is not dfid
    * - query?
    * - custom_results_id?
    *
@@ -447,25 +342,20 @@ class Client {
    * @param string query query used to get to those results
    * @return boolean true if it was successfully registered.
    */
-  public function registerClick($sessionId, $id, $datatype = null, $query = null, $customResultsId = null) {
+  public function registerClick($sessionId, $hashid, $id, $options = []) {
     $params = array(
-      'session_id' => $sessionId
+      'session_id' => $sessionId,
+      'hashid' => $hashid,
     );
 
-    if (!is_null($datatype)) {
+    if (isset($options['datatype'])) {
       $params['id'] = $id;
-      $params['datatype'] = $datatype;
+      $params['datatype'] = $options['datatype'];
     } else {
       $params['dfid'] = $id;
     }
 
-    if (!is_null($query)) {
-      $params['query'] = $query;
-    }
-
-    if (!is_null($customResultsId)) {
-      $params['custom_results_id'] = $customResultsId;
-    }
+    $params = array_merge($params, $options);
 
     return $this->_request('/stats/click', $params) === self::OK;
   }
@@ -481,8 +371,12 @@ class Client {
    *
    * @return boolean true if it was successfully registered.
    */
-  public function registerCheckout($sessionId){
-    return $this->_request('/stats/checkout', array('session_id' => $sessionId)) == self::OK;
+  public function registerCheckout($sessionId, $hashid) {
+    $params = array(
+      'session_id' => $sessionId,
+      'hashid' => $hashid,
+    );
+    return $this->_request('/stats/checkout', $params) == self::OK;
   }
 
   /**
@@ -496,8 +390,13 @@ class Client {
    * @param string $bannerId the id of the banner
    * @return boolean true if it was successfully registered.
    */
-  public function registerImageClick($sessionId, $imageId){
-    return $this->_request('/stats/img_click', array('session_id' => $sessionId, 'img_id' => $imageId)) == self::OK;
+  public function registerImageClick($sessionId, $hashid, $imageId){
+    $params = array(
+      'session_id' => $sessionId,
+      'hashid' => $hashid,
+      'img_id' => $imageId,
+    );
+    return $this->_request('/stats/img_click', $params) == self::OK;
   }
 
   /**
@@ -509,6 +408,8 @@ class Client {
    * - hashid (included by _request)
    * - redirection_id
    * - link
+   *
+   * options:
    * - query?
    *
    * @param string $redirectionId the id of the redirection
@@ -516,18 +417,52 @@ class Client {
    * @param string $link  the url the redirection points to.
    * @return boolean true if it was successfully registered.
    */
-  public function registerRedirection($sessionId, $redirectionId, $link, $query = null) {
-    $params = array(
+  public function registerRedirection($sessionId, $hashid, $redirectionId, $link, $options = []) {
+    $params = array_merge([
       'session_id' => $sessionId,
+      'hashid' => $hashid,
       'redirection_id' => $redirectionId,
-      'link' => $link
-    );
-
-    if (!is_null($query)) {
-      $params['query'] = $query;
-    }
-
+      'link' => $link,
+    ], $options);
     return $this->_request('/stats/redirect', $params) == self::OK;
+  }
+
+  /**
+   * options:
+   * - datatype
+   * - custom_results_id
+   */
+  public function addToCart($sessionId, $hashid, $itemId, $amount, $options = []) {
+    $params = array_merge([
+      'session_id' => $sessionId,
+      'hashid' => $hashid,
+      'item_id' => $itemId,
+      'amount' => $amount
+    ], $options);
+    return $this->_request('/stats/add-to-cart', $params) == self::OK;
+  }
+
+  /**
+   * options:
+   * - datatype
+   * - custom_results_id
+   */
+  public function removeFromCart($sessionId, $hashid, $itemId, $amount, $options = []) {
+    $params = array_merge([
+      'session_id' => $sessionId,
+      'hashid' => $hashid,
+      'item_id' => $itemId,
+      'amount' => $amount
+    ], $options);
+    return $this->_request('/stats/remove-from-cart', $params) == self::OK;
+  }
+
+  public function clearCart($sessionId, $hashid) {
+    $params = [
+      'session_id' => $sessionId,
+      'hashid' => $hashid,
+    ];
+    return $this->_request('/stats/remove-from-cart', $params) == self::OK;
   }
 
   /**
