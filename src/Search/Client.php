@@ -140,6 +140,9 @@ class Client {
    */
   public function qs($options = array()){
     $params = $this->dumpParams($options);
+    if (isset($options["page"])) {
+      $params["page"] = $options["page"];
+    }
     return http_build_query($params, '', '&');
   }
 
@@ -246,6 +249,10 @@ class Client {
    */
   public function getSearchParam($key, $default = null) {
     return array_key_exists($key, $this->_searchParams) ? $this->_searchParams[$key] : $default;
+  }
+
+  public function getTotalPages() {
+    return $this->_lastPage;
   }
 
   /**
@@ -409,12 +416,7 @@ class Client {
   }
 
   /**
-   * options:
-   * - datatype
-   * - custom_results_id
-   */
-  /**
-   * Removes an amount of item to the cart in the current session.
+   * Removes an amount of item from the cart in the current session.
    *
    * The cart will be automatically stored in stats if there's any call
    * to registerCheckout. If any of the items' amount drops to zero or
