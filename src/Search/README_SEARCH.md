@@ -1,6 +1,6 @@
 # Official PHP Search Client for Doofinder
 
-<!-- MarkdownTOC depth="4" autolink="true" bracket="round" -->
+<!-- TOC depthFrom:2 -->
 
 - [Installation](#installation)
     - [Download Method](#download-method)
@@ -8,24 +8,29 @@
 - [Search Client](#search-client)
     - [Quick & Dirty](#quick--dirty)
     - [Searching from HTML Forms](#searching-from-html-forms)
-        - [Be careful with the `query_name` parameter](#be-careful-with-the-queryname-parameter)
-        - [`toQuerystring()`](#toquerystring)
-        - [`fromQuerystring()`](#fromquerystring)
+        - [Be careful with the `query_name` parameter](#be-careful-with-the-query_name-parameter)
+        - [Load parameters from request: `searchParams()`](#load-parameters-from-request-searchparams)
+        - [`dumpParams()`](#dumpparams)
+        - [`qs()`](#qs)
         - [Filter Parameters](#filter-parameters)
         - [Sort Parameters](#sort-parameters)
     - [Tips](#tips)
         - [Empty queries](#empty-queries)
         - [UTF-8 encoding](#utf-8-encoding)
     - [Extra Search Options](#extra-search-options)
-    - [Extra Constructor Options](#extra-constructor-options)
-    - [The Doofinder metrics](#the-doofinder-metrics)
+    - [The Doofinder Metrics](#the-doofinder-metrics)
+        - [Register Session](#register-session)
+        - [Register Checkout](#register-checkout)
+        - [Register Result Click](#register-result-click)
+        - [Register Banner Click](#register-banner-click)
+        - [Register Redirection](#register-redirection)
     - [The special 'banner' and 'redirect' results properties](#the-special-banner-and-redirect-results-properties)
     - [API reference](#api-reference)
-        - [`\Doofinder\Search\Client`](#%5Cdoofinder%5Capi%5Csearch%5Cclient)
-        - [`\Doofinder\Search\Results`](#%5Cdoofinder%5Capi%5Csearch%5Cresults)
+        - [`\Doofinder\Search\Client`](#\doofinder\search\client)
+        - [`\Doofinder\Search\Results`](#\doofinder\search\results)
     - [One quick example](#one-quick-example)
 
-<!-- /MarkdownTOC -->
+<!-- /TOC -->
 
 ## Installation
 
