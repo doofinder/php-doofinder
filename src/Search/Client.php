@@ -147,22 +147,6 @@ class Client {
   }
 
   /**
-   * query. makes the query to the doofinder search server.
-   * also set several search parameters through it's $options argument
-   *
-   * @param string $query the search query
-   * @param int $page the page number or the results to show
-   * @param array $options query options:
-   *        - 'rpp'=> number of results per page. default 10
-   *        - 'timeout' => timeout after which the search server drops the conn.
-   *                       defaults to 10 seconds
-   *        - 'types' => types of index to search at. default: all.
-   *        - 'filter' => filter to apply. ['color'=>['red','blue'], 'price'=>['from'=>33]]
-   *        - 'exclude' => exclude ['color' => ['yellow']]
-   *        - any other param will be sent as a request parameter
-   * @return DoofinderResults results
-   */
-  /**
    * Perform a search request.
    *
    * More information about search parameters here:
