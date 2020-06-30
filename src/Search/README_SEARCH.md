@@ -76,6 +76,7 @@ define("API_KEY", "384fdag73c7ff0a59g589xf9f4083bxb9727f9c3")
 $client = new \Doofinder\Search\Client(SERVER, API_KEY);
 
 $searchParams = [
+    "hashid" => HASHID,
     "query" => "sneakers",
     "filter" => [
         "brand" => ["nike", "converse"],
@@ -257,7 +258,7 @@ In short:
 - Once you got the results, you can use `$results->getProperty('query_name')` to know which `query_name` was the one Doofinder chose in a specific set of results or use `$client->getSearchParam("query_name")` to get the query name from the latest call.
 - If you want to make further filtering on those search results, you should instruct Doofinder to use the same `query_name` you got from the first search results.
 - Each time you do any new query, don't specify `query_name`. Let Doofinder find the best.
-- **Warning:** don't try to figure out a `query_name` on your own. Query names may change in the future. You can always count on `$results->getParameter('query_name')` to get the `query_name` that led to those `$results`.
+- **Warning:** don't try to figure out a `query_name` on your own. Query names may change in the future. Always count on `$results->getParameter('query_name')` or `$client->getSearchParam("query_name")` to get the `query_name` that led to those `$results`.
 
 #### `dumpParams()`
 
@@ -311,17 +312,17 @@ __Example:__ _color_ (terms filter) must be `blue` or `red` and _price_ (range f
 ```html
 <input name="dfParam_filter[color][]" value="blue">
 <input name="dfParam_filter[color][]" value="red">
-<input name="dfParam_filter[price][from]" value="10.2">
+<input name="dfParam_filter[price][gte]" value="10.2">
 ```
 
 
 This constructs the array:
 
 ```php
-dfParam_filter = array(
-  'color' => array('blue', 'red'),
-  'price' => array('from' => 10.2)
-);
+dfParam_filter = [
+  'color' => ['blue', 'red'],
+  'price' => ['from' => 10.2],
+];
 ```
 
 #### Sort Parameters
@@ -354,10 +355,10 @@ __Example:__ sort in descending order by price and if same price, sort by title 
 This constructs the array:
 
 ```php
-dfParam_sort = array(
-  array('price' => 'desc'),
-  array('title' => 'asc')
-);
+dfParam_sort = [
+  ['price' => 'desc'],
+  ['title' => 'asc'],
+];
 ```
 
 Please read carefully the [sort parameters](http://www.doofinder.com/support/developer/api/search-api#sort-parameters) section in our search API documentation.
@@ -382,6 +383,7 @@ foreach ($results->getResults() as $result) {
 
 ```php
 $results = $client->search([
+    "hashid" => HASHID,
     "query" => "test query",
     "page" => 3,
     // Results Per Page (default: 10)
@@ -389,7 +391,7 @@ $results = $client->search([
     // types of item to search (default: all)
     "types" => ["product", "question"],
     // Template used to return items
-    "transformer" => "dflayer",
+    "transformer" => "basic",
     // Filtering options
     "filter" => [
         "brand" => ["nike", "converse"],
