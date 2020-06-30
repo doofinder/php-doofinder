@@ -1,6 +1,6 @@
 {
   "name": "doofinder/doofinder",
-  "version": "5.9.1",
+  "version": "6.0.0",
   "type": "library",
   "description": "Doofinder PHP API Client",
   "keywords": [
@@ -20,18 +20,34 @@
       "name": "Carlos Escribano",
       "email": "carlos@doofinder.com",
       "role": "Developer"
+    },
+    {
+      "name": "Domingo Arteaga",
+      "email": "domingo@doofinder.com",
+      "role": "Developer"
+    },
+    {
+      "name": "Swagger and contributors",
+      "homepage": "https://github.com/swagger-api/swagger-codegen"
     }
   ],
   "require": {
-    "php": ">=5.3.0"
+    "php": ">=5.6",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "guzzlehttp/guzzle": "^6.5"
   },
   "require-dev": {
     "phpunit/phpunit": "4.8.*",
-    "php-mock/php-mock-phpunit": "1.1.*"
+    "php-mock/php-mock-phpunit": "1.1.*",
+    "squizlabs/php_codesniffer": "~2.6"
   },
   "autoload": {
     "psr-4": {
-      "Doofinder\\Api\\": "src/"
+      "Doofinder\\Search\\": "src/Search/",
+      "Doofinder\\Management\\" : "src/Management/",
+      "DoofinderManagement\\" : "src/Management/PhpClient/"
     }
   }
 }

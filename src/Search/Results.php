@@ -1,5 +1,5 @@
 <?php
-namespace Doofinder\Api\Search;
+namespace Doofinder\Search;
 
 /**
  * @author JoeZ99 <jzarate@gmail.com>

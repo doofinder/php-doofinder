@@ -1,9 +1,9 @@
 <?php
 
-namespace Doofinder\Api\Search;
+namespace Doofinder\Search;
 
 /**
- * Doofinder\Api\Search\Error
+ * Doofinder\Search\Error
  *
  * Represents an error returned to the user of the library.
  */
