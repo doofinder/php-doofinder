@@ -75,7 +75,7 @@ require_once("path/to/php-doofinder/autoload.php");
 
 define("HASHID", "6a9gbc4dcx735x123b1e0198gf92e6e9");
 define("SERVER", "eu1-search.doofinder.com");
-define("API_KEY", "384fdag73c7ff0a59g589xf9f4083bxb9727f9c3")
+define("API_KEY", "384fdag73c7ff0a59g589xf9f4083bxb9727f9c3");
 
 // Set server and API Key
 $client = new \Doofinder\Search\Client(SERVER, API_KEY);
