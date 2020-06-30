@@ -31,7 +31,7 @@
 
 To install the library you can download it from the project's [releases](https://github.com/doofinder/php-doofinder/releases) page or use [Composer](https://packagist.org/packages/doofinder/doofinder).
 
-Requires PHP 7.3 or later. Not tested in previous versions.
+Requires PHP 5.6 or later. Not tested in previous versions.
 
 ### Download Method
 
@@ -54,7 +54,7 @@ If you're already using composer your autoload.php file will be updated. If not,
 
 ```php
 <?php
-require_once dirname(__FILE__).'/vendor/autoload.php';
+require_once dirname(__FILE__)."/vendor/autoload.php";
 
 use \Doofinder\Search\Client as SearchClient;
 
@@ -66,32 +66,31 @@ $client = new SearchClient(HASHID, API_KEY);
 ### Quick & Dirty
 
 ```php
-require_once('path/to/php-doofinder/autoload.php');
+require_once("path/to/php-doofinder/autoload.php");
 
-define('HASHID', '6a9gbc4dcx735x123b1e0198gf92e6e9');
-define('API_KEY', 'eu1-384fdag73c7ff0a59g589xf9f4083bxb9727f9c3')
+define("HASHID", "6a9gbc4dcx735x123b1e0198gf92e6e9");
+define("SERVER", "eu1-search.doofinder.com");
+define("API_KEY", "384fdag73c7ff0a59g589xf9f4083bxb9727f9c3")
 
-// Set hashid and API Key
-$client = new \Doofinder\Search\Client(HASHID, API_KEY);
+// Set server and API Key
+$client = new \Doofinder\Search\Client(SERVER, API_KEY);
 
-// You can specify filters
-$client->setFilter('brand', array('nike', 'converse')); // brand must be 'nike' or 'converse' AND ...
-$client->setFilter('color', array('red', 'blue'));      // ... color must be 'red' or 'blue' AND ...
-$client->setFilter('price', array('from'=>33.2));       // ... price must be upper than 33.2
+$searchParams = [
+    "hashid" => HASHID,
+    "query" => "sneakers",
+    "filter" => [
+        "brand" => ["nike", "converse"],
+        "color" => ["red", "blue"],
+        "price" => ["from" => 33.2, "to" => 99]
+    ],
+    "sort" => [
+        ["price" => "desc"],
+        ["title" => "asc"]
+    ],
+    "transformer" => "basic"
+];
 
-// You can also use more specific methods for that.
-$client->addTerm('brand', 'adidas');    // add 'adidas' to the 'brand' filter
-$client->removeTerm('brand', 'nike');   // remove 'nike' from the 'brand' filter
-$client->setRange('price', null, 99.9); // add an upper limit to the price
-
-// Feeling adventurous? sort!
-
-$client->addSort('price', 'desc'); // sort by price (descending)...
-$client->addSort('title', 'asc');  // ... and then by title (ascending)
-
-// Do the query, specify the page if you want.
-// 'page' = 1. optional . 'transformer' = 'dflayer'. optional.
-$results = $client->query('test query', 1, array('transformer' => 'dflayer'));
+$results = $client->search($searchParams);
 
 // With the results object, fetch specific properties, facets or the results
 // itself as an array.
@@ -107,12 +106,6 @@ $results->getProperty('doofinder_status');  // special Doofinder status, see bel
 // special properties: banner and redirect (if defined in your control center)
 $banner = $results->getProperty('banner'); // array with 'id', 'link', 'image' and 'blank' keys
 $redirect = $results->getProperty('redirect'); // array with 'id' and 'url' keys
-
-// register banner display to Doofinder metrics
-if($banner){
-  $client->registerBannerDisplay($banner['id']);
-}
-
 
 // If you use the 'basic' transformer ...
 foreach($results->getResults() as $result){
@@ -139,7 +132,31 @@ $price_facet = $results->getFacet('price');
 echo "Min price found: ".$price_facet['from']."\n";
 // Min price found: 33.6
 echo "Max price found: ".$price_facet['to']."\n";
+
+
+// You can iterate through pages too:
+$params = [
+  'hashid' => HASHID,
+  "filter" => [
+    "country" => ["Spain"]
+  ],
+  "sort" => [
+    ["city" => "asc"]
+  ],
+  "rpp" => 5
+];
+
+$results = $client->search($params);
+while ($results) {
+  foreach ($results->getResults() as $item) {
+    $city = $item["city"];
+    $title = $item["title"];
+    echo "[$city] $title" . PHP_EOL;
+  }
+  $results = $client->getNextPage();
+}
 ```
+
 
 __Notice:__
 
@@ -158,64 +175,127 @@ However, if you're going to apply filters to a query, that means you're going to
 
 ```php
 // make the initial query. no filters and no "query_name" specified
-$results = $client->query("baby gloves");
-// "query_name" is automatically set to be the same it used for the first query
-// add a filter
-$client->addTerm('category', 'More than 6 years');
+$params = ['hashid' => HASHID, "query" => "baby gloves"]
+$results = $client->search($params);
+
+$params["query_name"] = $client->getSearchParam("query_name");
+$params["filter"] = [
+    "category" => ["More than 6 years"]
+];
+
 // do the same query. this time filtered and with a specific query_name
-$client->query("baby gloves");
+$client->search($params);
 ```
 
-or with a form parameter:
+#### Load parameters from request: `searchParams()`
+
+You can load form parameters:
 
 ```html
-<form>
-  <input type="text" name="dfParam_query">
-  <input type="hidden" name="dfParam_query_name" value="text_all">
+<form method="GET" action="search.php">
+  <input type="hidden" name="hashid" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">
+  <input type="text" name="query" value="sneakers">
+  <input type="hidden" name="query_name" value="match_and">
   ...
 </form>
+```
+
+```php
+$params = $client->searchParams($_GET);
+// [
+//     "hashid" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+//     "query" => "sneakers",
+//     "query_name" => "match_and"
+//     …
+// ]
+```
+
+You can change the name of the query parameter:
+
+```html
+<form method="GET" action="search.php">
+  <input type="hidden" name="hashid" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">
+  <input type="text" name="text" value="sneakers">
+  <input type="hidden" name="query_name" value="match_and">
+  ...
+</form>
+```
+
+```php
+$params = $client->searchParams($_GET, ["queryParameter" => "text"]);
+// [
+//     "hashid" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+//     "query" => "sneakers",
+//     "query_name" => "match_and"
+//     …
+// ]
+```
+
+And you can add a prefix if necessary:
+
+```html
+<form method="GET" action="search.php">
+  <input type="hidden" name="dfParam_hashid" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">
+  <input type="text" name="dfParam_text" value="sneakers">
+  <input type="hidden" name="dfParam_query_name" value="match_and">
+  ...
+</form>
+```
+
+```php
+$params = $client->searchParams($_GET, ["prefix" => "dfParam_", "queryParameter" => "text"]);
+// [
+//     "hashid" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+//     "query" => "sneakers",
+//     "query_name" => "match_and",
+//     …
+// ]
 ```
 
 In short:
 
 - You make a query to Doofinder either with filters or not. You don't need to specify `query_name`. Doofinder will find the more suitable `query_name`.
-- Once you got the results, you can use `$results->getProperty('query_name')` to know which `query_name` was the one Doofinder chose.
+- Once you got the results, you can use `$results->getProperty('query_name')` to know which `query_name` was the one Doofinder chose in a specific set of results or use `$client->getSearchParam("query_name")` to get the query name from the latest call.
 - If you want to make further filtering on those search results, you should instruct Doofinder to use the same `query_name` you got from the first search results.
 - Each time you do any new query, don't specify `query_name`. Let Doofinder find the best.
-- **Warning:** don't try to figure out a `query_name` on your own. query names may change in the future. You can always count on `$results->getParameter('query_name')` to get the `query_name` that led to those `$results`
+- **Warning:** don't try to figure out a `query_name` on your own. Query names may change in the future. Always count on `$results->getParameter('query_name')` or `$client->getSearchParam("query_name")` to get the `query_name` that led to those `$results`.
 
-#### `toQuerystring()`
+#### `dumpParams()`
 
-Dumps the complete state of the client (query, page, filters, rpp) into a querystring. Every param has the (configurable) `dfParam_` prefix to avoid conflicts.
+Dumps the parameters of the latest search done to an array.
 
 ```php
-$page = 3; // Results page number. Optional.
-echo $client->toQuerystring($page);
-// query=dfParam_test+query&dfParam_rpp=4&dfParam_timeout=8000&dfParam_page=3
+$client->search(["hashid" => HASHID, "query" => "sneakers"]);
+$client->dumpParams(["prefix" => "dfParam_", "queryParameter" => "dfParam_"]);
+// [
+//     "hashid" => "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+//     "query" => "sneakers",
+//     "query_name" => "match_and",
+//     "page" => 1,
+//     …
+// ]
+```
+
+#### `qs()`
+
+This is the same as the `dumpParams()` method but generates a querystring instead of an array:
+
+```php
+$client->search(["hashid" => HASHID, "query" => "sneakers"]);
+$client->qs();
+// hashid=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&query=sneakers&query_name=match_and&page=1
+$client->qs(["queryParameter" => "text"]);
+// hashid=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&text=sneakers&query_name=match_and&page=1
+$client->qs(["prefix" => "dfParam_"]);
+// dfParam_hashid=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&dfParam_query=sneakers&dfParam_query_name=match_and&dfParam_page=1
+$client->qs(["prefix" => "dfParam_", "queryParameter" => "text"]);
+// dfParam_hashid=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&dfParam_text=sneakers&dfParam_query_name=match_and&dfParam_page=1
 ```
 
 You can use it to build links to search results:
 
-```html
-<a href="results.php?<?php echo $client->toQuerystring(4)?>">Next Page</a>
-```
-
-#### `fromQuerystring()`
-
-Gets information from the PHP request globals and initialises the client with search parameters (query, page, filters, rpp).
-
 ```php
-$client = new \Doofinder\Search\Client(HASHID, API_KEY);
-$client->fromQuerystring();
-$results = $client->query();
-```
-
-You can do the same in the constructor by passing `true` as the third parameter. This code is equivalent to the code above:
-
-```php
-<?php
-$client = new \Doofinder\Search\Client(HASHID, API_KEY, true);
-$results = $client->query();
+<a href="results.php?<?php echo $client->qs(['page' => 4])?>">Next Page</a>
 ```
 
 #### Filter Parameters
@@ -232,17 +312,17 @@ __Example:__ _color_ (terms filter) must be `blue` or `red` and _price_ (range f
 ```html
 <input name="dfParam_filter[color][]" value="blue">
 <input name="dfParam_filter[color][]" value="red">
-<input name="dfParam_filter[price][from]" value="10.2">
+<input name="dfParam_filter[price][gte]" value="10.2">
 ```
 
 
 This constructs the array:
 
 ```php
-dfParam_filter = array(
-  'color' => array('blue', 'red'),
-  'price' => array('from' => 10.2)
-);
+dfParam_filter = [
+  'color' => ['blue', 'red'],
+  'price' => ['from' => 10.2],
+];
 ```
 
 #### Sort Parameters
@@ -275,10 +355,10 @@ __Example:__ sort in descending order by price and if same price, sort by title 
 This constructs the array:
 
 ```php
-dfParam_sort = array(
-  array('price' => 'desc'),
-  array('title' => 'asc')
-);
+dfParam_sort = [
+  ['price' => 'desc'],
+  ['title' => 'asc'],
+];
 ```
 
 Please read carefully the [sort parameters](http://www.doofinder.com/support/developer/api/search-api#sort-parameters) section in our search API documentation.
@@ -302,62 +382,97 @@ foreach ($results->getResults() as $result) {
 ### Extra Search Options
 
 ```php
-$query = 'test query';
-$page = 3;
-$results = $client->query($query, $page, array(
-  // Results Per Page (default: 10)
-  'rpp' => 4,
-  // types of item to search (default: all)
-  'types' => array('product', 'question'),
-  // Template used to return items
-  'transformer' => 'dflayer',
-  // Filtering options
-  'filter' => array(
-    'brand' => array('nike', 'converse'),
-    'price' => array('from'=> 33.2, 'to'=> 99),
-  ),
-  // Sorting options
-  'sort' => array(
-    array('price' => 'asc'),
-    array('title' => 'desc'),
-  )
-));
+$results = $client->search([
+    "hashid" => HASHID,
+    "query" => "test query",
+    "page" => 3,
+    // Results Per Page (default: 10)
+    "rpp" => 4,
+    // types of item to search (default: all)
+    "types" => ["product", "question"],
+    // Template used to return items
+    "transformer" => "basic",
+    // Filtering options
+    "filter" => [
+        "brand" => ["nike", "converse"],
+        "price" => ["from"=> 33.2, "to"=> 99],
+    ],
+    // Sorting options
+    "sort" => [
+        ["price" => "asc"],
+        ["title" => "desc"],
+    ]
+]);
 ```
 
-### Extra Constructor Options
+### The Doofinder Metrics
+
+In order to take the most of Doofinder stats, you can **register** in Doofinder certain events so you can have stats and metrics.
+
+#### Register Session
+
+All metrics require a unique session id. You must generate and register it before performing any search. It's your responsability to manage its duration (recommended 24h or until a checkout is done - see _Register Checkout_).
 
 ```php
-$client = new \Doofinder\Search\Client(
-  HASHID,
-  API_KEY,
-  true, // Whether to import request parameters or not (default: false)
-  array(
-    // Prefix to use with toQuerystring() (default: dfParam_)
-    'prefix' => 'sp_df_df_',
-    // Parameter name to use for the query parameter (default: query)
-    'queryParameter' => 'q',
-    // API version of the search server (default: 5)
-    'apiVersion' => '5',
-    // Use only parameters from $_POST or $_GET methods
-    // (default: unset, uses $_REQUEST)
-    'restrictedRequest' => 'post'
-  )
-);
+$sessionId = $client->createSessionId();
+$client->registerSession($sessionId, HASHID);
 ```
 
-### The Doofinder metrics
+**IMPORTANT:** This method should only be used once per user until the session expires.
 
-In order to take the most of Doofinder stats, you can **register** in Doofinder certain events so you can have stats and metrics:
+#### Register Checkout
 
-- **The `init` event** (`$client->initSession()`) : You'll have to init a session for every user session, so you can get proper checkout metrics (number of buyings per user session. Remember, this method is to be used **once** during a user session. You should call this method the first time the user uses the search capabilities, but only the first time.
-- **The `checkout` event** (`$client->registerCheckout()`): Every time a user does a checkout as a result of the search terms, you should trigger this method. *NOTE:* make sure `$client->initSession()` has been called before in the user session.
-- **The `click` event** (`$client->registerClick($id, $datatype, $query)`) every time a click is done on a search result, you should register it, providing:
-    - `id`: Database ID of the item clicked.
-    - `datatype`: Data type of the item in Doofinder (i.e. 'product', 'article').
-    - `query`: The search terms that led to the current set of results.
-- **The `banner_display` event** (`$client->registerBannerDisplay($bannerId)`) every time a banner from you have configured in Doofinder is displayed. You'll know this because you'll have access to the "banner" property of your results.
-- **The `banner_click` event** (`$client->registerBannerClick($bannerId)`) every time a user clicks on a search results banner, you should use this method to register that click.
-- **The `redirect` event***`$client->registerRedirection($redirectionId, $query, $link)` every time a user follows one redirection provided by your search results you should register it.
+Call this method when a goal is achieved (a user purchases something…). Use the session id previously generated and then, regenerate the session id.
+
+```php
+$client->registerCheckout($sessionId, HASHID);
+$sessionId = $client->createSessionId();
+```
+
+#### Register Result Click
+
+Register the fact of a user clicking a product after a search.
+
+```php
+$doofinderItemId = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@product@ffffffffffffffffffffffffffffffff";
+$client->registerClick($sessionId, HASHID, $doofinderItemId);
+```
+
+If you want, you can provide the item's database id (the id you provided when indexing the item). Just provide the datatype used for indexing:
+
+```php
+$client->registerClick($sessionId, HASHID, 12345, ["datatype" => "product"]);
+```
+
+You can link the click to the search query for enhanced insights:
+
+```php
+$client->registerClick($sessionId, HASHID, 12345, [
+    "datatype" => "product",
+    "query" => "sneakers"
+]);
+```
+
+#### Register Banner Click
+
+Sometimes the response can hold banner info if you defined a banner for certain search conditions. You can register a click on a banner with:
+
+```php
+$banner = $results->getProperty("banner");
+$client->registerImageClick($sessionId, HASHID, $banner["id"]);
+```
+
+#### Register Redirection
+
+As with banners, you can register a redirection if you defined it in Doofinder. You're the responsible of redirecting the user or not, and you can send the event to Doofinder, optionally linking with the query, with:
+
+```php
+$redirection = $results->getProperty("redirection");
+$query = $results->getProperty("query");
+$client->registerRedirection($sessionId, HASHID, $redirection["id"], $redirection["url"], [
+    "query" => $query
+]);
+```
 
 ### The special 'banner' and 'redirect' results properties
 
@@ -368,15 +483,24 @@ In the Doofinder control center you can create:
 
 If present in the response, you can get both properties along with their info by simply accesing them with `getProperty`:
 
+```html+php
+<?php
+$results = $client->search("This search term produces banner in search results");
+$banner = $results->getProperty("banner"); // if no banner, this is null
+?>
+
+<?php if ($banner): ?>
+  <a href="<? php echo $banner['link'] ?>">
+    <img src="<?php echo $banner["image"] ?>">
+  </a>
+<?php endif ?>
+```
+
 ```php
-$results = $client->query("This search term produces banner in search results");
-$banner = $results->getProperty('banner'); // if no banner, this is null
-if($banner){
-   echo "<div><a href="'.$banner['link'].'"><img src="'.$banner['image'].'"></a></div>";
-}
-$redirect = $results->getProperty('redirect');// if no redirect, this is null
-if($redirect){
-   header("location: ".$redirect['url']);
+$redirection = $results->getProperty("redirection"); // if no redirect, this is null
+
+if ($redirection) {
+   header("location: " . $redirection["url"]);
 }
 ```
 
@@ -385,36 +509,29 @@ if($redirect){
 #### `\Doofinder\Search\Client`
 
 ```php
-$client->query($query, $page, $options);                     // Perform search
-$client->hasNext();                                          // Boolean, true if there is a next page of results
-$client->hasPrev();                                          // Boolean, true if there is a prev page of results
-$client->numPages();                                         // Total number of pages
-$client->getPage();                                          // Get the actual page number
-$client->setFilter($filterName, $filter);                    // Set a filter
-$client->getFilter($filterName);                             // Get a filter by name
-$client->getFilters();                                       // Get all filters
-$client->addTerm($filterName, $term);                        // Add a term to a terms type $filterName
-$client->removeTerm($filterName, $term);
-$client->setRange($filterName, $from, $to);                  // Specify parameters for a range filter
-$client->getFilter($filter_name);                            // Get filter specifications for $filter_name, if any
-$client->getFilters();                                       // Get filter specifications for all defined filters
-$client->addSort($sortField, $direction);                    // Tells Doofinder to sort results
-$client->setPrefix($prefix);                                 // Sets prefix for dumping/recovering from querystring
-$client->toQuerystring($page);                               // Dumps state info to a querystring
-$client->fromQuerystring();                                  // Recover state from a querystring
-$client->nextPage();                                         // Obtain results for the nextpage
-$client->prevPage();                                         // Obtain results for the prev page
-$client->numPages();                                         // Num of pages
-$client->getRpp();                                           // Get the number of results per page
-$client->getTimeout();
-$client->setApiVersion($apiVersion);                         // Sets API version to use (default: 5)
-$client->initSession();                                      // Initializes session for the search client
-$client->registerClick($id, $datatype, $query);              // Register a click in Doofinder metrics
-$client->registerCheckout();                                 // Register a checkout in Doofinder metrics
-$client->registerBannerDisplay($bannerId);                   // Register a banner display in Doofinder metrics
-$client->registerBannerClick($bannerId);                     // Register a banner click in Doofinder metrics
-$client->registerRedirection($redirectionId, $query, $link); // Register a redirection in Doofinder metrics
+$client->searchParams($params, $options);                               // Import search params from a request into an array
+$client->dumpParams($options);                                          // Export latest search params in client into an array
+$client->qs();                                                          // Export latest search params in client to a string
 
+$client->search($params);                                               // Perform search
+$client->getNextPage();                                                 // Perform a search for the next page of results
+$client->getPreviousPage();                                             // Perform a search for the previous page of results
+
+$client->getSearchParam($paramName, $defaultValue);                     // Get a search parameter from the client for the latest search done
+
+$client->createSessionId();                                             // Create a hash to be used as session id
+$client->registerSession($sessionId, $hashid);                          // Initializes session for the search client
+$client->registerClick($sessionId, $hashid, $id, $options);             // Register a click in Doofinder
+$client->registerCheckout($sessionId, $hashid);                         // Register a checkout in Doofinder
+$client->registerImageClick($sessionId, $hashid, $imageId);             // Register a banner click in Doofinder
+$client->registerRedirection($sessionId, $hashid,
+                             $redirectionId, $link, $options);          // Register a redirection in Doofinder
+
+$client->addToCart($sessionId, $hashid, $id, $amount, $options);        // Add an amount of item to the cart in the current session
+$client->removeFromCart($sessionId, $hashid, $id, $amount, $options);   // Remove an amount of item from the cart in the current session
+$client->clearCart($sessionId, $hashid);                                // Clear the cart in the current session
+
+$client->setCustomHeaders($headers);                                    // Add custom headers to all requests
 ```
 
 #### `\Doofinder\Search\Results`
@@ -437,19 +554,24 @@ $results->status;                     // Account status info. 'success', 'exhaus
   require_once('path/to/php-doofinder/autoload.php');
 
   define('HASHID', '6a9gbc4dcx735x123b1e0198gf92e6e9');
-  define('API_KEY', 'eu1-384fdag73c7ff0a59g589xf9f4083bxb9727f9c3')
+  define('SERVER', 'eu1-search.doofinder.com');
+  define('API_KEY', '384fdag73c7ff0a59g589xf9f4083bxb9727f9c3');
 
-  $client = new \Doofinder\Search\Client(HASHID, API_KEY, true);
+  $client = new \Doofinder\Search\Client(SERVER, API_KEY);
   // if no dfParam_query, fetch all the results, to fetch all possible facets
-  $results = $client->query(null, null, array('transformer'=>'dflayer'));
+  $results = $client->search(array("transformer" => "basic"));
+  $query = $results->getProperty("query");
+  $queryName = $results->getProperty("query_name");
+  $page = $results->getProperty("page", 1);
+  $totalPages = $client->getTotalPages();
 ?>
 
-<form method="get" action="">
-  <input type="text" name="dfParam_query" onchange="emptyQueryName()" value="<?php echo $results->getProperty('query') ?>">
+<form method="GET" action="">
+  <input type="text" name="dfParam_query" onchange="emptyQueryName()" value="<?php echo $query ?>">
   <input type="hidden" name="dfParam_rpp" value="3">
-  <input type="hidden" name="dfParam_transformer" value="dflayer">
+  <input type="hidden" name="dfParam_transformer" value="basic">
   <!-- this has to be removed via javascript if we want Doofinder to find the best search for us. -->
-  <input type="hidden" id="query_name" name="dfParam_query_name" value="<?php echo $results->getProperty('query_name') ?>">
+  <input type="hidden" id="query_name" name="dfParam_query_name" value="<?php echo $queryName ?>">
   <input type="submit" value="search!">
 
   <p>Filter by:</p>
@@ -472,8 +594,8 @@ $results->status;                     // Account status info. 'success', 'exhaus
           <?php if $facetResults['_type'] == 'range'): $range = $facetResults['ranges'][0]; ?>
             <li>
               Range: <?php echo $range['min']?> -- <?php echo $range['max']?><br/>
-              From: <input type="text" name="dfParam_filter[<?php echo $facetName?>][from]" value="<?php echo $range['selected_from']?>">
-              To: <input type="text" name="dfParam_filter[<?php echo $facetName?>][to]" value="<?php echo $range['selected_to']?>">
+              From: <input type="text" name="dfParam_filter[<?php echo $facetName?>][gte]" value="<?php echo $range['selected_from']?>">
+              To: <input type="text" name="dfParam_filter[<?php echo $facetName?>][lte]" value="<?php echo $range['selected_to']?>">
             </li>
           <?php endif?>
         </ul>
@@ -490,12 +612,13 @@ $results->status;                     // Account status info. 'success', 'exhaus
   <?php endforeach ?>
 </ul>
 
-<?php if ($client->hasPrev()): ?>
-  <a href="?<?php echo $client->toQuerystring($client->getPage() - 1) ?>">Prev</a>
-<?php endif?>
-Number of pages: <?php echo $client->numPages() ?>
-<?php if ($client->hasNext()): ?>
-  <a href="?<?php echo $client->toQuerystring($client->getPage() + 1) ?>">Next</a>
+<?php if ($totalPages): ?>
+    <?php if ($page > 1): ?>
+        <a href="?<?php echo $client->qs(["page" => $page - 1]) ?>">Prev</a>
+    <?php endif?>
+    <?php if ($page < $totalPages): ?>
+        <a href="?<?php echo $client->qs(["page" => $page + 1]) ?>">Next</a>
+    <?php endif?>
 <?php endif?>
 
 <script>
@@ -507,4 +630,3 @@ Number of pages: <?php echo $client->numPages() ?>
   }
 </script>
 ```
-
