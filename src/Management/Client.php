@@ -92,9 +92,11 @@ class Client
       throw $error;
     }
 
+    $decodedResponse = json_decode($contentResponse, true);
+
     return array(
       'statusCode' => $statusCode,
-      'response' => ($decoded = json_decode($contentResponse, true)) ? $decoded : $contentResponse
+      'response' => is_array($decodedResponse) ? $decodedResponse : $contentResponse,
     );
   }
 
