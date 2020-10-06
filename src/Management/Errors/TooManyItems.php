@@ -1,4 +1,4 @@
 <?php
 namespace Doofinder\Management\Errors;
 
-class NotAllowed extends \Exception {}
+class TooManyItems extends \Exception {}
