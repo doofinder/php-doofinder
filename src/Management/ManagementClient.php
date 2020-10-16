@@ -7,11 +7,12 @@
 
 namespace Doofinder\Management;
 
+use Doofinder\Management\Errors\Utils;
 use DoofinderManagement\Api\SearchEnginesApi;
 use DoofinderManagement\Api\ItemsApi;
 use DoofinderManagement\Api\IndicesApi;
-
 use DoofinderManagement\Configuration;
+use DoofinderManagement\ApiException;
 use GuzzleHttp\Client;
 
 
@@ -79,7 +80,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\ProcessingTask
      */
     public function processSearchEngine($hashid) {
-        return $this->searchEngineClient->process($hashid);
+        try {
+            return $this->searchEngineClient->process($hashid);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
   
     /**
@@ -90,7 +99,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\ProcessingTask
      */
     public function getProcessStatus($hashid) {
-        return $this->searchEngineClient->processStatus($hashid);
+        try {
+            return $this->searchEngineClient->processStatus($hashid);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -101,7 +118,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\SearchEngine
      */
     public function createSearchEngine($body) {
-        return $this->searchEngineClient->searchEngineCreate($body);
+        try {
+            return $this->searchEngineClient->searchEngineCreate($body);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
     
     /**
@@ -112,7 +137,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\SearchEngine
      */
     public function getSearchEngine($hashid) {
-        return $this->searchEngineClient->searchEngineShow($hashid);
+        try {
+            return $this->searchEngineClient->searchEngineShow($hashid);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
     
     /**
@@ -121,7 +154,15 @@ class ManagementClient {
      * @param string $hashid Unique id of a search engine. (required)
      */
     public function deleteSearchEngine($hashid) {
-    $this->searchEngineClient->searchEngineDelete($hashid);
+        try {
+            $this->searchEngineClient->searchEngineDelete($hashid);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -133,7 +174,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\SearchEngine
      */
     public function updateSearchEngine($hashid, $body){
-        return $this->searchEngineClient->searchEngineUpdate($body, $hashid);
+        try {
+            return $this->searchEngineClient->searchEngineUpdate($body, $hashid);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -142,7 +191,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\SearchEngines
      */
     public function listSearchEngines(){
-        return $this->searchEngineClient->searchEngineList();
+        try {
+            return $this->searchEngineClient->searchEngineList();
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -153,7 +210,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\ReindexingTask
      */
     public function returnReindexingStatus($hashid, $name) {
-        return $this->IndicesClient->getReindexingStatus($hashid, $name);
+        try {
+            return $this->IndicesClient->getReindexingStatus($hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
     
     /**
@@ -164,7 +229,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\Index
      */
     public function createIndex($hashid, $body) {
-        return $this->IndicesClient->indexCreate($body, $hashid);
+        try {
+            return $this->IndicesClient->indexCreate($body, $hashid);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
     
     /**
@@ -175,7 +248,15 @@ class ManagementClient {
      * @return void
      */
     public function deleteIndex($hashid, $name) {
-      $this->IndicesClient->indexDelete($hashid, $name);
+        try {
+            $this->IndicesClient->indexDelete($hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -185,7 +266,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\Indices
      */
     public function listIndices($hashid){
-        return $this->IndicesClient->indexIndex($hashid);
+        try {
+            return $this->IndicesClient->indexIndex($hashid);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
     
     /**
@@ -196,7 +285,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\Index
      */
     public function getIndex($hashid, $name) {
-        return $this->IndicesClient->indexShow($hashid, $name);
+        try {
+            return $this->IndicesClient->indexShow($hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
   
     /**
@@ -209,7 +306,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\Index
      */
     public function updateIndex($hashid, $name, $body){
-        return $this->IndicesClient->indexUpdate($body, $hashid, $name);
+        try {
+            return $this->IndicesClient->indexUpdate($body, $hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
   
     /**
@@ -221,7 +326,15 @@ class ManagementClient {
      * @return object
      */
     public function reindex($hashid, $name){
-        return $this->IndicesClient->reindexToTemp($hashid, $name);
+        try {
+            return $this->IndicesClient->reindexToTemp($hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
   
     /**
@@ -233,7 +346,15 @@ class ManagementClient {
      * @return object
      */
     public function replace($hashid, $name){
-        return $this->IndicesClient->replaceByTemp($hashid, $name);
+        try {
+            return $this->IndicesClient->replaceByTemp($hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
   
     /**
@@ -245,7 +366,15 @@ class ManagementClient {
      * @return object
      */
     public function createTemporaryIndex($hashid, $name){
-        return $this->IndicesClient->temporaryIndexCreate($hashid, $name);
+        try {
+            return $this->IndicesClient->temporaryIndexCreate($hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
   
     /**
@@ -257,7 +386,15 @@ class ManagementClient {
      * @return void
      */
     public function deleteTemporaryIndex($hashid, $name){
-        return $this->IndicesClient->temporaryIndexDelete($hashid, $name);
+        try {
+            return $this->IndicesClient->temporaryIndexDelete($hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -270,7 +407,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\Item
      */
     public function createItem($hashid, $name, $body) {
-        return $this->ItemsClient->itemCreate($body, $hashid, $name);
+        try {
+            return $this->ItemsClient->itemCreate($body, $hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
   
     /**
@@ -283,7 +428,15 @@ class ManagementClient {
      * @return void
      */
     public function deleteItem($hashid, $item_id, $name) {
-        return $this->ItemsClient->itemDelete($hashid, $name, $item_id);
+        try {
+            return $this->ItemsClient->itemDelete($hashid, $name, $item_id);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -298,7 +451,15 @@ class ManagementClient {
     * @return \DoofinderManagement\Model\Scroller
     */
     public function scrollsItems($hashid, $name, $scroll_id = null, $rpp = null) {
-        return $this->ItemsClient->itemIndex($hashid, $name, $scroll_id, $rpp);
+        try {
+            return $this->ItemsClient->itemIndex($hashid, $name, $scroll_id, $rpp);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -311,7 +472,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\Item
      */
     public function getItem($hashid, $item_id, $name) {
-        return $this->ItemsClient->itemShow($hashid, $name, $item_id);
+        try {
+            return $this->ItemsClient->itemShow($hashid, $name, $item_id);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -324,7 +493,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\Item
      */
     public function createTempItem($hashid, $name, $body) {
-        return $this->ItemsClient->itemTempCreate($hashid, $name, $body);
+        try {
+            return $this->ItemsClient->itemTempCreate($hashid, $name, $body);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -337,7 +514,15 @@ class ManagementClient {
      * @return void
      */
     public function deleteTempItem($hashid, $item_id, $name) {
-        return $this->ItemsClient->itemTempDelete($hashid, $name, $item_id);
+        try {
+            return $this->ItemsClient->itemTempDelete($hashid, $name, $item_id);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -350,7 +535,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\Item
      */
     public function getTempItem($hashid, $item_id, $name) {
-        return $this->ItemsClient->itemTempShow($hashid, $name, $item_id);
+        try {
+            return $this->ItemsClient->itemTempShow($hashid, $name, $item_id);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -364,7 +557,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\Item
      */
     public function updateTempItem($hashid, $item_id, $name, $body) {
-        return $this->ItemsClient->itemTempUpdate($body, $hashid, $name, $item_id);
+        try {
+            return $this->ItemsClient->itemTempUpdate($body, $hashid, $name, $item_id);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -378,7 +579,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\Item
      */
     public function updateItem($hashid, $item_id, $name, $body) {
-        return $this->ItemsClient->itemUpdate($body, $hashid, $name, $item_id);
+        try {
+            return $this->ItemsClient->itemUpdate($body, $hashid, $name, $item_id);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -391,7 +600,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\BulkResult
      */
     public function createBulk($hashid, $name, $body) {
-        return $this->ItemsClient->itemsBulkCreate($body, $hashid, $name);
+        try {
+            return $this->ItemsClient->itemsBulkCreate($body, $hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -404,7 +621,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\BulkResult
      */
     public function deleteBulk($hashid, $name, $body) {
-        return $this->ItemsClient->itemsBulkDelete($body, $hashid, $name);
+        try {
+            return $this->ItemsClient->itemsBulkDelete($body, $hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -417,7 +642,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\BulkResult
      */
     public function updateBulk($hashid, $name, $body) {
-        return $this->ItemsClient->itemsBulkUpdate($body, $hashid, $name);
+        try {
+            return $this->ItemsClient->itemsBulkUpdate($body, $hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -430,7 +663,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\BulkResult
      */
     public function createTempBulk($hashid, $name, $body) {
-        return $this->ItemsClient->itemsTempBulkCreate($body, $hashid, $name);
+        try {
+            return $this->ItemsClient->itemsTempBulkCreate($body, $hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -443,7 +684,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\BulkResult
      */
     public function deleteTempBulk($hashid, $name, $body) {
-        return $this->ItemsClient->itemsTempBulkDelete($body, $hashid, $name);
+        try {
+            return $this->ItemsClient->itemsTempBulkDelete($body, $hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
 
     /**
@@ -456,7 +705,15 @@ class ManagementClient {
      * @return \DoofinderManagement\Model\BulkResult
      */
     public function updateTempBulk($hashid, $name, $body) {
-        return $this->ItemsClient->itemsTempBulkUpdate($body, $hashid, $name);
+        try {
+            return $this->ItemsClient->itemsTempBulkUpdate($body, $hashid, $name);
+        } catch (ApiException $e) {
+            $statusCode = $e->getCode();
+            $contentResponse = $e->getResponseBody();
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
+            
+            throw $error;
+        }
     }
   }
   
