@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [6.1.0] - 2020-10-16
+### Added
+- Custom error classes for Management API.
+
+## [6.0.0] - 2020-06-30
+### Added
+- New client for Management API v2.
+
+### Changed
+- Refactored client for Search API v5.
+  - Holds less state.
+  - Refactor some methods related to params processing.
+
+### Removed
+- Client for Management API v1.
+- Some methods related to facets and sorting in search client.
+
 ## [5.9.1] - 2019-11-15
 ### Fixed
 - Guarantee a max of 2 requests/s when getting search engines. Thanks to @magently.
