@@ -85,7 +85,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -104,7 +104,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -123,7 +123,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -142,7 +142,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -159,7 +159,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -179,7 +179,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -196,7 +196,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -215,7 +215,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -234,7 +234,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -253,7 +253,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -271,7 +271,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -290,7 +290,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -311,7 +311,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -331,7 +331,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -351,7 +351,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -371,7 +371,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -391,7 +391,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -412,7 +412,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -433,7 +433,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -456,7 +456,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -477,7 +477,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -498,7 +498,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -519,7 +519,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -540,7 +540,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -562,7 +562,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -584,7 +584,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -605,7 +605,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -626,7 +626,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -647,7 +647,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -668,7 +668,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -689,7 +689,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
@@ -710,7 +710,7 @@ class ManagementClient {
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse);
+            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
             
             throw $error;
         }
