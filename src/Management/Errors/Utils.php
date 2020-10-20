@@ -11,11 +11,11 @@ use Doofinder\Management\Errors\ConflictRequest;
 use Doofinder\Management\Errors\TooManyItems;
 use Doofinder\Management\Errors\TooManyRequests;
 use Doofinder\Management\Errors\WrongResponse;
+use DoofinderManagement\ApiException;
 
 
 class Utils {
   public static function handleErrors($statusCode, $response, $exception) {
-    print_r($exception);
     switch ($statusCode) {
       case 400:
         if (Utils::getCode($response) == "bad_params" || Utils::getCode($response) == "index_internal_error") {
@@ -53,7 +53,7 @@ class Utils {
         return new BadGateway("Bad Gateway Error connecting to Doofinder.", null, $exception);
     }
 
-    return false;
+    return new ApiException("Unknown error", null, $exception);
   }
 
   private static function getCode($response) {

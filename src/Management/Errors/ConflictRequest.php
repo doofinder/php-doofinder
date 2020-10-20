@@ -1,4 +1,4 @@
 <?php
-namespace Doofinder\Api\Management\Errors;
+namespace Doofinder\Management\Errors;
 
 class ConflictRequest extends \Exception {}
