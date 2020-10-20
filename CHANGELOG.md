@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [6.1.1] - 2020-10-20
+### Fixed
+- Some bugs with error classes in Management API (thanks to @arkadiuszzietek).
+
 ## [6.1.0] - 2020-10-16
 ### Added
 - Custom error classes for Management API.
