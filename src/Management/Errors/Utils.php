@@ -19,41 +19,41 @@ class Utils {
     switch ($statusCode) {
       case 400:
         if (Utils::getCode($response) == "bad_params" || Utils::getCode($response) == "index_internal_error") {
-            return new BadRequest("Request contains wrong parameter or values.", null, $exception);
+            return new BadRequest("Request contains wrong parameter or values.", $statusCode, $exception, $response);
         } elseif (Utils::getCode($response) == "invalid_boost_value") {
-            return new BadRequest("Invalid value for item boost field.", null, $exception);
+            return new BadRequest("Invalid value for item boost field.", $statusCode, $exception, $response);
         } elseif (Utils::getCode($response) == "invalid_field_name") {
-            return new BadRequest("Items field names contains invalid characters.", null, $exception);
+            return new BadRequest("Items field names contains invalid characters.", $statusCode, $exception, $response);
         }else {
-            return new BadRequest("The client made a bad request.", null, $exception);
+            return new BadRequest("The client made a bad request.", $statusCode, $exception, $response);
         };
       case 401:
-        return new NotAllowed("The user hasn't provided valid authorization.", null, $exception);
+        return new NotAllowed("The user hasn't provided valid authorization.", $statusCode, $exception, $response);
       case 403:
-        return new NotAllowed("The user does not have permissions to perform this operation.", null, $exception);
+        return new NotAllowed("The user does not have permissions to perform this operation.", $statusCode, $exception, $response);
       case 404:
-        return new NotFound("Not Found.", null, $exception);
+        return new NotFound("Not Found.", $statusCode, $exception, $response);
       case 408:
-        return new APITimeout("Operation has surpassed time limit.", null, $exception);
+        return new APITimeout("Operation has surpassed time limit.", $statusCode, $exception, $response);
       case 409:
         if (Utils::getCode($response) == "searchengine_locked") {
-            return new ConflictRequest("The request search engine is locked by another operation.", null, $exception);
+            return new ConflictRequest("The request search engine is locked by another operation.", $statusCode, $exception, $response);
         } elseif (Utils::getCode($response) == "too_many_temporary") {
-            return new ConflictRequest("There are too many temporary index.", null, $exception);
+            return new ConflictRequest("There are too many temporary index.", $statusCode, $exception, $response);
         }else {
-            return new ConflictRequest("Request conflict.", null, $exception);
+            return new ConflictRequest("Request conflict.", $statusCode, $exception, $response);
         };
       case 413:
-          return new TooManyItems("Requests contains too many items.", null, $exception);
+          return new TooManyItems("Requests contains too many items.", $statusCode, $exception, $response);
       case 429:
-        return new TooManyRequests("Too many requests by second.", null, $exception);
+        return new TooManyRequests("Too many requests by second.", $statusCode, $exception, $response);
       case 500:
-        return new WrongResponse("Server error.", null, $exception);
+        return new WrongResponse("Server error.", $statusCode, $exception, $response);
       case 502:
-        return new BadGateway("Bad Gateway Error connecting to Doofinder.", null, $exception);
+        return new BadGateway("Bad Gateway Error connecting to Doofinder.", $statusCode, $exception, $response);
     }
 
-    return new ApiException("Unknown error", null, $exception);
+    return new ApiException("Unknown error", $statusCode, $exception, $response);
   }
 
   private static function getCode($response) {

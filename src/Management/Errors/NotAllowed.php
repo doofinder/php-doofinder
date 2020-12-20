@@ -1,4 +1,6 @@
 <?php
 namespace Doofinder\Management\Errors;
 
-class NotAllowed extends \Exception {}
+use Doofinder\Management\Errors\DoofinderError;
+
+class NotAllowed extends DoofinderError {}

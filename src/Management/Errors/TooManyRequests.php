@@ -1,4 +1,6 @@
 <?php
 namespace Doofinder\Management\Errors;
 
-class TooManyRequests extends \Exception {}
+use Doofinder\Management\Errors\DoofinderError;
+
+class TooManyRequests extends DoofinderError {}

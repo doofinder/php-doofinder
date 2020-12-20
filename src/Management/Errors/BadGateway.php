@@ -1,4 +1,6 @@
 <?php
 namespace Doofinder\Management\Errors;
 
-class BadGateway extends \Exception {}
+use Doofinder\Management\Errors\DoofinderError;
+
+class BadGateway extends DoofinderError {}

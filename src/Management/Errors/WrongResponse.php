@@ -1,4 +1,6 @@
 <?php
 namespace Doofinder\Management\Errors;
 
-class WrongResponse extends \Exception {}
+use Doofinder\Management\Errors\DoofinderError;
+
+class WrongResponse extends DoofinderError {}
