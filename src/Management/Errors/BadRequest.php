@@ -1,4 +1,6 @@
 <?php
 namespace Doofinder\Management\Errors;
 
-class BadRequest extends \Exception {}
+use Doofinder\Management\Errors\DoofinderError;
+
+class BadRequest extends DoofinderError {}

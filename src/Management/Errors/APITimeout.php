@@ -1,4 +1,6 @@
 <?php
 namespace Doofinder\Management\Errors;
 
-class APITimeout extends \Exception {}
+use Doofinder\Management\Errors\DoofinderError;
+
+class APITimeout extends DoofinderError {}
