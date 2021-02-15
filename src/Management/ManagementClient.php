@@ -494,7 +494,7 @@ class ManagementClient {
      */
     public function createTempItem($hashid, $name, $body) {
         try {
-            return $this->ItemsClient->itemTempCreate($hashid, $name, $body);
+            return $this->ItemsClient->itemTempCreate($body, $hashid, $name);
         } catch (ApiException $e) {
             $statusCode = $e->getCode();
             $contentResponse = $e->getResponseBody();
