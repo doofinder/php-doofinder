@@ -298,15 +298,6 @@ self::RESULT_DELETED,        ];
      */
     public function setResult($result)
     {
-        $allowedValues = $this->getResultAllowableValues();
-        if (!is_null($result) && !in_array($result, $allowedValues, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "Invalid value for 'result', must be one of '%s'",
-                    implode("', '", $allowedValues)
-                )
-            );
-        }
         $this->container['result'] = $result;
 
         return $this;
