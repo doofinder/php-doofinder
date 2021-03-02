@@ -1,6 +1,6 @@
 {
   "name": "doofinder/doofinder",
-  "version": "6.1.3",
+  "version": "6.1.4",
   "type": "library",
   "description": "Doofinder PHP API Client",
   "keywords": [
