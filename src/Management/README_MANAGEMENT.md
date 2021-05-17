@@ -63,7 +63,7 @@ composer install
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-define('YOUR_HOST', 'eu1-api.doofinder.com');
+define('YOUR_HOST', 'https://eu1-api.doofinder.com');
 define('YOUR_API_KEY', '384fdag73c7ff0a59g589xf9f4083bxb9727f9c3');
 
 $client = new Doofinder\Management\ManagementClient(YOUR_HOST, YOUR_API_KEY);
