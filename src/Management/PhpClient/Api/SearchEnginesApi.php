@@ -890,7 +890,6 @@ class SearchEnginesApi
             $headers
         );
 
-        //$query = \GuzzleHttp\Psr7\Query::build($queryParams);
         $query = \GuzzleHttp\Psr7\Query::build($queryParams);
         return new Request(
             'POST',
