@@ -865,7 +865,6 @@ class SearchEnginesApi
             } else {
                 // for HTTP post (form)
                 $httpBody = \GuzzleHttp\Psr7\Query::build($formParams);
-                $httpBody = \GuzzleHttp\Psr7\Query::build(($formParams);
             }
         }
 
