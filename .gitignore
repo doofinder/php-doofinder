@@ -1,6 +1,2 @@
-*~
-.DS_Store
-*.diff
-*.sublime-project
-*.sublime-workspace
+.idea
 vendor/*
