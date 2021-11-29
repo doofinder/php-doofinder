@@ -1,0 +1,49 @@
+{
+  "name": "doofinder/php-doofinder",
+  "version": "6.2.0",
+  "type": "library",
+  "description": "Doofinder PHP API Client",
+  "keywords": [
+    "search",
+    "api",
+    "doofinder"
+  ],
+  "homepage": "https://github.com/doofinder/php-doofinder-2.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "JoeZ99",
+      "email": "jzarate@gmail.com",
+      "role": "Developer"
+    },
+    {
+      "name": "Carlos Escribano",
+      "email": "carlos@doofinder.com",
+      "role": "Developer"
+    },
+    {
+      "name": "Domingo Arteaga",
+      "email": "domingo@doofinder.com",
+      "role": "Developer"
+    },
+    {
+      "name": "Gabriel Lagunilla",
+      "email": "gabriel@doofinder.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=5.6",
+    "ext-curl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Doofinder\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  }
+}
