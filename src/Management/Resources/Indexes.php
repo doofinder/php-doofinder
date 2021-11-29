@@ -2,14 +2,14 @@
 
 namespace Doofinder\Management\Resources;
 
-class Indexes
-{
-    private function __construct()
-    {
-    }
+use Doofinder\Configuration;
+use Doofinder\Shared\Interfaces\HttpClientInterface;
+use Doofinder\Shared\Resource;
 
-    public static function create()
+class Indexes extends Resource
+{
+    public static function create(HttpClientInterface $httpClient, Configuration $config)
     {
-        return new self();
+        return new self($httpClient, $config);
     }
 }
