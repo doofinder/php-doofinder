@@ -1,8 +1,9 @@
 <?php
 
-namespace Doofinder\Tests\Unit\Management;
+namespace Tests\Unit\Management;
 
 use Doofinder\Management\ManagementClient;
+use Doofinder\Shared\Services\Validator\Validations\IntegerValidation;
 
 class ManagementClientTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,5 +23,13 @@ class ManagementClientTest extends \PHPUnit_Framework_TestCase
         $result = $managementClient->getProcessStatus('fake_hash_id');
         $this->assertTrue(is_array($result));
         $this->assertEmpty($result);
+    }
+
+    public function testCreateSearchEngine()
+    {
+        $managementClient = $this->createSut();
+        $params = [];
+        $this->expectException(\Exception::class);
+        $managementClient->createSearchEngine($params);
     }
 }
