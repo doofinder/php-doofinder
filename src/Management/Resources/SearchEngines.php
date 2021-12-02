@@ -28,9 +28,4 @@ class SearchEngines extends Resource
             //Do something and return error
         }
     }
-
-    public function getValidations($path)
-    {
-        return include $this->getConfig()->getValidationsPath() . '/SearchEngines/' . $path;
-    }
 }

@@ -3,7 +3,6 @@
 namespace Tests\Unit\Management;
 
 use Doofinder\Management\ManagementClient;
-use Doofinder\Shared\Services\Validator\Validations\IntegerValidation;
 
 class ManagementClientTest extends \PHPUnit_Framework_TestCase
 {
