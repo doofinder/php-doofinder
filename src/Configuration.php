@@ -22,4 +22,9 @@ class Configuration
     {
         return $this->host;
     }
+
+    public function getToken()
+    {
+        return $this->token;
+    }
 }

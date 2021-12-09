@@ -6,27 +6,53 @@ use Doofinder\Configuration;
 use Doofinder\Management\Resources\Indexes;
 use Doofinder\Management\Resources\Items;
 use Doofinder\Management\Resources\SearchEngines;
+use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpClient;
+use Doofinder\Shared\Interfaces\HttpResponseInterface;
+use Doofinder\Shared\Utils\ErrorHandler;
 
 class ManagementClient
 {
+    /**
+     * @var SearchEngines
+     */
     private $searchEnginesResource;
+
+    /**
+     * @var Items
+     */
     private $itemsResource;
+
+    /**
+     * @var Indexes
+     */
     private $indexesResource;
 
-
-    private function __construct($host, $token)
-    {
-        $config = Configuration::create($host, $token, 'Management');
-        $httpClient = new HttpClient();
-        $this->searchEnginesResource = SearchEngines::create($httpClient, $config);
-        $this->itemsResource = Items::create($httpClient, $config);
-        $this->indexesResource = Indexes::create($httpClient, $config);
+    private function __construct(
+        $searchEnginesResource,
+        $itemsResource,
+        $indexesResource
+    ) {
+        $this->searchEnginesResource = $searchEnginesResource;
+        $this->itemsResource = $itemsResource;
+        $this->indexesResource = $indexesResource;
     }
 
     public static function create($host, $token)
     {
-        return new self($host, $token);
+        $config = Configuration::create($host, $token, 'Management');
+        $httpClient = new HttpClient();
+
+        return new self(
+            SearchEngines::create($httpClient, $config),
+            Items::create($httpClient, $config),
+            Indexes::create($httpClient, $config)
+        );
+    }
+
+    public static function createForTest($searchEnginesResource, $itemsResource, $indexesResource)
+    {
+        return new self($searchEnginesResource, $itemsResource, $indexesResource);
     }
 
     public function getProcessStatus($hashId)
@@ -41,36 +67,73 @@ class ManagementClient
         // POST /api/v2/search_engines/{hashid}/_process
     }
 
-    public function getSearchEngine()
-    {
-        // GET /api/v2/search_engines/{hashid}
-    }
-
-    public function deleteSearchEngine()
-    {
-        // DELETE /api/v2/search_engines/{hashid}
-    }
-
-    public function updateSearchEngine()
-    {
-        // PATCH /api/v2/search_engines/{hashid}
-    }
-
-    public function listSearchEngines()
-    {
-        // GET /api/v2/search_engines
-    }
-
+    /**
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
     public function createSearchEngine(array $params)
     {
         try {
-            $this->searchEnginesResource->createSearchEngine($params);
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-            throw $e;
+            return $this->searchEnginesResource->createSearchEngine($params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
+    /**
+     * @param string $hashId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateSearchEngine($hashId, array $params)
+    {
+        try {
+            return $this->searchEnginesResource->updateSearchEngine($hashId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 
+    /**
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getSearchEngine($hashId)
+    {
+        try {
+            return $this->searchEnginesResource->getSearchEngine($hashId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 
+    /**
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function listSearchEngines()
+    {
+        try {
+            return $this->searchEnginesResource->listSearchEngines();
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteSearchEngine($hashId)
+    {
+        try {
+            return $this->searchEnginesResource->deleteSearchEngine($hashId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

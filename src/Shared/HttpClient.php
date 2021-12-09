@@ -2,23 +2,42 @@
 
 namespace Doofinder\Shared;
 
+use Doofinder\Shared\Exceptions\RequestException;
 use Doofinder\Shared\Interfaces\HttpClientInterface;
 
 class HttpClient implements HttpClientInterface
 {
-
-    public function request($url, $method, $params, $options)
+    public function request($url, $method, $params, $headers)
     {
         $s = curl_init();
         curl_setopt($s,CURLOPT_URL,$url);
+        curl_setopt($s,CURLOPT_NOBODY, false);
+        curl_setopt($s,CURLOPT_POST, ($method === self::METHOD_GET)? 0 : 1);
+        curl_setopt($s,CURLOPT_POSTFIELDS, json_encode($params));
+        curl_setopt($s, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($s, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($s, CURLOPT_HTTPHEADER, $this->getHeader($headers));
 
-        if($method === 'POST') {
-            curl_setopt($s,CURLOPT_POST,true);
-            curl_setopt($s,CURLOPT_POSTFIELDS, $params);
+        if (($response = curl_exec($s)) === false) {
+            $error = curl_error($s);
+            curl_close($s);
+            throw new RequestException('curl_error', $error);
+        } else {
+            $response = HttpResponse::create(curl_getinfo($s)['http_code'], $response);
         }
 
-        curl_exec($s);
-        $status = curl_getinfo($s);
         curl_close($s);
+
+        return $response;
+    }
+
+    private function getHeader($headers)
+    {
+        $header = ['Content-Type: application/json'];
+        if ($headers) {
+            $header = array_merge($header, $headers);
+        }
+
+        return $header;
     }
 }

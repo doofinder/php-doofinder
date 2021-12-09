@@ -32,7 +32,7 @@ class ErrorHandler
         self::DEFAULT_FIELD => 'Unknown error'
     ];
 
-    public static function create($statusCode, $response, $exception)
+    public static function create($statusCode, $response, $exception = null)
     {
         $message = array_key_exists($statusCode, self::MESSAGES)?
             self::MESSAGES[$statusCode] : self::MESSAGES[self::DEFAULT_FIELD];
@@ -42,7 +42,7 @@ class ErrorHandler
                 $message[ErrorHandler::getErrorCode($response)] : $message[self::DEFAULT_FIELD];
         }
 
-        return new ApiException($message, $statusCode, $exception);
+        return new ApiException($message, $statusCode, $exception, $response);
     }
 
     private static function getErrorCode($response)
