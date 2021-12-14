@@ -10,6 +10,9 @@ use Doofinder\Shared\Interfaces\HttpClientInterface;
 use Doofinder\Shared\Interfaces\HttpResponseInterface;
 use Doofinder\Shared\Resource;
 
+/**
+ * SearchEngines class is responsible for making the requests to the search_engine's endpoints and return a response
+ */
 class SearchEngines extends Resource
 {
     /**

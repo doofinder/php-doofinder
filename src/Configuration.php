@@ -7,15 +7,15 @@ class Configuration
     private $host;
     private $token;
 
-    private function __construct($host, $token, $scope)
+    private function __construct($host, $token)
     {
         $this->host = $host;
         $this->token = $token;
     }
 
-    public static function create($host, $token, $scope)
+    public static function create($host, $token)
     {
-        return new self($host, $token, $scope);
+        return new self($host, $token);
     }
 
     public function getBaseUrl()

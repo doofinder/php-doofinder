@@ -11,6 +11,10 @@ class SearchEngineList implements ModelInterface
      */
     private $searchEngines = [];
 
+    /**
+     * @param array $data
+     * @return SearchEngineList
+     */
     public static function createFromArray(array $data)
     {
         $entity = new self();
@@ -29,6 +33,9 @@ class SearchEngineList implements ModelInterface
         return $this->searchEngines;
     }
 
+    /**
+     * @return array
+     */
     public function jsonSerialize()
     {
         $searchEnginesArray = [];

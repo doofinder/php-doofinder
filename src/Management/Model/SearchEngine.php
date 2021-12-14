@@ -6,7 +6,6 @@ use Doofinder\Shared\Interfaces\ModelInterface;
 
 class SearchEngine implements ModelInterface
 {
-
     /**
      * @var string
      */
@@ -88,9 +87,12 @@ class SearchEngine implements ModelInterface
         $this->hasGrouping = $hasGrouping;
     }
 
+    /**
+     * @param array $data
+     * @return SearchEngine
+     */
     public static function createFromArray(array $data)
     {
-        // TODO Revisar como hacer esta parte
         return new self(
             $data['language'],
             $data['name'],
@@ -194,6 +196,9 @@ class SearchEngine implements ModelInterface
         return $this->hasGrouping;
     }
 
+    /**
+     * @return array
+     */
     public function jsonSerialize()
     {
         return [

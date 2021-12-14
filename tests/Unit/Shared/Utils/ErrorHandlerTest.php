@@ -3,7 +3,7 @@
 namespace Tests\Unit\Shared\Utils;
 
 use Doofinder\Shared\Exceptions\ApiException;
-use Doofinder\Shared\Interfaces\HttpResponseInterface;
+use Doofinder\Shared\HttpStatusCode;
 use Doofinder\Shared\Utils\ErrorHandler;
 use PHPUnit_Framework_TestCase;
 use Exception;
@@ -13,22 +13,22 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase
     public function errorsProvider()
     {
         return [
-            [HttpResponseInterface::STATUS_BAD_REQUEST, 'Request contains wrong parameter or values.', 'bad_params'],
-            [HttpResponseInterface::STATUS_BAD_REQUEST, 'Request contains wrong parameter or values.', 'index_internal_error'],
-            [HttpResponseInterface::STATUS_BAD_REQUEST, 'Invalid value for item boost field.', 'invalid_boost_value'],
-            [HttpResponseInterface::STATUS_BAD_REQUEST, 'Items field names contains invalid characters.', 'invalid_field_name'],
-            [HttpResponseInterface::STATUS_BAD_REQUEST, 'The client made a bad request.'],
-            [HttpResponseInterface::STATUS_UNAUTHORIZED, 'The user hasn\'t provided valid authorization.'],
-            [HttpResponseInterface::STATUS_FORBIDDEN, 'The user does not have permissions to perform this operation.'],
-            [HttpResponseInterface::STATUS_NOT_FOUND, 'Not Found.'],
-            [HttpResponseInterface::STATUS_TIMEOUT, 'Operation has surpassed time limit.'],
-            [HttpResponseInterface::STATUS_CONFLICT, 'The request search engine is locked by another operation.', 'searchengine_locked'],
-            [HttpResponseInterface::STATUS_CONFLICT, 'There are too many temporary index.', 'too_many_temporary'],
-            [HttpResponseInterface::STATUS_CONFLICT, 'Request conflict.'],
-            [HttpResponseInterface::STATUS_ENTITY_TOO_LARGE, 'Requests contains too many items.'],
-            [HttpResponseInterface::STATUS_TOO_MANY_REQUESTS, 'Too many requests by second.'],
-            [HttpResponseInterface::STATUS_INTERNAL_SERVER_ERROR, 'Server error.'],
-            [HttpResponseInterface::STATUS_BAD_GATEWAY, 'Bad Gateway Error connecting to Doofinder.'],
+            [HttpStatusCode::BAD_REQUEST, 'Request contains wrong parameter or values.', 'bad_params'],
+            [HttpStatusCode::BAD_REQUEST, 'Request contains wrong parameter or values.', 'index_internal_error'],
+            [HttpStatusCode::BAD_REQUEST, 'Invalid value for item boost field.', 'invalid_boost_value'],
+            [HttpStatusCode::BAD_REQUEST, 'Items field names contains invalid characters.', 'invalid_field_name'],
+            [HttpStatusCode::BAD_REQUEST, 'The client made a bad request.'],
+            [HttpStatusCode::UNAUTHORIZED, 'The user hasn\'t provided valid authorization.'],
+            [HttpStatusCode::FORBIDDEN, 'The user does not have permissions to perform this operation.'],
+            [HttpStatusCode::NOT_FOUND, 'Not Found.'],
+            [HttpStatusCode::REQUEST_TIMEOUT, 'Operation has surpassed time limit.'],
+            [HttpStatusCode::CONFLICT, 'The request search engine is locked by another operation.', 'searchengine_locked'],
+            [HttpStatusCode::CONFLICT, 'There are too many temporary index.', 'too_many_temporary'],
+            [HttpStatusCode::CONFLICT, 'Request conflict.'],
+            [HttpStatusCode::REQUEST_ENTITY_TOO_LARGE, 'Requests contains too many items.'],
+            [HttpStatusCode::TOO_MANY_REQUESTS, 'Too many requests by second.'],
+            [HttpStatusCode::INTERNAL_SERVER_ERROR, 'Server error.'],
+            [HttpStatusCode::BAD_GATEWAY, 'Bad Gateway Error connecting to Doofinder.'],
             [555, 'Unknown error'],
         ];
     }
