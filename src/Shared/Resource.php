@@ -57,7 +57,7 @@ abstract class Resource
 
             if ($message === false) {
                 // TODO Mirar que hacer en estos casos?
-                throw new \HttpResponseException('');
+                $message = '';
             }
 
             throw new ApiException($message, $response->getStatusCode(), null, $response);

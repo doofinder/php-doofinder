@@ -30,7 +30,7 @@ class SearchEngines extends Resource
     public function createSearchEngine(array $params)
     {
         return $this->requestWithJwt(
-            $this->baseUrl . '/api/v2/search_engines',
+            $this->baseUrl . '/search_engines',
             HttpClientInterface::METHOD_POST,
             SearchEngine::class,
             $params
@@ -46,7 +46,7 @@ class SearchEngines extends Resource
     public function updateSearchEngine($hashId, array $params)
     {
         return $this->requestWithJwt(
-            $this->baseUrl . '/api/v2/search_engines/' . $hashId,
+            $this->baseUrl . '/search_engines/' . $hashId,
             HttpClientInterface::METHOD_PATCH,
             SearchEngine::class,
             $params
@@ -61,7 +61,7 @@ class SearchEngines extends Resource
     public function getSearchEngine($hashId)
     {
         return $this->requestWithJwt(
-            $this->baseUrl . '/api/v2/search_engines/' . $hashId,
+            $this->baseUrl . '/search_engines/' . $hashId,
             HttpClientInterface::METHOD_GET,
             SearchEngine::class
         );
@@ -74,7 +74,7 @@ class SearchEngines extends Resource
     public function listSearchEngines()
     {
         return $this->requestWithJwt(
-            $this->baseUrl . '/api/v2/search_engines',
+            $this->baseUrl . '/search_engines',
             HttpClientInterface::METHOD_GET,
             SearchEngineList::class
         );
@@ -88,7 +88,7 @@ class SearchEngines extends Resource
     public function deleteSearchEngine($hashId)
     {
         return $this->requestWithJwt(
-            $this->baseUrl . '/api/v2/search_engines/' . $hashId,
+            $this->baseUrl . '/search_engines/' . $hashId,
             HttpClientInterface::METHOD_DELETE
         );
     }
