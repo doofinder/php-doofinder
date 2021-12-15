@@ -40,7 +40,7 @@ class ManagementClient
 
     public static function create($host, $token)
     {
-        $config = Configuration::create($host, $token, 'Management');
+        $config = Configuration::create($host, $token);
         $httpClient = new HttpClient();
 
         return new self(

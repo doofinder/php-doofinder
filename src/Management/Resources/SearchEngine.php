@@ -3,7 +3,6 @@
 namespace Doofinder\Management\Resources;
 
 use Doofinder\Configuration;
-use Doofinder\Management\Model\SearchEngineList;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\Interfaces\HttpClientInterface;
 use Doofinder\Shared\Interfaces\HttpResponseInterface;
@@ -75,11 +74,19 @@ class SearchEngine extends Resource
      */
     public function listSearchEngines()
     {
-        return $this->requestWithJwt(
+        $httpResponse = $this->requestWithJwt(
             $this->baseUrl . '/search_engines',
-            HttpClientInterface::METHOD_GET,
-            SearchEngineList::class
+            HttpClientInterface::METHOD_GET
         );
+
+        $httpResponse->setBody(
+            array_map(function (array $searchEngine) {
+            return \Doofinder\Management\Model\SearchEngine::createFromArray($searchEngine);
+            },
+            $httpResponse->getBody()
+        ));
+
+        return $httpResponse;
     }
 
     /**

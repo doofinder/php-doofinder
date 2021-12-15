@@ -4,7 +4,7 @@ namespace Doofinder\Shared;
 
 class HttpStatusCode
 {
-    // TODO Mirar si hay más errores que controlar
+    // TODO Remove the unused constants after implement the whole PHP library.
     const OK = 200;
     const CREATED = 201;
 //    const ACCEPTED = 202;

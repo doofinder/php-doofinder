@@ -4,7 +4,6 @@ namespace Tests\Unit\Management;
 
 use Doofinder\Management\ManagementClient;
 use Doofinder\Management\Model\SearchEngine as SearchEngineModel;
-use Doofinder\Management\Model\SearchEngineList;
 use Doofinder\Management\Resources\Index;
 use Doofinder\Management\Resources\Item;
 use Doofinder\Management\Resources\SearchEngine;
@@ -35,11 +34,6 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
      * @var SearchEngine
      */
     private $searchEngine;
-
-    /**
-     * @var SearchEngineList
-     */
-    private $searchEngineList;
 
     /**
      * @var ApiException
@@ -75,11 +69,6 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         /** @var SearchEngine searchEngine */
         $this->searchEngine = SearchEngineModel::createFromArray(
             $params
-        );
-
-        /** @var SearchEngineList searchEngine */
-        $this->searchEngineList = SearchEngineList::createFromArray(
-            [$params]
         );
 
         $this->unauthorizedException = new ApiException('', HttpStatusCode::UNAUTHORIZED);
@@ -467,7 +456,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function testListSearchEngineSuccess()
     {
         $httpResponse = HttpResponse::create(HttpStatusCode::OK);
-        $httpResponse->setBody($this->searchEngineList);
+        $httpResponse->setBody([$this->searchEngine]);
 
         $this->searchEnginesResource
             ->expects($this->once())
@@ -478,12 +467,12 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $response = $managementClient->listSearchEngines();
 
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
-        $searchEngineList = $response->getBody();
+        $searchEngines = $response->getBody();
 
-        $this->assertInstanceOf(SearchEngineList::class, $searchEngineList);
-        $this->assertCount(1, $searchEngineList->getSearchEngines());
+        $this->assertCount(1, $searchEngines);
+        $this->assertInstanceOf(SearchEngineModel::class, $searchEngines[0]);
 
-        $searchEngine = $searchEngineList->getSearchEngines()[0];
+        $searchEngine = $searchEngines[0];
         $this->assertSame($this->searchEngine->getCurrency(), $searchEngine->getCurrency());
         $this->assertSame($this->searchEngine->getHashid(), $searchEngine->getHashid());
         $this->assertSame($this->searchEngine->getIndices(), $searchEngine->getIndices());

@@ -4,7 +4,6 @@ namespace Tests\Unit\Management\Resources;
 
 use Doofinder\Configuration;
 use Doofinder\Management\Model\SearchEngine as SearchEngineModel;
-use Doofinder\Management\Model\SearchEngineList;
 use Doofinder\Management\Resources\SearchEngine;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpClient;
@@ -318,11 +317,12 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $response = $this->createSut()->listSearchEngines();
 
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
-        $this->assertInstanceOf(SearchEngineList::class, $response->getBody());
 
-        /** @var SearchEngineList $searchEngineList */
-        $searchEngineList = $response->getBody();
-        $this->assertSame($searchEngineList->jsonSerialize(), $body);
+        /** @var array<SearchEngine> $searchEngines */
+        $searchEngines = $response->getBody();
+        $this->assertCount(1, $searchEngines);;
+        $this->assertInstanceOf(SearchEngineModel::class, $searchEngines[0]);
+        $this->assertSame($searchEngines[0]->jsonSerialize(), $body[0]);
     }
 
     public function testDeleteSearchEngine()
