@@ -3,9 +3,9 @@
 namespace Tests\Unit\Management\Resources;
 
 use Doofinder\Configuration;
-use Doofinder\Management\Model\SearchEngine;
+use Doofinder\Management\Model\SearchEngine as SearchEngineModel;
 use Doofinder\Management\Model\SearchEngineList;
-use Doofinder\Management\Resources\SearchEngines;
+use Doofinder\Management\Resources\SearchEngine;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpClient;
 use Doofinder\Shared\HttpResponse;
@@ -39,7 +39,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
 
     public function createSut()
     {
-        return SearchEngines::create($this->httpClient, $this->config);
+        return SearchEngine::create($this->httpClient, $this->config);
     }
 
     public function testCreateSearchEngine()
@@ -80,7 +80,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $response = $this->createSut()->createSearchEngine($params);
 
         $this->assertSame(HttpStatusCode::CREATED, $response->getStatusCode());
-        $this->assertInstanceOf(SearchEngine::class, $response->getBody());
+        $this->assertInstanceOf(SearchEngineModel::class, $response->getBody());
 
         /** @var SearchEngine $searchEngine */
         $searchEngine = $response->getBody();
@@ -110,6 +110,34 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
             /** @var HttpResponseInterface $response */
             $response = $e->getBody();
             $this->assertSame('bad_params', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCreateSearchEngineErrorWhithNoMessage()
+    {
+        $response = HttpResponse::create(HttpStatusCode::BAD_REQUEST, '{"error": {"code" : "Something went wrong"}}');
+        $params = [];
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_POST, $params, ['Authorization: Token ' . self::TOKEN])
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->createSearchEngine($params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('Something went wrong', $response->getBody()['error']['code']);
         }
 
         $this->assertTrue($thrownException);
@@ -155,9 +183,9 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $response = $this->createSut()->updateSearchEngine($hashId, $params);
 
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
-        $this->assertInstanceOf(SearchEngine::class, $response->getBody());
+        $this->assertInstanceOf(SearchEngineModel::class, $response->getBody());
 
-        /** @var SearchEngine $searchEngine */
+        /** @var SearchEngineModel $searchEngine */
         $searchEngine = $response->getBody();
         $this->assertSame($searchEngine->jsonSerialize(), $body);
     }
@@ -223,9 +251,9 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $response = $this->createSut()->getSearchEngine($hashId);
 
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
-        $this->assertInstanceOf(SearchEngine::class, $response->getBody());
+        $this->assertInstanceOf(SearchEngineModel::class, $response->getBody());
 
-        /** @var SearchEngine $searchEngine */
+        /** @var SearchEngineModel $searchEngine */
         $searchEngine = $response->getBody();
         $this->assertSame($searchEngine->jsonSerialize(), $body);
     }

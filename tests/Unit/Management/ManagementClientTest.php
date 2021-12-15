@@ -3,11 +3,11 @@
 namespace Tests\Unit\Management;
 
 use Doofinder\Management\ManagementClient;
-use Doofinder\Management\Model\SearchEngine;
+use Doofinder\Management\Model\SearchEngine as SearchEngineModel;
 use Doofinder\Management\Model\SearchEngineList;
-use Doofinder\Management\Resources\Indexes;
-use Doofinder\Management\Resources\Items;
-use Doofinder\Management\Resources\SearchEngines;
+use Doofinder\Management\Resources\Index;
+use Doofinder\Management\Resources\Item;
+use Doofinder\Management\Resources\SearchEngine;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpResponse;
 use Doofinder\Shared\HttpStatusCode;
@@ -16,7 +16,6 @@ use PHPUnit_Framework_MockObject_MockObject;
 
 class ManagementClientTest extends PHPUnit_Framework_TestCase
 {
-
     /**
      * @var PHPUnit_Framework_MockObject_MockObject
      */
@@ -74,7 +73,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         ];
 
         /** @var SearchEngine searchEngine */
-        $this->searchEngine = SearchEngine::createFromArray(
+        $this->searchEngine = SearchEngineModel::createFromArray(
             $params
         );
 
@@ -92,9 +91,9 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
             '{"error": {"code" : "not_found"}}',
             HttpStatusCode::NOT_FOUND
         );
-        $this->searchEnginesResource = $this->createMock(SearchEngines::class);
-        $this->itemsResource = $this->createMock(Items::class);
-        $this->indexesResource = $this->createMock(Indexes::class);
+        $this->searchEnginesResource = $this->createMock(SearchEngine::class);
+        $this->itemsResource = $this->createMock(Item::class);
+        $this->indexesResource = $this->createMock(Index::class);
     }
 
     /**
@@ -206,7 +205,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $this->assertSame(HttpStatusCode::CREATED, $response->getStatusCode());
         $searchEngine = $response->getBody();
 
-        $this->assertInstanceOf(SearchEngine::class, $searchEngine);
+        $this->assertInstanceOf(SearchEngineModel::class, $searchEngine);
 
         $this->assertSame($this->searchEngine->getCurrency(), $searchEngine->getCurrency());
         $this->assertSame($this->searchEngine->getHashid(), $searchEngine->getHashid());
@@ -338,10 +337,10 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $response = $managementClient->updateSearchEngine($hashId, $params);
 
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
-        /** @var SearchEngine $searchEngine */
+        /** @var SearchEngineModel $searchEngine */
         $searchEngine = $response->getBody();
 
-        $this->assertInstanceOf(SearchEngine::class, $searchEngine);
+        $this->assertInstanceOf(SearchEngineModel::class, $searchEngine);
 
         $this->assertSame($this->searchEngine->getCurrency(), $searchEngine->getCurrency());
         $this->assertSame($this->searchEngine->getHashid(), $searchEngine->getHashid());
@@ -426,7 +425,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
         $searchEngine = $response->getBody();
 
-        $this->assertInstanceOf(SearchEngine::class, $searchEngine);
+        $this->assertInstanceOf(SearchEngineModel::class, $searchEngine);
 
         $this->assertSame($this->searchEngine->getCurrency(), $searchEngine->getCurrency());
         $this->assertSame($this->searchEngine->getHashid(), $searchEngine->getHashid());

@@ -56,8 +56,7 @@ abstract class Resource
             $message = json_encode($response->getBody());
 
             if ($message === false) {
-                // TODO Mirar que hacer en estos casos?
-                $message = '';
+                $message = '{"error": {"code" : "Something went wrong"}}';
             }
 
             throw new ApiException($message, $response->getStatusCode(), null, $response);

@@ -3,9 +3,9 @@
 namespace Doofinder\Management;
 
 use Doofinder\Configuration;
-use Doofinder\Management\Resources\Indexes;
-use Doofinder\Management\Resources\Items;
-use Doofinder\Management\Resources\SearchEngines;
+use Doofinder\Management\Resources\Index;
+use Doofinder\Management\Resources\Item;
+use Doofinder\Management\Resources\SearchEngine;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpClient;
 use Doofinder\Shared\Interfaces\HttpResponseInterface;
@@ -14,17 +14,17 @@ use Doofinder\Shared\Utils\ErrorHandler;
 class ManagementClient
 {
     /**
-     * @var SearchEngines
+     * @var SearchEngine
      */
     private $searchEnginesResource;
 
     /**
-     * @var Items
+     * @var Item
      */
     private $itemsResource;
 
     /**
-     * @var Indexes
+     * @var Index
      */
     private $indexesResource;
 
@@ -44,9 +44,9 @@ class ManagementClient
         $httpClient = new HttpClient();
 
         return new self(
-            SearchEngines::create($httpClient, $config),
-            Items::create($httpClient, $config),
-            Indexes::create($httpClient, $config)
+            SearchEngine::create($httpClient, $config),
+            Item::create($httpClient, $config),
+            Index::create($httpClient, $config)
         );
     }
 

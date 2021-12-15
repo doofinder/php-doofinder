@@ -6,7 +6,7 @@ use Doofinder\Configuration;
 use Doofinder\Shared\Interfaces\HttpClientInterface;
 use Doofinder\Shared\Resource;
 
-class Indexes extends Resource
+class Index extends Resource
 {
     public static function create(HttpClientInterface $httpClient, Configuration $config)
     {
