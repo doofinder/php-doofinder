@@ -90,7 +90,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
      */
     public function createSut()
     {
-        return ManagementClient::createForTest(
+        return new ManagementClient(
             $this->searchEnginesResource,
             $this->itemsResource,
             $this->indexesResource

@@ -34,7 +34,7 @@ class ManagementClient
      */
     private $indexesResource;
 
-    private function __construct(
+    public function __construct(
         $searchEnginesResource,
         $itemsResource,
         $indexesResource
@@ -60,11 +60,6 @@ class ManagementClient
             Item::create($httpClient, $config),
             Index::create($httpClient, $config)
         );
-    }
-
-    public static function createForTest($searchEnginesResource, $itemsResource, $indexesResource)
-    {
-        return new self($searchEnginesResource, $itemsResource, $indexesResource);
     }
 
     /**
