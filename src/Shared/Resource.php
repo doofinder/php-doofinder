@@ -9,6 +9,9 @@ use Doofinder\Shared\Interfaces\HttpResponseInterface;
 use Doofinder\Shared\Interfaces\ModelInterface;
 use Doofinder\Shared\Services\Jwt;
 
+/**
+ * A resource class is in charge to communicate with the API and return a formatted response
+ */
 abstract class Resource
 {
     protected $httpClient;

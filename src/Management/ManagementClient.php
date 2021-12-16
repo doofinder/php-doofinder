@@ -12,9 +12,6 @@ use Doofinder\Shared\Interfaces\HttpResponseInterface;
 use Doofinder\Shared\Utils\ErrorHandler;
 
 /**
- * Class ManagementClient
- * @package Doofinder\Management
- *
  * This class is used to do management actions against search engines, index and items through calling an API.
  */
 class ManagementClient

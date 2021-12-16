@@ -50,5 +50,9 @@
   },
   "require-dev": {
     "phpunit/phpunit": "5.*"
+  },
+  "scripts": {
+    "remove-documentation" : "rm -rf doc/*",
+    "generate-documentation" : "php phpDocumentor.phar -d src/  -t doc/"
   }
 }

@@ -3,7 +3,7 @@ Search.appendIndex(
                 {
             "fqsen": "\\Doofinder\\Configuration",
             "name": "Configuration",
-            "summary": "",
+            "summary": "Class\u0020with\u0020API\u0020configuration",
             "url": "classes/Doofinder-Configuration.html"
         },                {
             "fqsen": "\\Doofinder\\Configuration\u003A\u003A__construct\u0028\u0029",
@@ -48,7 +48,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Management\\ManagementClient",
             "name": "ManagementClient",
-            "summary": "Class\u0020ManagementClient",
+            "summary": "This\u0020class\u0020is\u0020used\u0020to\u0020do\u0020management\u0020actions\u0020against\u0020search\u0020engines,\u0020index\u0020and\u0020items\u0020through\u0020calling\u0020an\u0020API.",
             "url": "classes/Doofinder-Management-ManagementClient.html"
         },                {
             "fqsen": "\\Doofinder\\Management\\ManagementClient\u003A\u003A__construct\u0028\u0029",
@@ -103,7 +103,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Management\\Model\\SearchEngine",
             "name": "SearchEngine",
-            "summary": "",
+            "summary": "Model\u0020with\u0020data\u0020of\u0020a\u0020given\u0020search\u0020engine",
             "url": "classes/Doofinder-Management-Model-SearchEngine.html"
         },                {
             "fqsen": "\\Doofinder\\Management\\Model\\SearchEngine\u003A\u003A__construct\u0028\u0029",
@@ -233,7 +233,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Management\\Resources\\Index",
             "name": "Index",
-            "summary": "",
+            "summary": "A\u0020resource\u0020class\u0020is\u0020in\u0020charge\u0020to\u0020communicate\u0020with\u0020the\u0020API\u0020and\u0020return\u0020a\u0020formatted\u0020response",
             "url": "classes/Doofinder-Management-Resources-Index.html"
         },                {
             "fqsen": "\\Doofinder\\Management\\Resources\\Index\u003A\u003Acreate\u0028\u0029",
@@ -243,7 +243,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Management\\Resources\\Item",
             "name": "Item",
-            "summary": "",
+            "summary": "A\u0020resource\u0020class\u0020is\u0020in\u0020charge\u0020to\u0020communicate\u0020with\u0020the\u0020API\u0020and\u0020return\u0020a\u0020formatted\u0020response",
             "url": "classes/Doofinder-Management-Resources-Item.html"
         },                {
             "fqsen": "\\Doofinder\\Management\\Resources\\Item\u003A\u003Acreate\u0028\u0029",
@@ -288,7 +288,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Search\\Resources\\Searches",
             "name": "Searches",
-            "summary": "",
+            "summary": "A\u0020resource\u0020class\u0020is\u0020in\u0020charge\u0020to\u0020communicate\u0020with\u0020the\u0020API\u0020and\u0020return\u0020a\u0020formatted\u0020response",
             "url": "classes/Doofinder-Search-Resources-Searches.html"
         },                {
             "fqsen": "\\Doofinder\\Search\\Resources\\Searches\u003A\u003Acreate\u0028\u0029",
@@ -318,7 +318,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Shared\\Exceptions\\ApiException",
             "name": "ApiException",
-            "summary": "",
+            "summary": "Exception\u0020used\u0020when\u0020API\u0020request\u0020returns\u0020a\u0020not\u0020OK\u0020response",
             "url": "classes/Doofinder-Shared-Exceptions-ApiException.html"
         },                {
             "fqsen": "\\Doofinder\\Shared\\Exceptions\\ApiException\u003A\u003A__construct\u0028\u0029",
@@ -338,12 +338,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Shared\\Exceptions\\RequestException",
             "name": "RequestException",
-            "summary": "",
+            "summary": "Exception\u0020used\u0020when\u0020there\u0020is\u0020an\u0020error\u0020in\u0020the\u0020http\u0020request",
             "url": "classes/Doofinder-Shared-Exceptions-RequestException.html"
         },                {
             "fqsen": "\\Doofinder\\Shared\\HttpClient",
             "name": "HttpClient",
-            "summary": "",
+            "summary": "Class\u0020to\u0020do\u0020requests\u0020though\u0020curl\u0020utility",
             "url": "classes/Doofinder-Shared-HttpClient.html"
         },                {
             "fqsen": "\\Doofinder\\Shared\\HttpClient\u003A\u003Arequest\u0028\u0029",
@@ -353,12 +353,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Shared\\HttpClient\u003A\u003AgetHeader\u0028\u0029",
             "name": "getHeader",
-            "summary": "",
+            "summary": "It\u0020generates\u0020the\u0020http\u0020header",
             "url": "classes/Doofinder-Shared-HttpClient.html#method_getHeader"
         },                {
             "fqsen": "\\Doofinder\\Shared\\HttpResponse",
             "name": "HttpResponse",
-            "summary": "",
+            "summary": "Class\u0020to\u0020return\u0020a\u0020formatted\u0020info\u0020comming\u0020from\u0020API",
             "url": "classes/Doofinder-Shared-HttpResponse.html"
         },                {
             "fqsen": "\\Doofinder\\Shared\\HttpResponse\u003A\u003A__construct\u0028\u0029",
@@ -398,7 +398,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Shared\\HttpStatusCode",
             "name": "HttpStatusCode",
-            "summary": "",
+            "summary": "Class\u0020to\u0020store\u0020all\u0020http\u0020status\u0020code\u0020used\u0020in\u0020the\u0020API",
             "url": "classes/Doofinder-Shared-HttpStatusCode.html"
         },                {
             "fqsen": "\\Doofinder\\Shared\\HttpStatusCode\u003A\u003AOK",
@@ -468,7 +468,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Shared\\Interfaces\\HttpClientInterface",
             "name": "HttpClientInterface",
-            "summary": "",
+            "summary": "Http\u0020client\u0027s\u0020interface",
             "url": "classes/Doofinder-Shared-Interfaces-HttpClientInterface.html"
         },                {
             "fqsen": "\\Doofinder\\Shared\\Interfaces\\HttpClientInterface\u003A\u003Arequest\u0028\u0029",
@@ -498,7 +498,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Shared\\Interfaces\\HttpResponseInterface",
             "name": "HttpResponseInterface",
-            "summary": "",
+            "summary": "Http\u0020response\u0027s\u0020interface",
             "url": "classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"
         },                {
             "fqsen": "\\Doofinder\\Shared\\Interfaces\\HttpResponseInterface\u003A\u003Acreate\u0028\u0029",
@@ -523,7 +523,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Shared\\Interfaces\\ModelInterface",
             "name": "ModelInterface",
-            "summary": "",
+            "summary": "Model\u0027s\u0020interface",
             "url": "classes/Doofinder-Shared-Interfaces-ModelInterface.html"
         },                {
             "fqsen": "\\Doofinder\\Shared\\Interfaces\\ModelInterface\u003A\u003AcreateFromArray\u0028\u0029",
@@ -533,7 +533,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Shared\\Resource",
             "name": "Resource",
-            "summary": "",
+            "summary": "A\u0020resource\u0020class\u0020is\u0020in\u0020charge\u0020to\u0020communicate\u0020with\u0020the\u0020API\u0020and\u0020return\u0020a\u0020formatted\u0020response",
             "url": "classes/Doofinder-Shared-Resource.html"
         },                {
             "fqsen": "\\Doofinder\\Shared\\Resource\u003A\u003A__construct\u0028\u0029",
@@ -563,12 +563,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Shared\\Services\\Jwt",
             "name": "Jwt",
-            "summary": "",
+            "summary": "Utility\u0020to\u0020generate\u0020a\u0020Json\u0020Web\u0020Token\u0020\u0028JWT\u0029\u0020to\u0020do\u0020requests\u0020to\u0020Doofinder\u0020API\u0020services",
             "url": "classes/Doofinder-Shared-Services-Jwt.html"
         },                {
             "fqsen": "\\Doofinder\\Shared\\Services\\Jwt\u003A\u003AgenerateToken\u0028\u0029",
             "name": "generateToken",
-            "summary": "",
+            "summary": "Given\u0020an\u0020api\u0020token\u0020and\u0020secret\u0020generates\u0020a\u0020JWT",
             "url": "classes/Doofinder-Shared-Services-Jwt.html#method_generateToken"
         },                {
             "fqsen": "\\Doofinder\\Shared\\Services\\Jwt\u003A\u003Abase64url_encode\u0028\u0029",
@@ -583,7 +583,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Shared\\Utils\\ErrorHandler",
             "name": "ErrorHandler",
-            "summary": "",
+            "summary": "Class\u0020in\u0020charge\u0020on\u0020mapping\u0020response\u0020message\u0020to\u0020client\u0020message",
             "url": "classes/Doofinder-Shared-Utils-ErrorHandler.html"
         },                {
             "fqsen": "\\Doofinder\\Shared\\Utils\\ErrorHandler\u003A\u003Acreate\u0028\u0029",

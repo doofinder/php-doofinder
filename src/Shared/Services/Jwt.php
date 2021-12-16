@@ -4,10 +4,20 @@ namespace Doofinder\Shared\Services;
 
 use DateTime;
 
+/**
+ * Utility to generate a Json Web Token (JWT) to do requests to Doofinder API services
+ */
 class Jwt
 {
     const HEADER = '{"alg": "HS256", "typ": "JWT"}';
 
+    /**
+     * Given an api token and secret generates a JWT
+     *
+     * @param string $name
+     * @param string $secret
+     * @return string
+     */
     public static function generateToken($name, $secret)
     {
         $payload = json_encode(
@@ -29,6 +39,10 @@ class Jwt
         return $headerPayload . '.' . self::base64url_encode($signature);
     }
 
+    /**
+     * @param string $data
+     * @return array|string|string[]
+     */
     private static function base64url_encode($data)
     {
         return str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($data));

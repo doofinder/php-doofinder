@@ -2,6 +2,9 @@
 
 namespace Doofinder\Shared\Interfaces;
 
+/**
+ * Model's interface
+ */
 interface ModelInterface extends \JsonSerializable
 {
     /**

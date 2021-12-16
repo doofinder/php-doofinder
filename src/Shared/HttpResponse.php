@@ -4,9 +4,19 @@ namespace Doofinder\Shared;
 
 use Doofinder\Shared\Interfaces\HttpResponseInterface;
 
+/**
+ * Class to return a formatted info comming from API
+ */
 class HttpResponse implements HttpResponseInterface
 {
+    /**
+     * @var int
+     */
     private $statusCode;
+
+    /**
+     * @var mixed
+     */
     private $body;
 
     /**
@@ -20,7 +30,7 @@ class HttpResponse implements HttpResponseInterface
     }
 
     /**
-     * @param mixed $statusCode
+     * @param int $statusCode
      * @param mixed $body
      * @return HttpResponse
      */
@@ -38,7 +48,7 @@ class HttpResponse implements HttpResponseInterface
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getStatusCode()
     {
@@ -46,7 +56,7 @@ class HttpResponse implements HttpResponseInterface
     }
 
     /**
-     * @return mixed
+     * @param mixed $body
      */
     public function setBody($body)
     {

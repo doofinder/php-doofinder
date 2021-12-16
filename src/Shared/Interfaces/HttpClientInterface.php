@@ -2,6 +2,9 @@
 
 namespace Doofinder\Shared\Interfaces;
 
+/**
+ * Http client's interface
+ */
 interface HttpClientInterface
 {
     const METHOD_POST = 'POST';

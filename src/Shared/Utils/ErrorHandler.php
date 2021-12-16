@@ -5,6 +5,9 @@ namespace Doofinder\Shared\Utils;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpStatusCode;
 
+/**
+ * Class in charge on mapping response message to client message
+ */
 class ErrorHandler
 {
     const DEFAULT_FIELD = 'default';
@@ -32,6 +35,12 @@ class ErrorHandler
         self::DEFAULT_FIELD => 'Unknown error'
     ];
 
+    /**
+     * @param int $statusCode
+     * @param string $response
+     * @param \Throwable $exception
+     * @return ApiException
+     */
     public static function create($statusCode, $response, $exception = null)
     {
         $message = array_key_exists($statusCode, self::MESSAGES)?
@@ -45,6 +54,10 @@ class ErrorHandler
         return new ApiException($message, $statusCode, $exception, $response);
     }
 
+    /**
+     * @param string $response
+     * @return array
+     */
     private static function getErrorCode($response)
     {
         return json_decode($response, true)["error"]['code'];

@@ -2,6 +2,9 @@
 
 namespace Doofinder\Shared;
 
+/**
+ * Class to store all http status code used in the API
+ */
 class HttpStatusCode
 {
     // TODO Remove the unused constants after implement the whole PHP library.

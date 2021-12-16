@@ -4,9 +4,21 @@ namespace Doofinder\Shared;
 
 use Doofinder\Shared\Exceptions\RequestException;
 use Doofinder\Shared\Interfaces\HttpClientInterface;
+use Doofinder\Shared\Interfaces\HttpResponseInterface;
 
+/**
+ * Class to do requests though curl utility
+ */
 class HttpClient implements HttpClientInterface
 {
+    /**
+     * @param string $url
+     * @param string $method
+     * @param array $params
+     * @param array $headers
+     * @return HttpResponseInterface
+     * @throws RequestException
+     */
     public function request($url, $method, $params, $headers)
     {
         $s = curl_init();
@@ -31,6 +43,12 @@ class HttpClient implements HttpClientInterface
         return $response;
     }
 
+    /**
+     * It generates the http header
+     *
+     * @param array $headers
+     * @return string[]
+     */
     private function getHeader($headers)
     {
         $header = ['Content-Type: application/json'];
