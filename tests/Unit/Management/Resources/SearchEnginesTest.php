@@ -71,7 +71,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_POST, $params, ['Authorization: Token ' . self::TOKEN])
+            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -94,7 +94,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_POST, $params, ['Authorization: Token ' . self::TOKEN])
+            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -114,7 +114,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($thrownException);
     }
 
-    public function testCreateSearchEngineErrorWhithNoMessage()
+    public function testCreateSearchEngineErrorWithNoMessage()
     {
         $response = HttpResponse::create(HttpStatusCode::BAD_REQUEST, '{"error": {"code" : "Something went wrong"}}');
         $params = [];
@@ -122,7 +122,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_POST, $params, ['Authorization: Token ' . self::TOKEN])
+            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -174,7 +174,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_PATCH, $params, ['Authorization: Token ' . self::TOKEN])
+            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -199,7 +199,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_PATCH, $params, ['Authorization: Token ' . self::TOKEN])
+            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -242,7 +242,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_GET, [], ['Authorization: Token ' . self::TOKEN])
+            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -266,7 +266,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_GET, [], ['Authorization: Token ' . self::TOKEN])
+            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -309,7 +309,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_GET, [], ['Authorization: Token ' . self::TOKEN])
+            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -334,7 +334,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_DELETE, [], ['Authorization: Token ' . self::TOKEN])
+            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -353,7 +353,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_DELETE, [], ['Authorization: Token ' . self::TOKEN])
+            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -371,6 +371,19 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertTrue($thrownException);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_Constraint_Callback
+     */
+    private function assertBearerCallback()
+    {
+        return $this->callback(
+            function ($authentication) {
+                $this->assertStringStartsWith('Authorization: Bearer ', $authentication[0]);
+                return true;
+            }
+        );
     }
 
     private function setConfig()

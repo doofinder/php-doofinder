@@ -24,6 +24,8 @@ class SearchEngine extends Resource
     }
 
     /**
+     * Creates a new search engine
+     *
      * @param array $params
      * @return HttpResponseInterface
      * @throws ApiException
@@ -39,6 +41,8 @@ class SearchEngine extends Resource
     }
 
     /**
+     * Given a hashId and data updates a search engine
+     *
      * @param string $hashId
      * @param array $params
      * @return HttpResponseInterface
@@ -55,6 +59,8 @@ class SearchEngine extends Resource
     }
 
     /**
+     * Given a hashId gets a search engine
+     *
      * @param string $hashId
      * @return HttpResponseInterface
      * @throws ApiException
@@ -69,6 +75,7 @@ class SearchEngine extends Resource
     }
 
     /**
+     * List a user's search engines
      * @return HttpResponseInterface
      * @throws ApiException
      */
@@ -90,6 +97,8 @@ class SearchEngine extends Resource
     }
 
     /**
+     * Given a hashId deletes a search engine
+     *
      * @param string $hashId
      * @return HttpResponseInterface
      * @throws ApiException

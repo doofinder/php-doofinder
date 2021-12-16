@@ -7,6 +7,7 @@ use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\Interfaces\HttpClientInterface;
 use Doofinder\Shared\Interfaces\HttpResponseInterface;
 use Doofinder\Shared\Interfaces\ModelInterface;
+use Doofinder\Shared\Services\Jwt;
 
 abstract class Resource
 {
@@ -26,14 +27,8 @@ abstract class Resource
     }
 
     /**
-     * @return Configuration
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
+     * It does a http request with Jwt authentication. If there is an error throws an ApiException
+     *
      * @param string $url
      * @param string $method
      * @param class-string<ModelInterface> $model
@@ -44,12 +39,14 @@ abstract class Resource
      */
     protected function requestWithJwt($url, $method, $model = null, array $params = [], array $headers = [])
     {
+        $jwtToken = Jwt::generateToken($this->config->getToken(), $this->config->getUserId());
+
         /** @var HttpResponseInterface $response */
         $response = $this->httpClient->request(
             $url,
             $method,
             $params,
-            array_merge($headers, ["Authorization: Token {$this->config->getToken()}"])
+            array_merge($headers, ["Authorization: Bearer {$jwtToken}"])
         );
 
         if ($response->getStatusCode() < HttpStatusCode::OK || $response->getStatusCode() >= HttpStatusCode::BAD_REQUEST) {

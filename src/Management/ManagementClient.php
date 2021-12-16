@@ -11,6 +11,12 @@ use Doofinder\Shared\HttpClient;
 use Doofinder\Shared\Interfaces\HttpResponseInterface;
 use Doofinder\Shared\Utils\ErrorHandler;
 
+/**
+ * Class ManagementClient
+ * @package Doofinder\Management
+ *
+ * This class is used to do management actions against search engines, index and items through calling an API.
+ */
 class ManagementClient
 {
     /**
@@ -38,9 +44,15 @@ class ManagementClient
         $this->indexesResource = $indexesResource;
     }
 
-    public static function create($host, $token)
+    /**
+     * @param string $host
+     * @param string $token
+     * @param string $userId
+     * @return ManagementClient
+     */
+    public static function create($host, $token, $userId)
     {
-        $config = Configuration::create($host, $token);
+        $config = Configuration::create($host, $token, $userId);
         $httpClient = new HttpClient();
 
         return new self(
@@ -55,22 +67,15 @@ class ManagementClient
         return new self($searchEnginesResource, $itemsResource, $indexesResource);
     }
 
-    public function getProcessStatus($hashId)
-    {
-
-        // GET /api/v2/search_engines/{hashid}/_process
-        return [];
-    }
-
-    public function processTask()
-    {
-        // POST /api/v2/search_engines/{hashid}/_process
-    }
-
     /**
+     * Creates a new search engine with the provided data. It is not possible to run searches against the new search
+     * engine as it does not have any index yet. You must create an index belonging to the new search engine to be able
+     * to make searches.
+     *
      * @param array $params
      * @return HttpResponseInterface
      * @throws ApiException
+     *
      */
     public function createSearchEngine(array $params)
     {
@@ -82,6 +87,8 @@ class ManagementClient
     }
 
     /**
+     * Given a hashId and data updates a search engine.
+     *
      * @param string $hashId
      * @param array $params
      * @return HttpResponseInterface
@@ -97,6 +104,8 @@ class ManagementClient
     }
 
     /**
+     * Given a hashId gets a search engine details.
+     *
      * @param string $hashId
      * @return HttpResponseInterface
      * @throws ApiException
@@ -111,6 +120,8 @@ class ManagementClient
     }
 
     /**
+     * Lists all user's search engines.
+     *
      * @return HttpResponseInterface
      * @throws ApiException
      */
@@ -124,6 +135,8 @@ class ManagementClient
     }
 
     /**
+     * Given a hashId deletes a search engine.
+     *
      * @param string $hashId
      * @return HttpResponseInterface
      * @throws ApiException
