@@ -3,67 +3,142 @@
 namespace Doofinder\Management;
 
 use Doofinder\Configuration;
-use Doofinder\Management\Resources\Indexes;
-use Doofinder\Management\Resources\Items;
-use Doofinder\Management\Resources\SearchEngines;
+use Doofinder\Management\Resources\Index;
+use Doofinder\Management\Resources\Item;
+use Doofinder\Management\Resources\SearchEngine;
+use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpClient;
+use Doofinder\Shared\Interfaces\HttpResponseInterface;
+use Doofinder\Shared\Utils\ErrorHandler;
 
+/**
+ * This class is used to do management actions against search engines, index and items through calling an API.
+ */
 class ManagementClient
 {
+    /**
+     * @var SearchEngine
+     */
     private $searchEnginesResource;
+
+    /**
+     * @var Item
+     */
     private $itemsResource;
+
+    /**
+     * @var Index
+     */
     private $indexesResource;
 
-    private function __construct($host, $token)
+    public function __construct(
+        $searchEnginesResource,
+        $itemsResource,
+        $indexesResource
+    ) {
+        $this->searchEnginesResource = $searchEnginesResource;
+        $this->itemsResource = $itemsResource;
+        $this->indexesResource = $indexesResource;
+    }
+
+    /**
+     * @param string $host
+     * @param string $token
+     * @param string $userId
+     * @return ManagementClient
+     */
+    public static function create($host, $token, $userId)
     {
-        $config = Configuration::create($host, $token);
+        $config = Configuration::create($host, $token, $userId);
         $httpClient = new HttpClient();
-        $this->searchEnginesResource = SearchEngines::create($httpClient, $config);
-        $this->itemsResource = Items::create($httpClient, $config);
-        $this->indexesResource = Indexes::create($httpClient, $config);
+
+        return new self(
+            SearchEngine::create($httpClient, $config),
+            Item::create($httpClient, $config),
+            Index::create($httpClient, $config)
+        );
     }
 
-    public static function create($host, $token)
+    /**
+     * Creates a new search engine with the provided data. It is not possible to run searches against the new search
+     * engine as it does not have any index yet. You must create an index belonging to the new search engine to be able
+     * to make searches.
+     *
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     *
+     */
+    public function createSearchEngine(array $params)
     {
-        return new self($host, $token);
+        try {
+            return $this->searchEnginesResource->createSearchEngine($params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
     }
 
-    public function getProcessStatus(string $hashId)
+    /**
+     * Given a hashId and data updates a search engine.
+     *
+     * @param string $hashId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateSearchEngine($hashId, array $params)
     {
-        // GET /api/v2/search_engines/{hashid}/_process
-        return [];
+        try {
+            return $this->searchEnginesResource->updateSearchEngine($hashId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
     }
 
-    public function processTask()
+    /**
+     * Given a hashId gets a search engine details.
+     *
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getSearchEngine($hashId)
     {
-        // POST /api/v2/search_engines/{hashid}/_process
+        try {
+            return $this->searchEnginesResource->getSearchEngine($hashId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
     }
 
-    public function getSearchEngine()
-    {
-        // GET /api/v2/search_engines/{hashid}
-    }
-
-    public function deleteSearchEngine()
-    {
-        // DELETE /api/v2/search_engines/{hashid}
-    }
-
-    public function updateSearchEngine()
-    {
-        // PATCH /api/v2/search_engines/{hashid}
-    }
-
+    /**
+     * Lists all user's search engines.
+     *
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
     public function listSearchEngines()
     {
-        // GET /api/v2/search_engines
+        try {
+            return $this->searchEnginesResource->listSearchEngines();
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
     }
 
-    public function createSearchEngine()
+    /**
+     * Given a hashId deletes a search engine.
+     *
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteSearchEngine($hashId)
     {
-        // POST /api/v2/search_engines
+        try {
+            return $this->searchEnginesResource->deleteSearchEngine($hashId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
     }
-
-
-
 }
