@@ -141,4 +141,21 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId and index data, creates a new index
+     *
+     * @param string $hashId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createIndex($hashId, $params)
+    {
+        try {
+            return $this->indexesResource->createIndex($hashId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

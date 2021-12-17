@@ -11,7 +11,7 @@ class JwtTest extends \PHPUnit_Framework_TestCase
         $name = 'This is a fake name';
         $secret = 'This is a fake secret';
 
-        $jwtToken = Jwt::generateToken($name, $secret);
+        $jwtToken = Jwt::generateToken($secret, $name);
 
         $jwtValues = explode('.', $jwtToken);
 
