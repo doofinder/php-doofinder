@@ -17,9 +17,9 @@ class IndexTest extends BaseResourceTest
         return Index::create($this->httpClient, $this->config);
     }
 
-    private function getUrl($hashId, $indexId = null)
+    private function getUrl($hashId, $indexName = null)
     {
-        return self::BASE_URL . '/search_engines/' . $hashId . '/indices' . (!is_null($indexId)? '/' . $indexId : '');
+        return self::BASE_URL . '/search_engines/' . $hashId . '/indices' . (!is_null($indexName)? '/' . $indexName : '');
     }
 
     public function testCreateIndexSuccess()
@@ -125,7 +125,7 @@ class IndexTest extends BaseResourceTest
     public function testUpdateIndex()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
-        $indexId = '13a0811e861d36f76cedca60723e0329';
+        $indexName = 'index_test';
 
         $params = [
             'name' => 'test name',
@@ -150,12 +150,12 @@ class IndexTest extends BaseResourceTest
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with($this->getUrl($hashId, $indexId), HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
+            ->with($this->getUrl($hashId, $indexName), HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
 
-        $response = $this->createSut()->updateIndex($hashId, $indexId, $params);
+        $response = $this->createSut()->updateIndex($hashId, $indexName, $params);
 
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
         $this->assertInstanceOf(IndexModel::class, $response->getBody());
@@ -168,7 +168,7 @@ class IndexTest extends BaseResourceTest
     public function testUpdateIndexNotFound()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
-        $indexId = '13a0811e861d36f76cedca60723e0329';
+        $indexName = 'index_test';
 
         $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
         $params = [];
@@ -176,7 +176,7 @@ class IndexTest extends BaseResourceTest
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with($this->getUrl($hashId, $indexId), HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
+            ->with($this->getUrl($hashId, $indexName), HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -184,7 +184,7 @@ class IndexTest extends BaseResourceTest
         $thrownException = false;
 
         try {
-            $this->createSut()->updateIndex($hashId, $indexId, $params);
+            $this->createSut()->updateIndex($hashId, $indexName, $params);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
@@ -199,7 +199,7 @@ class IndexTest extends BaseResourceTest
     public function testGetIndex()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
-        $indexId = '13a0811e861d36f76cedca60723e0329';
+        $indexName = 'index_test';
 
         $body = [
             'name' => 'test name',
@@ -224,12 +224,12 @@ class IndexTest extends BaseResourceTest
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with($this->getUrl($hashId, $indexId), HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->with($this->getUrl($hashId, $indexName), HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
 
-        $response = $this->createSut()->getIndex($hashId, $indexId);
+        $response = $this->createSut()->getIndex($hashId, $indexName);
 
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
         $this->assertInstanceOf(IndexModel::class, $response->getBody());
@@ -242,14 +242,14 @@ class IndexTest extends BaseResourceTest
     public function testGetIndexNotFound()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
-        $indexId = '13a0811e861d36f76cedca60723e0329';
+        $indexName = 'index_test';
 
         $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
 
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with($this->getUrl($hashId, $indexId), HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->with($this->getUrl($hashId, $indexName), HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -257,7 +257,7 @@ class IndexTest extends BaseResourceTest
         $thrownException = false;
 
         try {
-            $this->createSut()->getIndex($hashId, $indexId);
+            $this->createSut()->getIndex($hashId, $indexName);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
@@ -315,19 +315,19 @@ class IndexTest extends BaseResourceTest
     public function testDeleteIndex()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
-        $indexId = '13a0811e861d36f76cedca60723e0329';
+        $indexName = 'index_test';
 
         $response = HttpResponse::create(HttpStatusCode::NO_CONTENT);
 
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with($this->getUrl($hashId, $indexId), HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
+            ->with($this->getUrl($hashId, $indexName), HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
 
-        $response = $this->createSut()->deleteIndex($hashId, $indexId);
+        $response = $this->createSut()->deleteIndex($hashId, $indexName);
 
         $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
     }
@@ -335,14 +335,14 @@ class IndexTest extends BaseResourceTest
     public function testDeleteIndexNotFound()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
-        $indexId = '13a0811e861d36f76cedca60723e0329';
+        $indexName = 'index_test';
 
         $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
 
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with($this->getUrl($hashId, $indexId), HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
+            ->with($this->getUrl($hashId, $indexName), HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -350,7 +350,7 @@ class IndexTest extends BaseResourceTest
         $thrownException = false;
 
         try {
-            $this->createSut()->deleteIndex($hashId, $indexId);
+            $this->createSut()->deleteIndex($hashId, $indexName);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());

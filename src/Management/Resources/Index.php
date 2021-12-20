@@ -26,12 +26,12 @@ class Index extends Resource
 
     /**
      * @param string $hashId
-     * @param string|null $indexId
+     * @param string|null $indexName
      * @return string
      */
-    private function getBaseUrl($hashId, $indexId = null)
+    private function getBaseUrl($hashId, $indexName = null)
     {
-        return $this->baseUrl . '/search_engines/' . $hashId . '/indices' . (!is_null($indexId)? '/' . $indexId : '');
+        return $this->baseUrl . '/search_engines/' . $hashId . '/indices' . (!is_null($indexName)? '/' . $indexName : '');
     }
 
     /**
@@ -53,18 +53,18 @@ class Index extends Resource
     }
 
     /**
-     * Given a hashId, indexId and data updates an index
+     * Given a hashId, indexName and data updates an index
      *
      * @param string $hashId
-     * @param string $indexId
+     * @param string $indexName
      * @param array $params
      * @return HttpResponseInterface
      * @throws ApiException
      */
-    public function updateIndex($hashId, $indexId, array $params)
+    public function updateIndex($hashId, $indexName, array $params)
     {
         return $this->requestWithJwt(
-            $this->getBaseUrl($hashId, $indexId),
+            $this->getBaseUrl($hashId, $indexName),
             HttpClientInterface::METHOD_PATCH,
             IndexModel::class,
             $params
@@ -72,17 +72,17 @@ class Index extends Resource
     }
 
     /**
-     * Given a hashId, indexId and data, it gets an index
+     * Given a hashId, indexName and data, it gets an index
      *
      * @param string $hashId
-     * @param string $indexId
+     * @param string $indexName
      * @return HttpResponseInterface
      * @throws ApiException
      */
-    public function getIndex($hashId, $indexId)
+    public function getIndex($hashId, $indexName)
     {
         return $this->requestWithJwt(
-            $this->getBaseUrl($hashId, $indexId),
+            $this->getBaseUrl($hashId, $indexName),
             HttpClientInterface::METHOD_GET,
             IndexModel::class
         );
@@ -111,17 +111,17 @@ class Index extends Resource
     }
 
     /**
-     * Given a hashId and indexId, deletes an index
+     * Given a hashId and indexName, deletes an index
      *
      * @param string $hashId
-     * @param string $indexId
+     * @param string $indexName
      * @return HttpResponseInterface
      * @throws ApiException
      */
-    public function deleteIndex($hashId, $indexId)
+    public function deleteIndex($hashId, $indexName)
     {
         return $this->requestWithJwt(
-            $this->getBaseUrl($hashId, $indexId),
+            $this->getBaseUrl($hashId, $indexName),
             HttpClientInterface::METHOD_DELETE
         );
     }

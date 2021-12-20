@@ -698,19 +698,19 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function testUpdateIndexNoAuthorization()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
-        $indexId = '13a0811e861d36f76cedca60723e0329';
+        $indexName = 'index_test';
 
         $this->indexResource
             ->expects($this->once())
             ->method('updateIndex')
-            ->with($hashId, $indexId, [])
+            ->with($hashId, $indexName, [])
             ->willThrowException($this->unauthorizedException);
 
         $managementClient = $this->createSut();
         $thrownException = false;
 
         try {
-            $managementClient->updateIndex($hashId, $indexId, []);
+            $managementClient->updateIndex($hashId, $indexName, []);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
@@ -728,20 +728,20 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
      */
     public function testUpdateIndexInvalidParams(array $params)
     {
-        $hashId = 'ee859baa0f1d2d6abb7611046f297148';
-        $indexId = '1ee859baa0f1d2d6abb7611046f29714';
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
 
         $this->indexResource
             ->expects($this->once())
             ->method('updateIndex')
-            ->with($hashId, $indexId, $params)
+            ->with($hashId, $indexName, $params)
             ->willThrowException($this->badParametersException);
 
         $managementClient = $this->createSut();
         $thrownException = false;
 
         try {
-            $managementClient->updateIndex($hashId, $indexId, $params);
+            $managementClient->updateIndex($hashId, $indexName, $params);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
@@ -757,8 +757,8 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function testUpdateIndexInvalidHashid()
     {
-        $hashId = 'a59357c0ea737666f41f6d6b75cbd3bc';
-        $indexId = '1a59357c0ea737666f41f6d6b75cbd3b';
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
 
         $params = [
             'currency' => 'EUR',
@@ -773,14 +773,14 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $this->indexResource
             ->expects($this->once())
             ->method('updateIndex')
-            ->with($hashId, $indexId, $params)
+            ->with($hashId, $indexName, $params)
             ->willThrowException($this->notFoundException);
 
         $managementClient = $this->createSut();
         $thrownException = false;
 
         try {
-            $managementClient->updateIndex($hashId, $indexId, $params);
+            $managementClient->updateIndex($hashId, $indexName, $params);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
@@ -796,7 +796,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function testUpdateIndexSuccess()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
-        $indexId = '13a0811e861d36f76cedca60723e0329';
+        $indexName = 'index_test';
 
         $managementClient = $this->createSut();
         $params = [
@@ -815,10 +815,10 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $this->indexResource
             ->expects($this->once())
             ->method('updateIndex')
-            ->with($hashId, $indexId, $params)
+            ->with($hashId, $indexName, $params)
             ->willReturn($httpResponse);
 
-        $response = $managementClient->updateIndex($hashId, $indexId, $params);
+        $response = $managementClient->updateIndex($hashId, $indexName, $params);
 
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
         /** @var IndexModel $index */
@@ -834,20 +834,20 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function testGetIndexNoAuthorization()
     {
-        $hashId = 'fake_hashid';
-        $indexId = 'fake_indexid';
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
         
         $this->indexResource
             ->expects($this->once())
             ->method('getIndex')
-            ->with($hashId, $indexId)
+            ->with($hashId, $indexName)
             ->willThrowException($this->unauthorizedException);
 
         $managementClient = $this->createSut();
         $thrownException = false;
 
         try {
-            $managementClient->getIndex($hashId, $indexId);
+            $managementClient->getIndex($hashId, $indexName);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
@@ -862,20 +862,20 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function testGetIndexNotFound()
     {
-        $hashId = 'f57c79f50361df29126c24543a199eae';
-        $indexId = '1f57c79f50361df29126c24543a199ea';
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
         
         $this->indexResource
             ->expects($this->once())
             ->method('getIndex')
-            ->with($hashId, $indexId)
+            ->with($hashId, $indexName)
             ->willThrowException($this->notFoundException);
 
         $managementClient = $this->createSut();
         $thrownException = false;
 
         try {
-            $managementClient->getIndex($hashId, $indexId);
+            $managementClient->getIndex($hashId, $indexName);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
@@ -891,7 +891,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function testGetIndexSuccess()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
-        $indexId = '13a0811e861d36f76cedca60723e0329';
+        $indexName = 'index_test';
         
         $httpResponse = HttpResponse::create(HttpStatusCode::OK);
         $httpResponse->setBody($this->index);
@@ -899,11 +899,11 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $this->indexResource
             ->expects($this->once())
             ->method('getIndex')
-            ->with($hashId, $indexId)
+            ->with($hashId, $indexName)
             ->willReturn($httpResponse);
         $managementClient = $this->createSut();
 
-        $response = $managementClient->getIndex($hashId, $indexId);
+        $response = $managementClient->getIndex($hashId, $indexName);
 
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
         $index = $response->getBody();
@@ -974,19 +974,19 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function testDeleteIndexNoAuthorization()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
-        $indexId = '13a0811e861d36f76cedca60723e0329';
+        $indexName = 'index_test';
 
         $this->indexResource
             ->expects($this->once())
             ->method('deleteIndex')
-            ->with($hashId, $indexId)
+            ->with($hashId, $indexName)
             ->willThrowException($this->unauthorizedException);
 
         $managementClient = $this->createSut();
         $thrownException = false;
 
         try {
-            $managementClient->deleteIndex($hashId, $indexId);
+            $managementClient->deleteIndex($hashId, $indexName);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
@@ -1002,19 +1002,19 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function testDeleteIndexNotFound()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
-        $indexId = '13a0811e861d36f76cedca60723e0329';
+        $indexName = 'index_test';
 
         $this->indexResource
             ->expects($this->once())
             ->method('deleteIndex')
-            ->with($hashId, $indexId)
+            ->with($hashId, $indexName)
             ->willThrowException($this->notFoundException);
 
         $managementClient = $this->createSut();
         $thrownException = false;
 
         try {
-            $managementClient->deleteIndex($hashId, $indexId);
+            $managementClient->deleteIndex($hashId, $indexName);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
@@ -1030,7 +1030,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function testDeleteIndexSuccess()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
-        $indexId = '13a0811e861d36f76cedca60723e0329';
+        $indexName = 'index_test';
 
         $httpResponse = HttpResponse::create(HttpStatusCode::NO_CONTENT);
 
@@ -1041,7 +1041,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
         $managementClient = $this->createSut();
 
-        $response = $managementClient->deleteIndex($hashId, $indexId);
+        $response = $managementClient->deleteIndex($hashId, $indexName);
 
         $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
     }
