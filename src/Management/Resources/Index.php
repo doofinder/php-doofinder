@@ -87,4 +87,20 @@ class Index extends Resource
             IndexModel::class
         );
     }
+
+    /**
+     * Given a hashId, lists index's search engine
+     *
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function listIndexes($hashId)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId),
+            HttpClientInterface::METHOD_GET,
+            IndexModel::class
+        );
+    }
 }

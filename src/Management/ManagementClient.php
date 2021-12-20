@@ -193,4 +193,20 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId, list index's search engine.
+     *
+     * @param string $hasId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function listIndexes($hasId)
+    {
+        try {
+            return $this->indexResource->listIndexes($hasId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

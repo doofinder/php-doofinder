@@ -912,4 +912,59 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->index->getOptions(), $index->getOptions());
         $this->assertSame($this->index->getDataSources(), $index->getDataSources());
     }
+
+    public function testListIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('listIndexes')
+            ->with($hashId)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->listIndexes($hashId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testListIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK);
+        $httpResponse->setBody([$this->index]);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('listIndexes')
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->listIndexes($hashId);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $indexes = $response->getBody();
+
+        $this->assertCount(1, $indexes);
+        $this->assertInstanceOf(IndexModel::class, $indexes[0]);
+
+        $index = $indexes[0];
+        $this->assertSame($this->index->getName(), $index->getName());
+        $this->assertSame($this->index->getPreset(), $index->getPreset());
+        $this->assertSame($this->index->getOptions(), $index->getOptions());
+        $this->assertSame($this->index->getDataSources(), $index->getDataSources());
+    }
 }
