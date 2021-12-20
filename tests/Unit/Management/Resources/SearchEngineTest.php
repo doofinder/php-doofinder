@@ -12,7 +12,7 @@ use Doofinder\Shared\HttpStatusCode;
 use Doofinder\Shared\Interfaces\HttpClientInterface;
 use Doofinder\Shared\Interfaces\HttpResponseInterface;
 
-class SearchEnginesTest extends \PHPUnit_Framework_TestCase
+class SearchEngineTest extends \PHPUnit_Framework_TestCase
 {
     const BASE_URL = 'https://fake_url.com/random/api/v2';
     const TOKEN = 'fake_token';
@@ -81,7 +81,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(HttpStatusCode::CREATED, $response->getStatusCode());
         $this->assertInstanceOf(SearchEngineModel::class, $response->getBody());
 
-        /** @var SearchEngine $searchEngine */
+        /** @var SearchEngineModel $searchEngine */
         $searchEngine = $response->getBody();
         $this->assertSame($searchEngine->jsonSerialize(), $body);
     }
