@@ -19,7 +19,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     /**
      * @var PHPUnit_Framework_MockObject_MockObject
      */
-    private $searchEnginesResource;
+    private $searchEngineResource;
 
     /**
      * @var PHPUnit_Framework_MockObject_MockObject
@@ -29,7 +29,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     /**
      * @var PHPUnit_Framework_MockObject_MockObject
      */
-    private $indexesResource;
+    private $indexResource;
 
     /**
      * @var SearchEngineModel
@@ -104,9 +104,9 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
             '{"error": {"code" : "not_found"}}',
             HttpStatusCode::NOT_FOUND
         );
-        $this->searchEnginesResource = $this->createMock(SearchEngine::class);
+        $this->searchEngineResource = $this->createMock(SearchEngine::class);
         $this->itemsResource = $this->createMock(Item::class);
-        $this->indexesResource = $this->createMock(Index::class);
+        $this->indexResource = $this->createMock(Index::class);
     }
 
     /**
@@ -115,15 +115,15 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function createSut()
     {
         return new ManagementClient(
-            $this->searchEnginesResource,
+            $this->searchEngineResource,
             $this->itemsResource,
-            $this->indexesResource
+            $this->indexResource
         );
     }
 
     public function testCreateSearchEngineNoAuthorization()
     {
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('createSearchEngine')
             ->with([])
@@ -167,7 +167,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateSearchEngineInvalidParams(array $params)
     {
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('createSearchEngine')
             ->with($params)
@@ -206,7 +206,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $httpResponse = HttpResponse::create(HttpStatusCode::CREATED);
         $httpResponse->setBody($this->searchEngine);
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('createSearchEngine')
             ->with($params)
@@ -235,7 +235,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function testUpdateSearchEngineNoAuthorization()
     {
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('updateSearchEngine')
             ->with('fake_hashid', [])
@@ -264,7 +264,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function testUpdateSearchEngineInvalidParams(array $params)
     {
         $hashId = 'ee859baa0f1d2d6abb7611046f297148';
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('updateSearchEngine')
             ->with($hashId, $params)
@@ -301,7 +301,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
             'has_grouping' => false,
         ];
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('updateSearchEngine')
             ->with($hashId, $params)
@@ -341,7 +341,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $httpResponse = HttpResponse::create(HttpStatusCode::OK);
         $httpResponse->setBody($this->searchEngine);
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('updateSearchEngine')
             ->with($hashId, $params)
@@ -371,7 +371,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function testGetSearchEngineNoAuthorization()
     {
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('getSearchEngine')
             ->with('fake_hashid')
@@ -397,7 +397,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function testGetSearchEngineNotFound()
     {
         $hashId = 'f57c79f50361df29126c24543a199eae';
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('getSearchEngine')
             ->with($hashId)
@@ -426,7 +426,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $httpResponse = HttpResponse::create(HttpStatusCode::OK);
         $httpResponse->setBody($this->searchEngine);
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('getSearchEngine')
             ->with($hashId)
@@ -455,7 +455,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function testListSearchEngineNoAuthorization()
     {
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('listSearchEngines')
             ->willThrowException($this->unauthorizedException);
@@ -482,7 +482,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $httpResponse = HttpResponse::create(HttpStatusCode::OK);
         $httpResponse->setBody([$this->searchEngine]);
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('listSearchEngines')
             ->willReturn($httpResponse);
@@ -512,7 +512,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function testDeleteSearchEngineNoAuthorization()
     {
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('deleteSearchEngine')
             ->with('fake_hashid')
@@ -539,7 +539,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('deleteSearchEngine')
             ->with($hashId)
@@ -566,7 +566,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $httpResponse = HttpResponse::create(HttpStatusCode::NO_CONTENT);
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('deleteSearchEngine')
             ->willReturn($httpResponse);
@@ -603,7 +603,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $httpResponse = HttpResponse::create(HttpStatusCode::CREATED);
         $httpResponse->setBody($this->index);
 
-        $this->indexesResource
+        $this->indexResource
             ->expects($this->once())
             ->method('createIndex')
             ->with($hashId, $params)
@@ -627,7 +627,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
 
-        $this->indexesResource
+        $this->indexResource
             ->expects($this->once())
             ->method('createIndex')
             ->with($hashId, [])
@@ -651,7 +651,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
 
-        $this->indexesResource
+        $this->indexResource
             ->expects($this->once())
             ->method('createIndex')
             ->with($hashId, [])
@@ -675,7 +675,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     {
         $hashId = 'fake_id';
 
-        $this->indexesResource
+        $this->indexResource
             ->expects($this->once())
             ->method('createIndex')
             ->with($hashId, [])
@@ -693,5 +693,139 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         }
 
         $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateIndexNoAuthorization()
+    {
+        $this->indexResource
+            ->expects($this->once())
+            ->method('updateIndex')
+            ->with('fake_hashid', 'fake_indexid', [])
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->updateIndex('fake_hashid', 'fake_indexid', []);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    /**
+     * @dataProvider invalidParamsProvider
+     */
+    public function testUpdateIndexInvalidParams(array $params)
+    {
+        $hashId = 'ee859baa0f1d2d6abb7611046f297148';
+        $indexId = '1ee859baa0f1d2d6abb7611046f29714';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('updateIndex')
+            ->with($hashId, $indexId, $params)
+            ->willThrowException($this->badParametersException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->updateIndex($hashId, $indexId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            $this->assertSame('Request contains wrong parameter or values.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('bad_params', $previousMessage['code']);
+            $this->assertSame('Bad parameters error', $previousMessage['message']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateIndexInvalidHashid()
+    {
+        $hashId = 'a59357c0ea737666f41f6d6b75cbd3bc';
+        $indexId = '1a59357c0ea737666f41f6d6b75cbd3b';
+
+        $params = [
+            'currency' => 'EUR',
+            'language' => 'es',
+            'name' => 'test_create',
+            'site_url' => 'http://test.url.com/fake',
+            'stopwords' => false,
+            'platform' => 'shopify',
+            'has_grouping' => false,
+        ];
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('updateIndex')
+            ->with($hashId, $indexId, $params)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->updateIndex($hashId, $indexId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexId = '13a0811e861d36f76cedca60723e0329';
+
+        $managementClient = $this->createSut();
+        $params = [
+            'currency' => 'USD',
+            'language' => 'es',
+            'name' => 'another_name',
+            'site_url' => 'fake_url',
+            'stopwords' => true,
+            'platform' => 'shopify',
+            'has_grouping' => true,
+        ];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK);
+        $httpResponse->setBody($this->index);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('updateIndex')
+            ->with($hashId, $indexId, $params)
+            ->willReturn($httpResponse);
+
+        $response = $managementClient->updateIndex($hashId, $indexId, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        /** @var IndexModel $index */
+        $index = $response->getBody();
+
+        $this->assertInstanceOf(IndexModel::class, $index);
+
+        $this->assertSame($this->index->getName(), $index->getName());
+        $this->assertSame($this->index->getPreset(), $index->getPreset());
+        $this->assertSame($this->index->getOptions(), $index->getOptions());
+        $this->assertSame($this->index->getDataSources(), $index->getDataSources());
     }
 }

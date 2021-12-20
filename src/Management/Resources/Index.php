@@ -26,11 +26,12 @@ class Index extends Resource
 
     /**
      * @param string $hashId
+     * @param string $indexId
      * @return string
      */
-    private function getBaseUrl($hashId)
+    private function getBaseUrl($hashId, $indexId = '')
     {
-        return $this->baseUrl . '/search_engines/' . $hashId . '/indices/';
+        return $this->baseUrl . '/search_engines/' . $hashId . '/indices/' . $indexId;
     }
 
     /**
@@ -46,6 +47,25 @@ class Index extends Resource
         return $this->requestWithJwt(
             $this->getBaseUrl($hashId),
             HttpClientInterface::METHOD_POST,
+            IndexModel::class,
+            $params
+        );
+    }
+
+    /**
+     * Given a hashId, indexId and data updates an index
+     *
+     * @param string $hashId
+     * @param string $indexId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateIndex($hashId, $indexId, array $params)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexId),
+            HttpClientInterface::METHOD_PATCH,
             IndexModel::class,
             $params
         );

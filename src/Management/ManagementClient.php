@@ -29,7 +29,7 @@ class ManagementClient
     /**
      * @var Index
      */
-    private $indexesResource;
+    private $indexResource;
 
     public function __construct(
         $searchEnginesResource,
@@ -38,7 +38,7 @@ class ManagementClient
     ) {
         $this->searchEnginesResource = $searchEnginesResource;
         $this->itemsResource = $itemsResource;
-        $this->indexesResource = $indexesResource;
+        $this->indexResource = $indexesResource;
     }
 
     /**
@@ -153,7 +153,25 @@ class ManagementClient
     public function createIndex($hashId, $params)
     {
         try {
-            return $this->indexesResource->createIndex($hashId, $params);
+            return $this->indexResource->createIndex($hashId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexId and data updates an index.
+     *
+     * @param string $hasId
+     * @param string $indexId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateIndex($hasId, $indexId, $params)
+    {
+        try {
+            return $this->indexResource->updateIndex($hasId, $indexId, $params);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }

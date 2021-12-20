@@ -7,6 +7,7 @@ use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\Interfaces\HttpClientInterface;
 use Doofinder\Shared\Interfaces\HttpResponseInterface;
 use Doofinder\Shared\Resource;
+use Doofinder\Management\Model\SearchEngine as SearchEngineModel;
 
 /**
  * SearchEngines class is responsible for making the requests to the search_engine's endpoints and return a response
@@ -35,7 +36,7 @@ class SearchEngine extends Resource
         return $this->requestWithJwt(
             $this->baseUrl . '/search_engines',
             HttpClientInterface::METHOD_POST,
-            \Doofinder\Management\Model\SearchEngine::class,
+            SearchEngineModel::class,
             $params
         );
     }
@@ -53,7 +54,7 @@ class SearchEngine extends Resource
         return $this->requestWithJwt(
             $this->baseUrl . '/search_engines/' . $hashId,
             HttpClientInterface::METHOD_PATCH,
-            \Doofinder\Management\Model\SearchEngine::class,
+            SearchEngineModel::class,
             $params
         );
     }
@@ -70,7 +71,7 @@ class SearchEngine extends Resource
         return $this->requestWithJwt(
             $this->baseUrl . '/search_engines/' . $hashId,
             HttpClientInterface::METHOD_GET,
-            \Doofinder\Management\Model\SearchEngine::class
+            SearchEngineModel::class
         );
     }
 
@@ -88,7 +89,7 @@ class SearchEngine extends Resource
 
         $httpResponse->setBody(
             array_map(function (array $searchEngine) {
-            return \Doofinder\Management\Model\SearchEngine::createFromArray($searchEngine);
+            return SearchEngineModel::createFromArray($searchEngine);
             },
             $httpResponse->getBody()
         ));
