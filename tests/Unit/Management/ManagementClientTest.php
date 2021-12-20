@@ -671,9 +671,9 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($thrownException);
     }
 
-    public function testCreateIndexSearchEngineNotFound()
+    public function testCreateIndexNotFound()
     {
-        $hashId = 'fake_id';
+        $hashId = '3a0811e861d36f76cedca60723e03291';
 
         $this->indexResource
             ->expects($this->once())
@@ -697,17 +697,20 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function testUpdateIndexNoAuthorization()
     {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexId = '13a0811e861d36f76cedca60723e0329';
+
         $this->indexResource
             ->expects($this->once())
             ->method('updateIndex')
-            ->with('fake_hashid', 'fake_indexid', [])
+            ->with($hashId, $indexId, [])
             ->willThrowException($this->unauthorizedException);
 
         $managementClient = $this->createSut();
         $thrownException = false;
 
         try {
-            $managementClient->updateIndex('fake_hashid', 'fake_indexid', []);
+            $managementClient->updateIndex($hashId, $indexId, []);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
@@ -966,5 +969,80 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->index->getPreset(), $index->getPreset());
         $this->assertSame($this->index->getOptions(), $index->getOptions());
         $this->assertSame($this->index->getDataSources(), $index->getDataSources());
+    }
+
+    public function testDeleteIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexId = '13a0811e861d36f76cedca60723e0329';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('deleteIndex')
+            ->with($hashId, $indexId)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteIndex($hashId, $indexId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexId = '13a0811e861d36f76cedca60723e0329';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('deleteIndex')
+            ->with($hashId, $indexId)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteIndex($hashId, $indexId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexId = '13a0811e861d36f76cedca60723e0329';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::NO_CONTENT);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('deleteIndex')
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+
+        $response = $managementClient->deleteIndex($hashId, $indexId);
+
+        $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
     }
 }

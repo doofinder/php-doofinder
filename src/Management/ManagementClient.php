@@ -162,16 +162,16 @@ class ManagementClient
     /**
      * Given a hashId, indexId and data updates an index.
      *
-     * @param string $hasId
+     * @param string $hashId
      * @param string $indexId
      * @param array $params
      * @return HttpResponseInterface
      * @throws ApiException
      */
-    public function updateIndex($hasId, $indexId, $params)
+    public function updateIndex($hashId, $indexId, $params)
     {
         try {
-            return $this->indexResource->updateIndex($hasId, $indexId, $params);
+            return $this->indexResource->updateIndex($hashId, $indexId, $params);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
@@ -180,15 +180,15 @@ class ManagementClient
     /**
      * Given a hashId and indexId, it gets an index.
      *
-     * @param string $hasId
+     * @param string $hashId
      * @param string $indexId
      * @return HttpResponseInterface
      * @throws ApiException
      */
-    public function getIndex($hasId, $indexId)
+    public function getIndex($hashId, $indexId)
     {
         try {
-            return $this->indexResource->getIndex($hasId, $indexId);
+            return $this->indexResource->getIndex($hashId, $indexId);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
@@ -197,14 +197,31 @@ class ManagementClient
     /**
      * Given a hashId, list index's search engine.
      *
-     * @param string $hasId
+     * @param string $hashId
      * @return HttpResponseInterface
      * @throws ApiException
      */
-    public function listIndexes($hasId)
+    public function listIndexes($hashId)
     {
         try {
-            return $this->indexResource->listIndexes($hasId);
+            return $this->indexResource->listIndexes($hashId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId and indexId, removes an index
+     *
+     * @param string $hashId
+     * @param string $indexId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteIndex($hashId, $indexId)
+    {
+        try {
+            return $this->indexResource->deleteIndex($hashId, $indexId);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }

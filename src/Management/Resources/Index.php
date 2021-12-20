@@ -103,4 +103,20 @@ class Index extends Resource
             IndexModel::class
         );
     }
+
+    /**
+     * Given a hashId and indexId, deletes an index
+     *
+     * @param string $hashId
+     * @param string $indexId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteIndex($hashId, $indexId)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexId),
+            HttpClientInterface::METHOD_DELETE
+        );
+    }
 }
