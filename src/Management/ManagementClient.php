@@ -176,4 +176,21 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId and indexId, it gets an index.
+     *
+     * @param string $hasId
+     * @param string $indexId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getIndex($hasId, $indexId)
+    {
+        try {
+            return $this->indexResource->getIndex($hasId, $indexId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

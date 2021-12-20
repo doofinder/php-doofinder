@@ -828,4 +828,88 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $this->assertSame($this->index->getOptions(), $index->getOptions());
         $this->assertSame($this->index->getDataSources(), $index->getDataSources());
     }
+
+    public function testGetIndexNoAuthorization()
+    {
+        $hashId = 'fake_hashid';
+        $indexId = 'fake_indexid';
+        
+        $this->indexResource
+            ->expects($this->once())
+            ->method('getIndex')
+            ->with($hashId, $indexId)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->getIndex($hashId, $indexId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testGetIndexNotFound()
+    {
+        $hashId = 'f57c79f50361df29126c24543a199eae';
+        $indexId = '1f57c79f50361df29126c24543a199ea';
+        
+        $this->indexResource
+            ->expects($this->once())
+            ->method('getIndex')
+            ->with($hashId, $indexId)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->getIndex($hashId, $indexId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testGetIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexId = '13a0811e861d36f76cedca60723e0329';
+        
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK);
+        $httpResponse->setBody($this->index);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('getIndex')
+            ->with($hashId, $indexId)
+            ->willReturn($httpResponse);
+        $managementClient = $this->createSut();
+
+        $response = $managementClient->getIndex($hashId, $indexId);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $index = $response->getBody();
+
+        $this->assertInstanceOf(IndexModel::class, $index);
+
+        $this->assertSame($this->index->getName(), $index->getName());
+        $this->assertSame($this->index->getPreset(), $index->getPreset());
+        $this->assertSame($this->index->getOptions(), $index->getOptions());
+        $this->assertSame($this->index->getDataSources(), $index->getDataSources());
+    }
 }

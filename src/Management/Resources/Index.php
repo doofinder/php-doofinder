@@ -70,4 +70,21 @@ class Index extends Resource
             $params
         );
     }
+
+    /**
+     * Given a hashId, indexId and data, it gets an index
+     *
+     * @param string $hashId
+     * @param string $indexId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getIndex($hashId, $indexId)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexId),
+            HttpClientInterface::METHOD_GET,
+            IndexModel::class
+        );
+    }
 }
