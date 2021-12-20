@@ -14,10 +14,10 @@ class DataSource implements ModelInterface
      */
     const FQCN_OPTIONS = [
         'file' => DataSourceOptionFile::class,
-        'shopify' => DataSourceOptionFile::class,
-        'bigcommerce' => DataSourceOptionFile::class,
-        'ekm' => DataSourceOptionFile::class,
-        'magento2' => DataSourceOptionFile::class
+        'shopify' => DataSourceOptionShopify::class,
+        'bigcommerce' => DataSourceOptionBigCommerce::class,
+        'ekm' => DataSourceOptionEkm::class,
+        'magento2' => DataSourceOptionMagento::class
     ];
 
     /**
@@ -48,7 +48,9 @@ class DataSource implements ModelInterface
     {
         $type = $data['type'];
         $options = array_map(function (array $option) use ($type) {
-            return DataSourceOptionFile::createFromArray($option);
+            /** @var class-string<DataSourceOption> $fqcn */
+            $fqcn = self::FQCN_OPTIONS[$type];
+            return $fqcn::createFromArray($option);
         }, $data['options']);
 
         return new self(
@@ -64,7 +66,9 @@ class DataSource implements ModelInterface
     {
         return [
             'type' => $this->type,
-            'options' => $this->options->jsonSerialize()
+            'options' => array_map(function (DataSourceOption $option) {
+                return $option->jsonSerialize();
+            }, $this->options)
         ];
     }
 }

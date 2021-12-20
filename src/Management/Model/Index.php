@@ -70,7 +70,9 @@ class Index implements ModelInterface
             'name' => $this->name,
             'preset' => $this->preset,
             'options' => $this->options,
-            'datasources' => $this->dataSources,
+            'datasources' => array_map(function (DataSource $dataSource) {
+                return $dataSource->jsonSerialize();
+            }, $this->dataSources)
         ];
     }
 

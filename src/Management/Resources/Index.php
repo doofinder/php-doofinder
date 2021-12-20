@@ -26,12 +26,12 @@ class Index extends Resource
 
     /**
      * @param string $hashId
-     * @param string $indexId
+     * @param string|null $indexId
      * @return string
      */
-    private function getBaseUrl($hashId, $indexId = '')
+    private function getBaseUrl($hashId, $indexId = null)
     {
-        return $this->baseUrl . '/search_engines/' . $hashId . '/indices/' . $indexId;
+        return $this->baseUrl . '/search_engines/' . $hashId . '/indices' . (!is_null($indexId)? '/' . $indexId : '');
     }
 
     /**
@@ -97,11 +97,17 @@ class Index extends Resource
      */
     public function listIndexes($hashId)
     {
-        return $this->requestWithJwt(
+        $httpResponse = $this->requestWithJwt(
             $this->getBaseUrl($hashId),
-            HttpClientInterface::METHOD_GET,
-            IndexModel::class
+            HttpClientInterface::METHOD_GET
         );
+
+        $httpResponse->setBody(
+            array_map(function (array $index) {
+                return IndexModel::createFromArray($index);
+            }, $httpResponse->getBody())
+        );
+        return $httpResponse;
     }
 
     /**

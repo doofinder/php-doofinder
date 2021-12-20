@@ -89,7 +89,7 @@ class SearchEngine extends Resource
 
         $httpResponse->setBody(
             array_map(function (array $searchEngine) {
-            return SearchEngineModel::createFromArray($searchEngine);
+                return SearchEngineModel::createFromArray($searchEngine);
             },
             $httpResponse->getBody()
         ));
