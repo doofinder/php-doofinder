@@ -2,6 +2,9 @@
 
 namespace Doofinder\Management\Model;
 
+/**
+ * Model with data of a given "magento" data source option
+ */
 class DataSourceOptionMagento extends DataSourceOption
 {
     /**

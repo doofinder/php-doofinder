@@ -2,6 +2,9 @@
 
 namespace Doofinder\Management\Model;
 
+/**
+ * Model with data of a given "big commerce" data source option
+ */
 class DataSourceOptionBigCommerce extends DataSourceOption
 {
     /**

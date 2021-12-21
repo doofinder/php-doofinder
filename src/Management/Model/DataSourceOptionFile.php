@@ -2,6 +2,9 @@
 
 namespace Doofinder\Management\Model;
 
+/**
+ * Model with data of a given "file" data source option
+ */
 class DataSourceOptionFile extends DataSourceOption
 {
     /**

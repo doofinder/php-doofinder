@@ -2,6 +2,9 @@
 
 namespace Doofinder\Management\Model;
 
+/**
+ * Model with data of a given "ekm" data source option
+ */
 class DataSourceOptionEkm extends DataSourceOption
 {
     /**

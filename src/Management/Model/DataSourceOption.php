@@ -4,6 +4,9 @@ namespace Doofinder\Management\Model;
 
 use Doofinder\Shared\Interfaces\ModelInterface;
 
+/**
+ * Model with data of a given data source option
+ */
 abstract class DataSourceOption implements ModelInterface
 {
     /**

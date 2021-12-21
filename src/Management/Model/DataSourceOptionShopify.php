@@ -2,6 +2,9 @@
 
 namespace Doofinder\Management\Model;
 
+/**
+ * Model with data of a given "shopify" data source option
+ */
 class DataSourceOptionShopify extends DataSourceOption
 {
     /**
