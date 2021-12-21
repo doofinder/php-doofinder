@@ -79,10 +79,8 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
                 'datasources' => [
                     [
                         'options' => [
-                            [
-                                'url' => 'fake_url',
-                                'page_size' => 100
-                            ]
+                            'url' => 'fake_url',
+                            'page_size' => 100
                         ],
                         'type' => 'file'
                     ]
@@ -585,10 +583,8 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
             'datasources' => [
                 [
                     'options' => [
-                        [
-                            'url' => 'fake_url',
-                            'page_size' => 100
-                        ]
+                        'url' => 'fake_url',
+                        'page_size' => 100
                     ],
                     'type' => 'file'
                 ]

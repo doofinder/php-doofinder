@@ -32,11 +32,9 @@ class IndexTest extends BaseResourceTest
                 [
                     'type' => 'bigcommerce',
                     'options' => [
-                        [
-                            'access_token' => 'fake_access_token',
-                            'store_hash' => 'fake_store_hash',
-                            'url' => 'fake_url'
-                        ]
+                        'access_token' => 'fake_access_token',
+                        'store_hash' => 'fake_store_hash',
+                        'url' => 'fake_url'
                     ]
                 ]
             ],
@@ -135,11 +133,9 @@ class IndexTest extends BaseResourceTest
                 [
                     'type' => 'bigcommerce',
                     'options' => [
-                        [
-                            'access_token' => 'fake_access_token',
-                            'store_hash' => 'fake_store_hash',
-                            'url' => 'fake_url'
-                        ]
+                        'access_token' => 'fake_access_token',
+                        'store_hash' => 'fake_store_hash',
+                        'url' => 'fake_url'
                     ]
                 ]
             ],
@@ -209,11 +205,9 @@ class IndexTest extends BaseResourceTest
                 [
                     'type' => 'bigcommerce',
                     'options' => [
-                        [
-                            'access_token' => 'fake_access_token',
-                            'store_hash' => 'fake_store_hash',
-                            'url' => 'fake_url'
-                        ]
+                        'access_token' => 'fake_access_token',
+                        'store_hash' => 'fake_store_hash',
+                        'url' => 'fake_url'
                     ]
                 ]
             ],
@@ -281,11 +275,9 @@ class IndexTest extends BaseResourceTest
                 [
                     'type' => 'bigcommerce',
                     'options' => [
-                        [
-                            'access_token' => 'fake_access_token',
-                            'store_hash' => 'fake_store_hash',
-                            'url' => 'fake_url'
-                        ]
+                        'access_token' => 'fake_access_token',
+                        'store_hash' => 'fake_store_hash',
+                        'url' => 'fake_url'
                     ]
                 ]
             ],

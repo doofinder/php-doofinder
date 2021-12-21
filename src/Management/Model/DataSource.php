@@ -21,7 +21,7 @@ class DataSource implements ModelInterface
     ];
 
     /**
-     * @var array<DataSourceOption>
+     * @var DataSourceOption
      */
     private $options;
 
@@ -31,7 +31,7 @@ class DataSource implements ModelInterface
     private $type;
 
     /**
-     * @param array<DataSourceOption> $options
+     * @param DataSourceOption $options
      * @param string $type
      */
     private function __construct($options, $type)
@@ -46,16 +46,12 @@ class DataSource implements ModelInterface
      */
     public static function createFromArray(array $data)
     {
-        $type = $data['type'];
-        $options = array_map(function (array $option) use ($type) {
-            /** @var class-string<DataSourceOption> $fqcn */
-            $fqcn = self::FQCN_OPTIONS[$type];
-            return $fqcn::createFromArray($option);
-        }, $data['options']);
+        /** @var class-string<DataSourceOption> $fqcn */
+        $fqcn = self::FQCN_OPTIONS[$data['type']];
 
         return new self(
-            $options,
-            $type
+            $fqcn::createFromArray($data['options']),
+            $data['type']
         );
     }
 
@@ -66,9 +62,7 @@ class DataSource implements ModelInterface
     {
         return [
             'type' => $this->type,
-            'options' => array_map(function (DataSourceOption $option) {
-                return $option->jsonSerialize();
-            }, $this->options)
+            'options' => $this->options->jsonSerialize()
         ];
     }
 }
