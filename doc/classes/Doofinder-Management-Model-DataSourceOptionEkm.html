@@ -93,13 +93,17 @@
             <div class="phpdocumentor-column -eight phpdocumentor-content">
                     <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="namespaces/doofinder.html">Doofinder</a></li>
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/doofinder-search.html">Search</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/doofinder-management.html">Management</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/doofinder-management-model.html">Model</a></li>
     </ul>
 
     <article class="phpdocumentor-element -class">
         <h2 class="phpdocumentor-content__title">
-    SearchClient
+    DataSourceOptionEkm
 
+        <span class="phpdocumentor-element__extends">
+        extends <a href="classes/Doofinder-Management-Model-DataSourceOption.html"><abbr title="\Doofinder\Management\Model\DataSourceOption">DataSourceOption</abbr></a>
+    </span>
     
             <div class="phpdocumentor-element__package">
             in package
@@ -112,9 +116,9 @@
     </h2>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Search/SearchClient.php"><a href="files/src-search-searchclient.html"><abbr title="src/Search/SearchClient.php">SearchClient.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Model/DataSourceOptionEkm.php"><a href="files/src-management-model-datasourceoptionekm.html"><abbr title="src/Management/Model/DataSourceOptionEkm.php">DataSourceOptionEkm.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9</span>
+    <span class="phpdocumentor-element-found-in__line">5</span>
 
     </aside>
 
@@ -134,22 +138,50 @@
 </h3>
 
 <dl class="phpdocumentor-table-of-contents">
-                <dt class="phpdocumentor-table-of-contents__entry -property -private">
-    <a href="classes/Doofinder-Search-SearchClient.html#property_searchesResource">$searchesResource</a>
+                <dt class="phpdocumentor-table-of-contents__entry -property -protected">
+    <a href="classes/Doofinder-Management-Model-DataSourceOption.html#property_url">$url</a>
     <span>
-                &nbsp;: mixed            </span>
+                &nbsp;: string|null            </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html#property_refreshToken">$refreshToken</a>
+    <span>
+                &nbsp;: string            </span>
 </dt>
 <dd></dd>
 
                 <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Doofinder-Search-SearchClient.html#method_create">create()</a>
+    <a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html#method_createFromArray">createFromArray()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                        &nbsp;: <a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html"><abbr title="\Doofinder\Management\Model\DataSourceOptionEkm">DataSourceOptionEkm</abbr></a>    </span>
 </dt>
 <dd></dd>
 
-            <dt class="phpdocumentor-table-of-contents__entry -method -private">
-    <a href="classes/Doofinder-Search-SearchClient.html#method___construct">__construct()</a>
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html#method_getRefreshToken">getRefreshToken()</a>
+    <span>
+                        &nbsp;: string    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Doofinder-Management-Model-DataSourceOption.html#method_getUrl">getUrl()</a>
+    <span>
+                        &nbsp;: string|null    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html#method_jsonSerialize">jsonSerialize()</a>
+    <span>
+                        &nbsp;: array&lt;string|int, string&gt;    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -protected">
+    <a href="classes/Doofinder-Management-Model-DataSourceOption.html#method___construct">__construct()</a>
     <span>
                         &nbsp;: mixed    </span>
 </dt>
@@ -165,8 +197,40 @@
     <section class="phpdocumentor-properties">
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
-            <a href="classes/Doofinder-Search-SearchClient.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
         </h3>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -protected
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="property_url">
+        $url
+        <a href="classes/Doofinder-Management-Model-DataSourceOption.html#property_url" class="headerlink"><i class="fas fa-link"></i></a>
+        <span class="phpdocumentor-element__modifiers">
+                                </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Model/DataSourceOption.php"><a href="files/src-management-model-datasourceoption.html"><abbr title="src/Management/Model/DataSourceOption.php">DataSourceOption.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">12</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">protected</span>
+        <span class="phpdocumentor-signature__type">string|null</span>
+    <span class="phpdocumentor-signature__name">$url</span>
+    </code>
+
+    
+    
+    
+
+</article>
                     <article
         class="
             phpdocumentor-element
@@ -174,30 +238,28 @@
             -private
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="property_searchesResource">
-        $searchesResource
-        <a href="classes/Doofinder-Search-SearchClient.html#property_searchesResource" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="property_refreshToken">
+        $refreshToken
+        <a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html#property_refreshToken" class="headerlink"><i class="fas fa-link"></i></a>
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Search/SearchClient.php"><a href="files/src-search-searchclient.html"><abbr title="src/Search/SearchClient.php">SearchClient.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Model/DataSourceOptionEkm.php"><a href="files/src-management-model-datasourceoptionekm.html"><abbr title="src/Management/Model/DataSourceOptionEkm.php">DataSourceOptionEkm.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">11</span>
+    <span class="phpdocumentor-element-found-in__line">10</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">private</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">$searchesResource</span>
+        <span class="phpdocumentor-signature__type">string</span>
+    <span class="phpdocumentor-signature__name">$refreshToken</span>
     </code>
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -206,7 +268,7 @@
             <section class="phpdocumentor-methods">
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
-            <a href="classes/Doofinder-Search-SearchClient.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
         </h3>
                     <article
         class="phpdocumentor-element
@@ -214,56 +276,38 @@
             -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_create">
-        create()
-        <a href="classes/Doofinder-Search-SearchClient.html#method_create" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_createFromArray">
+        createFromArray()
+        <a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html#method_createFromArray" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Search/SearchClient.php"><a href="files/src-search-searchclient.html"><abbr title="src/Search/SearchClient.php">SearchClient.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Model/DataSourceOptionEkm.php"><a href="files/src-management-model-datasourceoptionekm.html"><abbr title="src/Management/Model/DataSourceOptionEkm.php">DataSourceOptionEkm.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">20</span>
+    <span class="phpdocumentor-element-found-in__line">16</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__name">create</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$host</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$token</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$userId</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+            <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__name">createFromArray</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$data</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html"><abbr title="\Doofinder\Management\Model\DataSourceOptionEkm">DataSourceOptionEkm</abbr></a></span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$host</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                <span class="phpdocumentor-signature__argument__name">$data</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$token</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$userId</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html"><abbr title="\Doofinder\Management\Model\DataSourceOptionEkm">DataSourceOptionEkm</abbr></a></span>
             &mdash;
         
     
@@ -271,52 +315,130 @@
                     <article
         class="phpdocumentor-element
             -method
-            -private
+            -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method___construct">
-        __construct()
-        <a href="classes/Doofinder-Search-SearchClient.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_getRefreshToken">
+        getRefreshToken()
+        <a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html#method_getRefreshToken" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Search/SearchClient.php"><a href="files/src-search-searchclient.html"><abbr title="src/Search/SearchClient.php">SearchClient.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Model/DataSourceOptionEkm.php"><a href="files/src-management-model-datasourceoptionekm.html"><abbr title="src/Management/Model/DataSourceOptionEkm.php">DataSourceOptionEkm.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">13</span>
+    <span class="phpdocumentor-element-found-in__line">38</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">private</span>
-                <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$host</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$token</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$userId</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getRefreshToken</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
-        <section class="phpdocumentor-description"></section>
+    
+    
+    
 
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">string</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getUrl">
+        getUrl()
+        <a href="classes/Doofinder-Management-Model-DataSourceOption.html#method_getUrl" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Model/DataSourceOption.php"><a href="files/src-management-model-datasourceoption.html"><abbr title="src/Management/Model/DataSourceOption.php">DataSourceOption.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">25</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getUrl</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">string|null</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_jsonSerialize">
+        jsonSerialize()
+        <a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html#method_jsonSerialize" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Model/DataSourceOptionEkm.php"><a href="files/src-management-model-datasourceoptionekm.html"><abbr title="src/Management/Model/DataSourceOptionEkm.php">DataSourceOptionEkm.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">27</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">jsonSerialize</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, string&gt;</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">array&lt;string|int, string&gt;</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -protected
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___construct">
+        __construct()
+        <a href="classes/Doofinder-Management-Model-DataSourceOption.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Model/DataSourceOption.php"><a href="files/src-management-model-datasourceoption.html"><abbr title="src/Management/Model/DataSourceOption.php">DataSourceOption.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">17</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">protected</span>
+                <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$host</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                <span class="phpdocumentor-signature__argument__name">$url</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$token</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$userId</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
@@ -406,7 +528,7 @@
 </section>
             </div>
         </div>
-        <a href="classes/Doofinder-Search-SearchClient.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/Doofinder-Management-Model-DataSourceOptionEkm.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

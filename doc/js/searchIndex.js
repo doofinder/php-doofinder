@@ -86,6 +86,31 @@ Search.appendIndex(
             "summary": "Given\u0020a\u0020hashId\u0020deletes\u0020a\u0020search\u0020engine.",
             "url": "classes/Doofinder-Management-ManagementClient.html#method_deleteSearchEngine"
         },                {
+            "fqsen": "\\Doofinder\\Management\\ManagementClient\u003A\u003AcreateIndex\u0028\u0029",
+            "name": "createIndex",
+            "summary": "Given\u0020a\u0020hashId\u0020and\u0020index\u0020data,\u0020creates\u0020a\u0020new\u0020index",
+            "url": "classes/Doofinder-Management-ManagementClient.html#method_createIndex"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\ManagementClient\u003A\u003AupdateIndex\u0028\u0029",
+            "name": "updateIndex",
+            "summary": "Given\u0020a\u0020hashId,\u0020indexName\u0020and\u0020data\u0020updates\u0020an\u0020index.",
+            "url": "classes/Doofinder-Management-ManagementClient.html#method_updateIndex"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\ManagementClient\u003A\u003AgetIndex\u0028\u0029",
+            "name": "getIndex",
+            "summary": "Given\u0020a\u0020hashId\u0020and\u0020indexName,\u0020it\u0020gets\u0020an\u0020index.",
+            "url": "classes/Doofinder-Management-ManagementClient.html#method_getIndex"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\ManagementClient\u003A\u003AlistIndexes\u0028\u0029",
+            "name": "listIndexes",
+            "summary": "Given\u0020a\u0020hashId,\u0020list\u0020index\u0027s\u0020search\u0020engine.",
+            "url": "classes/Doofinder-Management-ManagementClient.html#method_listIndexes"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\ManagementClient\u003A\u003AdeleteIndex\u0028\u0029",
+            "name": "deleteIndex",
+            "summary": "Given\u0020a\u0020hashId\u0020and\u0020indexName,\u0020removes\u0020an\u0020index",
+            "url": "classes/Doofinder-Management-ManagementClient.html#method_deleteIndex"
+        },                {
             "fqsen": "\\Doofinder\\Management\\ManagementClient\u003A\u003A\u0024searchEnginesResource",
             "name": "searchEnginesResource",
             "summary": "",
@@ -96,10 +121,10 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Doofinder-Management-ManagementClient.html#property_itemsResource"
         },                {
-            "fqsen": "\\Doofinder\\Management\\ManagementClient\u003A\u003A\u0024indexesResource",
-            "name": "indexesResource",
+            "fqsen": "\\Doofinder\\Management\\ManagementClient\u003A\u003A\u0024indexResource",
+            "name": "indexResource",
             "summary": "",
-            "url": "classes/Doofinder-Management-ManagementClient.html#property_indexesResource"
+            "url": "classes/Doofinder-Management-ManagementClient.html#property_indexResource"
         },                {
             "fqsen": "\\Doofinder\\Management\\Model\\SearchEngine",
             "name": "SearchEngine",
@@ -233,13 +258,43 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Doofinder\\Management\\Resources\\Index",
             "name": "Index",
-            "summary": "A\u0020resource\u0020class\u0020is\u0020in\u0020charge\u0020to\u0020communicate\u0020with\u0020the\u0020API\u0020and\u0020return\u0020a\u0020formatted\u0020response",
+            "summary": "Index\u0020class\u0020is\u0020responsible\u0020for\u0020making\u0020the\u0020requests\u0020to\u0020the\u0020index\u0027s\u0020endpoints\u0020and\u0020return\u0020a\u0020response",
             "url": "classes/Doofinder-Management-Resources-Index.html"
         },                {
             "fqsen": "\\Doofinder\\Management\\Resources\\Index\u003A\u003Acreate\u0028\u0029",
             "name": "create",
             "summary": "",
             "url": "classes/Doofinder-Management-Resources-Index.html#method_create"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Resources\\Index\u003A\u003AgetBaseUrl\u0028\u0029",
+            "name": "getBaseUrl",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Resources-Index.html#method_getBaseUrl"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Resources\\Index\u003A\u003AcreateIndex\u0028\u0029",
+            "name": "createIndex",
+            "summary": "Given\u0020a\u0020hashId\u0020and\u0020index\u0020data,\u0020creates\u0020a\u0020new\u0020index",
+            "url": "classes/Doofinder-Management-Resources-Index.html#method_createIndex"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Resources\\Index\u003A\u003AupdateIndex\u0028\u0029",
+            "name": "updateIndex",
+            "summary": "Given\u0020a\u0020hashId,\u0020indexName\u0020and\u0020data\u0020updates\u0020an\u0020index",
+            "url": "classes/Doofinder-Management-Resources-Index.html#method_updateIndex"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Resources\\Index\u003A\u003AgetIndex\u0028\u0029",
+            "name": "getIndex",
+            "summary": "Given\u0020a\u0020hashId,\u0020indexName\u0020and\u0020data,\u0020it\u0020gets\u0020an\u0020index",
+            "url": "classes/Doofinder-Management-Resources-Index.html#method_getIndex"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Resources\\Index\u003A\u003AlistIndexes\u0028\u0029",
+            "name": "listIndexes",
+            "summary": "Given\u0020a\u0020hashId,\u0020lists\u0020index\u0027s\u0020search\u0020engine",
+            "url": "classes/Doofinder-Management-Resources-Index.html#method_listIndexes"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Resources\\Index\u003A\u003AdeleteIndex\u0028\u0029",
+            "name": "deleteIndex",
+            "summary": "Given\u0020a\u0020hashId\u0020and\u0020indexName,\u0020deletes\u0020an\u0020index",
+            "url": "classes/Doofinder-Management-Resources-Index.html#method_deleteIndex"
         },                {
             "fqsen": "\\Doofinder\\Management\\Resources\\Item",
             "name": "Item",
@@ -285,16 +340,6 @@ Search.appendIndex(
             "name": "deleteSearchEngine",
             "summary": "Given\u0020a\u0020hashId\u0020deletes\u0020a\u0020search\u0020engine",
             "url": "classes/Doofinder-Management-Resources-SearchEngine.html#method_deleteSearchEngine"
-        },                {
-            "fqsen": "\\Doofinder\\Search\\Resources\\Searches",
-            "name": "Searches",
-            "summary": "A\u0020resource\u0020class\u0020is\u0020in\u0020charge\u0020to\u0020communicate\u0020with\u0020the\u0020API\u0020and\u0020return\u0020a\u0020formatted\u0020response",
-            "url": "classes/Doofinder-Search-Resources-Searches.html"
-        },                {
-            "fqsen": "\\Doofinder\\Search\\Resources\\Searches\u003A\u003Acreate\u0028\u0029",
-            "name": "create",
-            "summary": "",
-            "url": "classes/Doofinder-Search-Resources-Searches.html#method_create"
         },                {
             "fqsen": "\\Doofinder\\Search\\SearchClient",
             "name": "SearchClient",
@@ -605,6 +650,256 @@ Search.appendIndex(
             "name": "MESSAGES",
             "summary": "",
             "url": "classes/Doofinder-Shared-Utils-ErrorHandler.html#constant_MESSAGES"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSource",
+            "name": "DataSource",
+            "summary": "Model\u0020with\u0020data\u0020of\u0020a\u0020given\u0020data\u0020source",
+            "url": "classes/Doofinder-Management-Model-DataSource.html"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSource\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSource.html#method___construct"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSource\u003A\u003AcreateFromArray\u0028\u0029",
+            "name": "createFromArray",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSource.html#method_createFromArray"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSource\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSource.html#method_jsonSerialize"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSource\u003A\u003AFQCN_OPTIONS",
+            "name": "FQCN_OPTIONS",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSource.html#constant_FQCN_OPTIONS"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSource\u003A\u003A\u0024options",
+            "name": "options",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSource.html#property_options"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSource\u003A\u003A\u0024type",
+            "name": "type",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSource.html#property_type"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOption",
+            "name": "DataSourceOption",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOption.html"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOption\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOption.html#method___construct"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOption\u003A\u003AgetUrl\u0028\u0029",
+            "name": "getUrl",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOption.html#method_getUrl"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOption\u003A\u003A\u0024url",
+            "name": "url",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOption.html#property_url"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionBigCommerce",
+            "name": "DataSourceOptionBigCommerce",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionBigCommerce.html"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionBigCommerce\u003A\u003AcreateFromArray\u0028\u0029",
+            "name": "createFromArray",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionBigCommerce.html#method_createFromArray"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionBigCommerce\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionBigCommerce.html#method_jsonSerialize"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionBigCommerce\u003A\u003AgetAccessToken\u0028\u0029",
+            "name": "getAccessToken",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionBigCommerce.html#method_getAccessToken"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionBigCommerce\u003A\u003AgetStoreHash\u0028\u0029",
+            "name": "getStoreHash",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionBigCommerce.html#method_getStoreHash"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionBigCommerce\u003A\u003A\u0024accessToken",
+            "name": "accessToken",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionBigCommerce.html#property_accessToken"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionBigCommerce\u003A\u003A\u0024storeHash",
+            "name": "storeHash",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionBigCommerce.html#property_storeHash"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionEkm",
+            "name": "DataSourceOptionEkm",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionEkm.html"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionEkm\u003A\u003AcreateFromArray\u0028\u0029",
+            "name": "createFromArray",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionEkm.html#method_createFromArray"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionEkm\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionEkm.html#method_jsonSerialize"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionEkm\u003A\u003AgetRefreshToken\u0028\u0029",
+            "name": "getRefreshToken",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionEkm.html#method_getRefreshToken"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionEkm\u003A\u003A\u0024refreshToken",
+            "name": "refreshToken",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionEkm.html#property_refreshToken"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionFile",
+            "name": "DataSourceOptionFile",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionFile.html"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionFile\u003A\u003AcreateFromArray\u0028\u0029",
+            "name": "createFromArray",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionFile.html#method_createFromArray"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionFile\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionFile.html#method_jsonSerialize"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionFile\u003A\u003AgetPageSize\u0028\u0029",
+            "name": "getPageSize",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionFile.html#method_getPageSize"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionFile\u003A\u003A\u0024pageSize",
+            "name": "pageSize",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionFile.html#property_pageSize"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionMagento",
+            "name": "DataSourceOptionMagento",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionMagento.html"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionMagento\u003A\u003AcreateFromArray\u0028\u0029",
+            "name": "createFromArray",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionMagento.html#method_createFromArray"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionMagento\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionMagento.html#method_jsonSerialize"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionShopify",
+            "name": "DataSourceOptionShopify",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionShopify.html"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionShopify\u003A\u003AcreateFromArray\u0028\u0029",
+            "name": "createFromArray",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionShopify.html#method_createFromArray"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionShopify\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionShopify.html#method_jsonSerialize"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionShopify\u003A\u003AgetToken\u0028\u0029",
+            "name": "getToken",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionShopify.html#method_getToken"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\DataSourceOptionShopify\u003A\u003A\u0024token",
+            "name": "token",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-DataSourceOptionShopify.html#property_token"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\Index",
+            "name": "Index",
+            "summary": "Model\u0020with\u0020data\u0020of\u0020a\u0020given\u0020index",
+            "url": "classes/Doofinder-Management-Model-Index.html"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\Index\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-Index.html#method___construct"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\Index\u003A\u003AcreateFromArray\u0028\u0029",
+            "name": "createFromArray",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-Index.html#method_createFromArray"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\Index\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-Index.html#method_jsonSerialize"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\Index\u003A\u003AgetName\u0028\u0029",
+            "name": "getName",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-Index.html#method_getName"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\Index\u003A\u003AgetPreset\u0028\u0029",
+            "name": "getPreset",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-Index.html#method_getPreset"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\Index\u003A\u003AgetOptions\u0028\u0029",
+            "name": "getOptions",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-Index.html#method_getOptions"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\Index\u003A\u003AgetDataSources\u0028\u0029",
+            "name": "getDataSources",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-Index.html#method_getDataSources"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\Index\u003A\u003A\u0024name",
+            "name": "name",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-Index.html#property_name"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\Index\u003A\u003A\u0024preset",
+            "name": "preset",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-Index.html#property_preset"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\Index\u003A\u003A\u0024options",
+            "name": "options",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-Index.html#property_options"
+        },                {
+            "fqsen": "\\Doofinder\\Management\\Model\\Index\u003A\u003A\u0024dataSources",
+            "name": "dataSources",
+            "summary": "",
+            "url": "classes/Doofinder-Management-Model-Index.html#property_dataSources"
+        },                {
+            "fqsen": "\\Doofinder\\Search\\Resources\\Search",
+            "name": "Search",
+            "summary": "A\u0020resource\u0020class\u0020is\u0020in\u0020charge\u0020to\u0020communicate\u0020with\u0020the\u0020API\u0020and\u0020return\u0020a\u0020formatted\u0020response",
+            "url": "classes/Doofinder-Search-Resources-Search.html"
+        },                {
+            "fqsen": "\\Doofinder\\Search\\Resources\\Search\u003A\u003Acreate\u0028\u0029",
+            "name": "create",
+            "summary": "",
+            "url": "classes/Doofinder-Search-Resources-Search.html#method_create"
         },                {
             "fqsen": "\\",
             "name": "\\",

@@ -29,7 +29,7 @@ class ManagementClient
     /**
      * @var Index
      */
-    private $indexesResource;
+    private $indexResource;
 
     public function __construct(
         $searchEnginesResource,
@@ -38,7 +38,7 @@ class ManagementClient
     ) {
         $this->searchEnginesResource = $searchEnginesResource;
         $this->itemsResource = $itemsResource;
-        $this->indexesResource = $indexesResource;
+        $this->indexResource = $indexesResource;
     }
 
     /**
@@ -137,6 +137,91 @@ class ManagementClient
     {
         try {
             return $this->searchEnginesResource->deleteSearchEngine($hashId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId and index data, creates a new index
+     *
+     * @param string $hashId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createIndex($hashId, $params)
+    {
+        try {
+            return $this->indexResource->createIndex($hashId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName and data updates an index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateIndex($hashId, $indexName, $params)
+    {
+        try {
+            return $this->indexResource->updateIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId and indexName, it gets an index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getIndex($hashId, $indexName)
+    {
+        try {
+            return $this->indexResource->getIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, list index's search engine.
+     *
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function listIndexes($hashId)
+    {
+        try {
+            return $this->indexResource->listIndexes($hashId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId and indexName, removes an index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteIndex($hashId, $indexName)
+    {
+        try {
+            return $this->indexResource->deleteIndex($hashId, $indexName);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }

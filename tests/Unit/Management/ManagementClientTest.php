@@ -4,6 +4,7 @@ namespace Tests\Unit\Management;
 
 use Doofinder\Management\ManagementClient;
 use Doofinder\Management\Model\SearchEngine as SearchEngineModel;
+use Doofinder\Management\Model\Index as IndexModel;
 use Doofinder\Management\Resources\Index;
 use Doofinder\Management\Resources\Item;
 use Doofinder\Management\Resources\SearchEngine;
@@ -18,7 +19,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     /**
      * @var PHPUnit_Framework_MockObject_MockObject
      */
-    private $searchEnginesResource;
+    private $searchEngineResource;
 
     /**
      * @var PHPUnit_Framework_MockObject_MockObject
@@ -28,12 +29,17 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     /**
      * @var PHPUnit_Framework_MockObject_MockObject
      */
-    private $indexesResource;
+    private $indexResource;
 
     /**
-     * @var SearchEngine
+     * @var SearchEngineModel
      */
     private $searchEngine;
+
+    /**
+     * @var IndexModel
+     */
+    private $index;
 
     /**
      * @var ApiException
@@ -52,23 +58,39 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $params = [
-            'hashid' => 'fake_hashid',
-            'indices' => [],
-            'inactive' => false,
-            'currency' => 'EUR',
-            'language' => 'es',
-            'name' => 'test_create',
-            'site_url' => 'http://test.url.com/fake',
-            'search_url' => 'http://search.url.com/fake',
-            'stopwords' => false,
-            'platform' => 'shopify',
-            'has_grouping' => false,
-        ];
-
-        /** @var SearchEngine searchEngine */
         $this->searchEngine = SearchEngineModel::createFromArray(
-            $params
+            [
+                'hashid' => 'fake_hashid',
+                'indices' => [],
+                'inactive' => false,
+                'currency' => 'EUR',
+                'language' => 'es',
+                'name' => 'test_create',
+                'site_url' => 'http://test.url.com/fake',
+                'search_url' => 'http://search.url.com/fake',
+                'stopwords' => false,
+                'platform' => 'shopify',
+                'has_grouping' => false,
+            ]
+        );
+
+        $this->index = IndexModel::createFromArray(
+            [
+                'datasources' => [
+                    [
+                        'options' => [
+                            'url' => 'fake_url',
+                            'page_size' => 100
+                        ],
+                        'type' => 'file'
+                    ]
+                ],
+                'name' => 'product_4',
+                'options' => [
+                    'exclude_out_of_stock_items' => false
+                ],
+                'preset' => 'product'
+            ]
         );
 
         $this->unauthorizedException = new ApiException('', HttpStatusCode::UNAUTHORIZED);
@@ -80,9 +102,9 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
             '{"error": {"code" : "not_found"}}',
             HttpStatusCode::NOT_FOUND
         );
-        $this->searchEnginesResource = $this->createMock(SearchEngine::class);
+        $this->searchEngineResource = $this->createMock(SearchEngine::class);
         $this->itemsResource = $this->createMock(Item::class);
-        $this->indexesResource = $this->createMock(Index::class);
+        $this->indexResource = $this->createMock(Index::class);
     }
 
     /**
@@ -91,15 +113,15 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function createSut()
     {
         return new ManagementClient(
-            $this->searchEnginesResource,
+            $this->searchEngineResource,
             $this->itemsResource,
-            $this->indexesResource
+            $this->indexResource
         );
     }
 
     public function testCreateSearchEngineNoAuthorization()
     {
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('createSearchEngine')
             ->with([])
@@ -143,7 +165,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateSearchEngineInvalidParams(array $params)
     {
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('createSearchEngine')
             ->with($params)
@@ -182,7 +204,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $httpResponse = HttpResponse::create(HttpStatusCode::CREATED);
         $httpResponse->setBody($this->searchEngine);
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('createSearchEngine')
             ->with($params)
@@ -211,7 +233,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function testUpdateSearchEngineNoAuthorization()
     {
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('updateSearchEngine')
             ->with('fake_hashid', [])
@@ -240,7 +262,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function testUpdateSearchEngineInvalidParams(array $params)
     {
         $hashId = 'ee859baa0f1d2d6abb7611046f297148';
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('updateSearchEngine')
             ->with($hashId, $params)
@@ -277,7 +299,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
             'has_grouping' => false,
         ];
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('updateSearchEngine')
             ->with($hashId, $params)
@@ -317,7 +339,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $httpResponse = HttpResponse::create(HttpStatusCode::OK);
         $httpResponse->setBody($this->searchEngine);
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('updateSearchEngine')
             ->with($hashId, $params)
@@ -347,7 +369,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function testGetSearchEngineNoAuthorization()
     {
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('getSearchEngine')
             ->with('fake_hashid')
@@ -373,7 +395,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     public function testGetSearchEngineNotFound()
     {
         $hashId = 'f57c79f50361df29126c24543a199eae';
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('getSearchEngine')
             ->with($hashId)
@@ -402,7 +424,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $httpResponse = HttpResponse::create(HttpStatusCode::OK);
         $httpResponse->setBody($this->searchEngine);
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('getSearchEngine')
             ->with($hashId)
@@ -431,7 +453,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function testListSearchEngineNoAuthorization()
     {
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('listSearchEngines')
             ->willThrowException($this->unauthorizedException);
@@ -458,7 +480,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $httpResponse = HttpResponse::create(HttpStatusCode::OK);
         $httpResponse->setBody([$this->searchEngine]);
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('listSearchEngines')
             ->willReturn($httpResponse);
@@ -488,7 +510,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
 
     public function testDeleteSearchEngineNoAuthorization()
     {
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('deleteSearchEngine')
             ->with('fake_hashid')
@@ -515,7 +537,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('deleteSearchEngine')
             ->with($hashId)
@@ -542,7 +564,7 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $httpResponse = HttpResponse::create(HttpStatusCode::NO_CONTENT);
 
-        $this->searchEnginesResource
+        $this->searchEngineResource
             ->expects($this->once())
             ->method('deleteSearchEngine')
             ->willReturn($httpResponse);
@@ -550,6 +572,528 @@ class ManagementClientTest extends PHPUnit_Framework_TestCase
         $managementClient = $this->createSut();
 
         $response = $managementClient->deleteSearchEngine($hashId);
+
+        $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
+    }
+
+    public function testCreateIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $params = [
+            'datasources' => [
+                [
+                    'options' => [
+                        'url' => 'fake_url',
+                        'page_size' => 100
+                    ],
+                    'type' => 'file'
+                ]
+            ],
+            'name' => 'product_4',
+            'options' => [
+                    'exclude_out_of_stock_items' => false
+            ],
+            'preset' => 'product'
+        ];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::CREATED);
+        $httpResponse->setBody($this->index);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('createIndex')
+            ->with($hashId, $params)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->createIndex($hashId, $params);
+
+        $this->assertSame(HttpStatusCode::CREATED, $response->getStatusCode());
+        $index = $response->getBody();
+
+        $this->assertInstanceOf(IndexModel::class, $index);
+
+        $this->assertSame($this->index->getName(), $index->getName());
+        $this->assertSame($this->index->getPreset(), $index->getPreset());
+        $this->assertSame($this->index->getOptions(), $index->getOptions());
+        $this->assertEquals($this->index->getDataSources(), $index->getDataSources());
+    }
+
+    public function testCreateIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $params = [
+            'datasources' => [
+                [
+                    'options' => [
+                        'url' => 'fake_url',
+                        'page_size' => 100
+                    ],
+                    'type' => 'file'
+                ]
+            ],
+            'name' => 'product_4',
+            'options' => [
+                'exclude_out_of_stock_items' => false
+            ],
+            'preset' => 'product'
+        ];
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('createIndex')
+            ->with($hashId, $params)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->createIndex($hashId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame('The user hasn\'t provided valid authorization.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCreateIndexInvalidParams()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('createIndex')
+            ->with($hashId, [])
+            ->willThrowException($this->badParametersException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->createIndex($hashId, []);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            $this->assertSame('Request contains wrong parameter or values.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCreateIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+
+        $params = [
+            'datasources' => [
+                [
+                    'options' => [
+                        'url' => 'fake_url',
+                        'page_size' => 100
+                    ],
+                    'type' => 'file'
+                ]
+            ],
+            'name' => 'product_4',
+            'options' => [
+                'exclude_out_of_stock_items' => false
+            ],
+            'preset' => 'product'
+        ];
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('createIndex')
+            ->with($hashId, $params)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->createIndex($hashId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $params = [
+            'datasources' => [
+                [
+                    'options' => [
+                        'url' => 'fake_url',
+                        'page_size' => 100
+                    ],
+                    'type' => 'file'
+                ]
+            ],
+            'options' => [
+                'exclude_out_of_stock_items' => false
+            ]
+        ];
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('updateIndex')
+            ->with($hashId, $indexName, $params)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->updateIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateIndexInvalidParams()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $params = [];
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('updateIndex')
+            ->with($hashId, $indexName, $params)
+            ->willThrowException($this->badParametersException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->updateIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            $this->assertSame('Request contains wrong parameter or values.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('bad_params', $previousMessage['code']);
+            $this->assertSame('Bad parameters error', $previousMessage['message']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $params = [
+            'datasources' => [
+                [
+                    'options' => [
+                        'url' => 'fake_url',
+                        'page_size' => 100
+                    ],
+                    'type' => 'file'
+                ]
+            ],
+            'options' => [
+                'exclude_out_of_stock_items' => false
+            ]
+        ];
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('updateIndex')
+            ->with($hashId, $indexName, $params)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->updateIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $managementClient = $this->createSut();
+        $params = [
+            'datasources' => [
+                [
+                    'options' => [
+                        'url' => 'fake_url',
+                        'page_size' => 100
+                    ],
+                    'type' => 'file'
+                ]
+            ],
+            'options' => [
+                'exclude_out_of_stock_items' => false
+            ]
+        ];
+
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK);
+        $httpResponse->setBody($this->index);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('updateIndex')
+            ->with($hashId, $indexName, $params)
+            ->willReturn($httpResponse);
+
+        $response = $managementClient->updateIndex($hashId, $indexName, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        /** @var IndexModel $index */
+        $index = $response->getBody();
+
+        $this->assertInstanceOf(IndexModel::class, $index);
+
+        $this->assertSame($this->index->getName(), $index->getName());
+        $this->assertSame($this->index->getPreset(), $index->getPreset());
+        $this->assertSame($this->index->getOptions(), $index->getOptions());
+        $this->assertEquals($this->index->getDataSources(), $index->getDataSources());
+    }
+
+    public function testGetIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        
+        $this->indexResource
+            ->expects($this->once())
+            ->method('getIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->getIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testGetIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        
+        $this->indexResource
+            ->expects($this->once())
+            ->method('getIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->getIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testGetIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK);
+        $httpResponse->setBody($this->index);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('getIndex')
+            ->with($hashId, $indexName)
+            ->willReturn($httpResponse);
+        $managementClient = $this->createSut();
+
+        $response = $managementClient->getIndex($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $index = $response->getBody();
+
+        $this->assertInstanceOf(IndexModel::class, $index);
+
+        $this->assertSame($this->index->getName(), $index->getName());
+        $this->assertSame($this->index->getPreset(), $index->getPreset());
+        $this->assertSame($this->index->getOptions(), $index->getOptions());
+        $this->assertEquals($this->index->getDataSources(), $index->getDataSources());
+    }
+
+    public function testListIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('listIndexes')
+            ->with($hashId)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->listIndexes($hashId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testListIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK);
+        $httpResponse->setBody([$this->index]);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('listIndexes')
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->listIndexes($hashId);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $indexes = $response->getBody();
+
+        $this->assertCount(1, $indexes);
+        $this->assertInstanceOf(IndexModel::class, $indexes[0]);
+
+        $index = $indexes[0];
+        $this->assertSame($this->index->getName(), $index->getName());
+        $this->assertSame($this->index->getPreset(), $index->getPreset());
+        $this->assertSame($this->index->getOptions(), $index->getOptions());
+        $this->assertEquals($this->index->getDataSources(), $index->getDataSources());
+    }
+
+    public function testDeleteIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('deleteIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('deleteIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::NO_CONTENT);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('deleteIndex')
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+
+        $response = $managementClient->deleteIndex($hashId, $indexName);
 
         $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
     }

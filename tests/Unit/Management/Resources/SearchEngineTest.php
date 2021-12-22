@@ -2,46 +2,28 @@
 
 namespace Tests\Unit\Management\Resources;
 
-use Doofinder\Configuration;
 use Doofinder\Management\Model\SearchEngine as SearchEngineModel;
 use Doofinder\Management\Resources\SearchEngine;
 use Doofinder\Shared\Exceptions\ApiException;
-use Doofinder\Shared\HttpClient;
 use Doofinder\Shared\HttpResponse;
 use Doofinder\Shared\HttpStatusCode;
 use Doofinder\Shared\Interfaces\HttpClientInterface;
 use Doofinder\Shared\Interfaces\HttpResponseInterface;
 
-class SearchEnginesTest extends \PHPUnit_Framework_TestCase
+class SearchEngineTest extends BaseResourceTest
 {
-    const BASE_URL = 'https://fake_url.com/random/api/v2';
-    const TOKEN = 'fake_token';
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    private $httpClient;
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    private $config;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->httpClient = $this->createMock(HttpClient::class);
-        $this->config = $this->createMock(Configuration::class);
-
-    }
-
     public function createSut()
     {
         return SearchEngine::create($this->httpClient, $this->config);
     }
 
-    public function testCreateSearchEngine()
+
+    private function getUrl($hashId = null)
+    {
+        return self::BASE_URL . '/search_engines' . (!is_null($hashId)? '/' . $hashId : '');
+    }
+
+    public function testCreateSearchEngineSuccess()
     {
         $body = [
             'language' => 'es',
@@ -71,7 +53,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
+            ->with($this->getUrl(), HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -81,7 +63,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(HttpStatusCode::CREATED, $response->getStatusCode());
         $this->assertInstanceOf(SearchEngineModel::class, $response->getBody());
 
-        /** @var SearchEngine $searchEngine */
+        /** @var SearchEngineModel $searchEngine */
         $searchEngine = $response->getBody();
         $this->assertSame($searchEngine->jsonSerialize(), $body);
     }
@@ -94,7 +76,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
+            ->with($this->getUrl(), HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -122,7 +104,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
+            ->with($this->getUrl(), HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -174,7 +156,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
+            ->with($this->getUrl($hashId), HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -199,7 +181,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
+            ->with($this->getUrl($hashId), HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -242,7 +224,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->with($this->getUrl($hashId), HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -266,7 +248,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->with($this->getUrl($hashId), HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -309,7 +291,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines', HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->with($this->getUrl(), HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -318,7 +300,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
 
-        /** @var array<SearchEngine> $searchEngines */
+        /** @var array<SearchEngineModel> $searchEngines */
         $searchEngines = $response->getBody();
         $this->assertCount(1, $searchEngines);;
         $this->assertInstanceOf(SearchEngineModel::class, $searchEngines[0]);
@@ -334,7 +316,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
+            ->with($this->getUrl($hashId), HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -353,7 +335,7 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with(self::BASE_URL . '/search_engines/' . $hashId, HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
+            ->with($this->getUrl($hashId), HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
@@ -371,31 +353,5 @@ class SearchEnginesTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertTrue($thrownException);
-    }
-
-    /**
-     * @return \PHPUnit_Framework_Constraint_Callback
-     */
-    private function assertBearerCallback()
-    {
-        return $this->callback(
-            function ($authentication) {
-                $this->assertStringStartsWith('Authorization: Bearer ', $authentication[0]);
-                return true;
-            }
-        );
-    }
-
-    private function setConfig()
-    {
-        $this->config
-            ->expects($this->once())
-            ->method('getBaseUrl')
-            ->willReturn(self::BASE_URL);
-
-        $this->config
-            ->expects($this->once())
-            ->method('getToken')
-            ->willReturn(self::TOKEN);
     }
 }

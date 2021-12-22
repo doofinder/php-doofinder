@@ -18,7 +18,7 @@ class Jwt
      * @param string $secret
      * @return string
      */
-    public static function generateToken($name, $secret)
+    public static function generateToken($secret, $name)
     {
         $payload = json_encode(
             [
