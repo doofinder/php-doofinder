@@ -353,4 +353,86 @@ class IndexTest extends BaseResourceTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testCreateTemporaryIndexSuccess()
+    {
+        $response = HttpResponse::create(HttpStatusCode::CREATED, json_encode(['status' => 'OK']));
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName) . '/temp', HttpClientInterface::METHOD_POST, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->createTemporaryIndex($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::CREATED, $response->getStatusCode());
+        $this->assertSame(['status' => 'OK'], $response->getBody());
+    }
+
+    public function testCreateTemporaryIndexNotFound()
+    {
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName) . '/temp', HttpClientInterface::METHOD_POST, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+        try {
+            $this->createSut()->createTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCreateTemporaryIndexAlreadyCreated()
+    {
+        $response = HttpResponse::create(
+            HttpStatusCode::CONFLICT,
+            '{"error":{"code":"too_many_temporary","message":"Too many temporary indices"}}'
+        );
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName) . '/temp', HttpClientInterface::METHOD_POST, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+        try {
+            $this->createSut()->createTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::CONFLICT, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('too_many_temporary', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }
