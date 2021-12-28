@@ -226,4 +226,95 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId, index id and item data, creates a new item
+     *
+     * @param string $hashId
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createItem($hashId, $itemId, $params)
+    {
+        try {
+            return $this->itemsResource->createItem($hashId, $itemId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName, item id and data updates an item.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItem($hashId, $indexName, $itemId, $params)
+    {
+        try {
+            return $this->itemsResource->updateItem($hashId, $indexName, $itemId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName and item id, it gets an item.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getItem($hashId, $indexName, $itemId)
+    {
+        try {
+            return $this->itemsResource->getItem($hashId, $indexName, $itemId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId and index name, scrolls index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function scrollIndex($hashId, $indexName, $params = [])
+    {
+        try {
+            return $this->itemsResource->scrollIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName and item id, removes an item
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteItem($hashId, $indexName, $itemId)
+    {
+        try {
+            return $this->itemsResource->deleteItem($hashId, $indexName, $itemId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

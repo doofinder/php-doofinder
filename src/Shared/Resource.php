@@ -26,7 +26,7 @@ abstract class Resource
     {
         $this->httpClient = $httpClient;
         $this->config = $config;
-        $this->baseUrl = $config->getBaseUrl();
+        $this->baseUrl = $config->getBaseUrl() . '/api/v2';
     }
 
     /**

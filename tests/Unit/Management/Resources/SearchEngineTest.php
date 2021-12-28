@@ -20,7 +20,7 @@ class SearchEngineTest extends BaseResourceTest
 
     private function getUrl($hashId = null)
     {
-        return self::BASE_URL . '/search_engines' . (!is_null($hashId)? '/' . $hashId : '');
+        return self::BASE_URL . '/api/v2/search_engines' . (!is_null($hashId)? '/' . $hashId : '');
     }
 
     public function testCreateSearchEngineSuccess()

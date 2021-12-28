@@ -19,7 +19,7 @@ class IndexTest extends BaseResourceTest
 
     private function getUrl($hashId, $indexName = null)
     {
-        return self::BASE_URL . '/search_engines/' . $hashId . '/indices' . (!is_null($indexName)? '/' . $indexName : '');
+        return self::BASE_URL . '/api/v2/search_engines/' . $hashId . '/indices' . (!is_null($indexName)? '/' . $indexName : '');
     }
 
     public function testCreateIndexSuccess()

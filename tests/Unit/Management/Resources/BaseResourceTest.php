@@ -5,9 +5,9 @@ namespace Tests\Unit\Management\Resources;
 use Doofinder\Configuration;
 use Doofinder\Shared\HttpClient;
 
-class BaseResourceTest extends \PHPUnit_Framework_TestCase
+abstract class BaseResourceTest extends \PHPUnit_Framework_TestCase
 {
-    const BASE_URL = 'https://fake_url.com/random/api/v2';
+    const BASE_URL = 'https://fake_url.com/random';
     const TOKEN = 'fake_token';
 
     /**
