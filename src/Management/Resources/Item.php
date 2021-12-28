@@ -94,24 +94,30 @@ class Item extends Resource
     }
 
     /**
-     * Given a hashId and index name, lists item's index
+     * Given a hashId and index name, scrolls index
      *
      * @param string $hashId
      * @param string $indexName
      * @return HttpResponseInterface
      * @throws ApiException
      */
-    public function listItems($hashId, $indexName)
+    public function scrollIndex($hashId, $indexName, $params)
     {
         $httpResponse = $this->requestWithJwt(
             $this->getBaseUrl($hashId, $indexName),
-            HttpClientInterface::METHOD_GET
+            HttpClientInterface::METHOD_GET,
+            null,
+            $params
         );
 
+        $body = $httpResponse->getBody();
+
+        $body['items'] = array_map(function (array $item) {
+            return ItemModel::createFromArray($item);
+        }, $body['items']);
+
         $httpResponse->setBody(
-            array_map(function (array $item) {
-                return ItemModel::createFromArray($item);
-            }, $httpResponse->getBody())
+            $body
         );
         return $httpResponse;
     }

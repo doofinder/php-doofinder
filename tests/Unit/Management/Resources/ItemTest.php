@@ -275,12 +275,12 @@ class ItemTest extends BaseResourceTest
         $this->assertTrue($thrownException);
     }
 
-    public function testListItem()
+    public function testScrollIndex()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $indexName = 'index_test';
 
-        $body = [[
+        $responseItems = [[
             'best_price' =>  74748791.45018,
             'categories' =>  [
                 'consectetur',
@@ -292,25 +292,37 @@ class ItemTest extends BaseResourceTest
             'id' =>  'magna'
         ]];
 
-        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode(
+            [
+                'items' => $responseItems,
+                'scroll_id' => 'fake_scroll_id',
+                'total' => 10
+            ]
+        ));
+        $params = [
+            'scroll_id' => 'fake_scroll_id',
+            'rpp' => 1,
+            'group_id' => 'fake_scroll_id'
+        ];
 
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with($this->getUrl($hashId, $indexName), HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->with($this->getUrl($hashId, $indexName), HttpClientInterface::METHOD_GET, $params, $this->assertBearerCallback())
             ->willReturn($response);
 
         $this->setConfig();
 
-        $response = $this->createSut()->listItems($hashId, $indexName);
+        $response = $this->createSut()->scrollIndex($hashId, $indexName, $params);
 
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
 
         /** @var array<ItemModel> $items */
-        $items = $response->getBody();
+        $body = $response->getBody();
+        $items = $body['items'];
         $this->assertCount(1, $items);;
         $this->assertInstanceOf(ItemModel::class, $items[0]);
-        $this->assertEquals($items[0]->jsonSerialize(), $body[0]);
+        $this->assertEquals($items[0]->jsonSerialize(), $responseItems[0]);
     }
 
     public function testDeleteItem()

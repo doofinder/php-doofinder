@@ -363,14 +363,14 @@ class ManagementClientItemTest extends BaseManagementClientTest
         $this->assertSame($this->item->getAdditionalFields(), $item->getAdditionalFields());
     }
 
-    public function testListItemNoAuthorization()
+    public function testScrollIndexNoAuthorization()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $indexName = 'index_test';
 
         $this->itemResource
             ->expects($this->once())
-            ->method('listItems')
+            ->method('scrollIndex')
             ->with($hashId, $indexName)
             ->willThrowException($this->unauthorizedException);
 
@@ -378,7 +378,7 @@ class ManagementClientItemTest extends BaseManagementClientTest
         $thrownException = false;
 
         try {
-            $managementClient->listItems($hashId, $indexName);
+            $managementClient->scrollIndex($hashId, $indexName);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
@@ -391,28 +391,42 @@ class ManagementClientItemTest extends BaseManagementClientTest
         $this->assertTrue($thrownException);
     }
 
-    public function testListItemSuccess()
+    public function testScrollIndexSuccess()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $indexName = 'index_test';
 
         $httpResponse = HttpResponse::create(HttpStatusCode::OK);
-        $httpResponse->setBody([$this->item]);
+        $httpResponse->setBody([
+            'items' => [$this->item],
+            'scroll_id' => 1234,
+            'total' => 1,
+        ]);
 
         $this->itemResource
             ->expects($this->once())
-            ->method('listItems')
+            ->method('scrollIndex')
             ->with($hashId, $indexName)
             ->willReturn($httpResponse);
 
+        $params = [
+            'scroll_id' => 'fake_scroll_id',
+            'rpp' => 1,
+            'group_id' => 'fake_scroll_id'
+        ];
+
         $managementClient = $this->createSut();
-        $response = $managementClient->listItems($hashId, $indexName);
+        $response = $managementClient->scrollIndex($hashId, $indexName, $params);
 
         $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
-        $items = $response->getBody();
+        $body = $response->getBody();
 
+        $items = $body['items'];
         $this->assertCount(1, $items);
         $this->assertInstanceOf(ItemModel::class, $items[0]);
+
+        $this->assertSame(1234, $body['scroll_id']);
+        $this->assertSame(1, $body['total']);
 
         $item = $items[0];
         $this->assertSame($this->item->getId(), $item->getId());

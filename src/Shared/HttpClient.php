@@ -22,10 +22,15 @@ class HttpClient implements HttpClientInterface
     public function request($url, $method, $params, $headers)
     {
         $s = curl_init();
-        curl_setopt($s,CURLOPT_URL,$url);
+        if ($method === self::METHOD_GET) {
+            $url .= '?' . http_build_query($params);
+        } else {
+            curl_setopt($s,CURLOPT_POSTFIELDS, json_encode($params));
+        }
+
+        curl_setopt($s,CURLOPT_URL, $url);
         curl_setopt($s,CURLOPT_NOBODY, false);
         curl_setopt($s,CURLOPT_POST, ($method === self::METHOD_GET)? 0 : 1);
-        curl_setopt($s,CURLOPT_POSTFIELDS, json_encode($params));
         curl_setopt($s, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($s, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($s, CURLOPT_HTTPHEADER, $this->getHeader($headers));

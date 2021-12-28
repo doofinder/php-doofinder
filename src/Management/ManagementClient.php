@@ -283,17 +283,18 @@ class ManagementClient
     }
 
     /**
-     * Given a hashId and index name, lists item's item.
+     * Given a hashId and index name, scrolls index
      *
      * @param string $hashId
      * @param string $indexName
+     * @param array $params
      * @return HttpResponseInterface
      * @throws ApiException
      */
-    public function listItems($hashId, $indexName)
+    public function scrollIndex($hashId, $indexName, $params = [])
     {
         try {
-            return $this->itemsResource->listItems($hashId, $indexName);
+            return $this->itemsResource->scrollIndex($hashId, $indexName, $params);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
