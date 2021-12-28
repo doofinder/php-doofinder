@@ -32,7 +32,6 @@ class Item extends Resource
      */
     private function getBaseUrl($hashId, $indexName, $itemId = null)
     {
-        // TODO To put /api/v2??
         return $this->baseUrl . '/search_engines/' . $hashId . '/indices/' . $indexName . '/items' .(!is_null($itemId)? '/' . $itemId : '');
     }
 

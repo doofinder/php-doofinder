@@ -19,7 +19,7 @@ class ItemTest extends BaseResourceTest
 
     private function getUrl($hashId, $indexName, $itemId = null)
     {
-        return self::BASE_URL . '/search_engines/' . $hashId . '/indices/' . $indexName . '/items' . (!is_null($itemId)? '/' . $itemId : '');
+        return self::BASE_URL . '/api/v2/search_engines/' . $hashId . '/indices/' . $indexName . '/items' . (!is_null($itemId)? '/' . $itemId : '');
     }
 
     public function testCreateItemSuccess()
