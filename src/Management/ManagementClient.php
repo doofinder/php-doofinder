@@ -419,4 +419,20 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId gets the status of the last process task.
+     *
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getSearchEngineProcessStatus($hashId)
+    {
+        try {
+            return $this->searchEnginesResource->getSearchEngineProcessStatus($hashId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

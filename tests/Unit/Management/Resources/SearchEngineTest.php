@@ -412,4 +412,58 @@ class SearchEngineTest extends BaseResourceTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testGetSearchEngineProcessStatusSuccess()
+    {
+        $hashId = 'fake_hashid';
+
+        $body = [
+            'status' => 'SUCCESS',
+            'result' => 'OK',
+            'finished_at' => '2021-12-01T10:32:21.158Z'
+        ];
+
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId) . '/_process', HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->getSearchEngineProcessStatus($hashId);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame($body, $response->getBody());
+    }
+
+    public function testGetSearchEngineProcessStatusNotFound()
+    {
+        $hashId = 'fake_hashid';
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId) . '/_process', HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->getSearchEngineProcessStatus($hashId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }
