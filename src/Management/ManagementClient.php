@@ -317,4 +317,89 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId and index name, creates a new temporary index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createTemporaryIndex($hashId, $indexName)
+    {
+        try {
+            return $this->indexResource->createTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId and index name, deletes a temporary index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteTemporaryIndex($hashId, $indexName)
+    {
+        try {
+            return $this->indexResource->deleteTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId and index name, replaces the content of the current "production" index with the content of the temporary one
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function replaceIndex($hashId, $indexName)
+    {
+        try {
+            return $this->indexResource->replaceIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId and index name, reindex all items from real and index them onto the temporary.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function reindexIntoTemporary($hashId, $indexName)
+    {
+        try {
+            return $this->indexResource->reindexIntoTemporary($hashId, $indexName);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId and index name, returns the status of the last scheduled reindexing tasks.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function reindexTaskStatus($hashId, $indexName)
+    {
+        try {
+            return $this->indexResource->reindexTaskStatus($hashId, $indexName);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

@@ -561,4 +561,386 @@ class ManagementClientIndexTest extends BaseManagementClientTest
 
         $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
     }
+
+    public function testCreateTemporaryIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::CREATED);
+        $httpResponse->setBody(['status' => 'OK']);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('createTemporaryIndex')
+            ->with($hashId, $indexName)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->createTemporaryIndex($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::CREATED, $response->getStatusCode());
+        $this->assertSame(['status' => 'OK'], $response->getBody());
+    }
+
+    public function testCreateTemporaryIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('createTemporaryIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->createTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame('The user hasn\'t provided valid authorization.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCreateTemporaryIndexAlreadyCreated()
+    {
+        $hashId = 'ee859baa0f1d2d6abb7611046f297148';
+        $indexName = 'product_4';
+        $conflictException = new ApiException(
+            '{"error":{"code":"too_many_temporary","message":"Too many temporary indices"}}',
+            HttpStatusCode::CONFLICT
+        );
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('createTemporaryIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($conflictException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->createTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::CONFLICT, $e->getCode());
+            $this->assertSame('There are too many temporary index.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCreateTemporaryIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('createTemporaryIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->createTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteTemporaryIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::NO_CONTENT);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('deleteTemporaryIndex')
+            ->with($hashId, $indexName)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->deleteTemporaryIndex($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
+    }
+
+    public function testDeleteTemporaryIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('deleteTemporaryIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame('The user hasn\'t provided valid authorization.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteTemporaryIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('deleteTemporaryIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testReplaceIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK);
+        $httpResponse->setBody(['status' => 'OK']);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('replaceIndex')
+            ->with($hashId, $indexName)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->replaceIndex($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame(['status' => 'OK'], $response->getBody());
+    }
+
+    public function testReplaceIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('replaceIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->replaceIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame('The user hasn\'t provided valid authorization.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testReplaceIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('replaceIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->replaceIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testReindexIntoTemporarySuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK);
+        $httpResponse->setBody(['status' => 'OK']);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('reindexIntoTemporary')
+            ->with($hashId, $indexName)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->reindexIntoTemporary($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame(['status' => 'OK'], $response->getBody());
+    }
+
+    public function testReindexIntoTemporaryNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('reindexIntoTemporary')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->reindexIntoTemporary($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame('The user hasn\'t provided valid authorization.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testReindexIntoTemporaryNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('reindexIntoTemporary')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->reindexIntoTemporary($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testReindexTaskStatusSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK);
+        $httpResponse->setBody(['progress' => 1.0, 'status' => 'completed']);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('reindexTaskStatus')
+            ->with($hashId, $indexName)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->reindexTaskStatus($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame(['progress' => 1.0, 'status' => 'completed'], $response->getBody());
+    }
+
+    public function testReindexTaskStatusNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('reindexTaskStatus')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->reindexTaskStatus($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame('The user hasn\'t provided valid authorization.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testReindexTaskStatusNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('reindexTaskStatus')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->reindexTaskStatus($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }

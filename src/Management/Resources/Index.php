@@ -125,4 +125,84 @@ class Index extends Resource
             HttpClientInterface::METHOD_DELETE
         );
     }
+
+    /**
+     * Given a hashId and index name, creates a new temporary index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createTemporaryIndex($hashId, $indexName)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName) . '/temp',
+            HttpClientInterface::METHOD_POST
+        );
+    }
+
+    /**
+     * Given a hashId and index name, deletes a temporary index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteTemporaryIndex($hashId, $indexName)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName) . '/temp',
+            HttpClientInterface::METHOD_DELETE
+        );
+    }
+
+    /**
+     * Given a hashId and index name, replaces the content of the current "production" index with the content of the temporary one
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function replaceIndex($hashId, $indexName)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName) . '/_replace_by_temp',
+            HttpClientInterface::METHOD_POST
+        );
+    }
+
+    /**
+     * Given a hashId and index name, reindex all items from real and index them onto the temporary.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function reindexIntoTemporary($hashId, $indexName)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName) . '/_reindex_to_temp',
+            HttpClientInterface::METHOD_POST
+        );
+    }
+
+    /**
+     * Given a hashId and index name, returns the status of the last scheduled reindexing tasks.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function reindexTaskStatus($hashId, $indexName)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName) . '/_reindex_to_temp',
+            HttpClientInterface::METHOD_GET
+        );
+    }
 }
