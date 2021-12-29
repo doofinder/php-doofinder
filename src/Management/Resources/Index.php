@@ -157,4 +157,20 @@ class Index extends Resource
             HttpClientInterface::METHOD_DELETE
         );
     }
+
+    /**
+     * Given a hashId and index name, replaces the content of the current "production" index with the content of the temporary one
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function replaceIndex($hashId, $indexName)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName) . '/_replace_by_temp',
+            HttpClientInterface::METHOD_POST
+        );
+    }
 }
