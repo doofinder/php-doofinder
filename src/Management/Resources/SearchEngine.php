@@ -138,4 +138,19 @@ class SearchEngine extends Resource
             $params
         );
     }
+
+    /**
+     * Given a hashId gets the status of the last process task.
+     *
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getSearchEngineProcessStatus($hashId)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId) . '/_process',
+            HttpClientInterface::METHOD_GET
+        );
+    }
 }
