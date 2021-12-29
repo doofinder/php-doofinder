@@ -801,4 +801,75 @@ class ManagementClientIndexTest extends BaseManagementClientTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testReindexIntoTemporarySuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK);
+        $httpResponse->setBody(['status' => 'OK']);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('reindexIntoTemporary')
+            ->with($hashId, $indexName)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->reindexIntoTemporary($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame(['status' => 'OK'], $response->getBody());
+    }
+
+    public function testReindexIntoTemporaryNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('reindexIntoTemporary')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->reindexIntoTemporary($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame('The user hasn\'t provided valid authorization.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testReindexIntoTemporaryNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('reindexIntoTemporary')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->reindexIntoTemporary($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }

@@ -368,4 +368,21 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId and index name, reindex all items from real and index them onto the temporary.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function reindexIntoTemporary($hashId, $indexName)
+    {
+        try {
+            return $this->indexResource->reindexIntoTemporary($hashId, $indexName);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

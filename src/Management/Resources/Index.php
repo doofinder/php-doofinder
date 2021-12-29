@@ -173,4 +173,20 @@ class Index extends Resource
             HttpClientInterface::METHOD_POST
         );
     }
+
+    /**
+     * Given a hashId and index name, reindex all items from real and index them onto the temporary.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function reindexIntoTemporary($hashId, $indexName)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName) . '/_reindex_to_temp',
+            HttpClientInterface::METHOD_POST
+        );
+    }
 }
