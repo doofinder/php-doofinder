@@ -584,4 +584,54 @@ class IndexTest extends BaseResourceTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testReindexTaskStatusSuccess()
+    {
+        $response = HttpResponse::create(HttpStatusCode::OK, '{"progress" : 1.0, "status" : "completed"}');
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName) . '/_reindex_to_temp', HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->reindexTaskStatus($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame(['progress' => 1.0, 'status' => 'completed'], $response->getBody());
+    }
+
+    public function testReindexTaskStatusNotFound()
+    {
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName) . '/_reindex_to_temp', HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+        try {
+            $this->createSut()->reindexTaskStatus($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }

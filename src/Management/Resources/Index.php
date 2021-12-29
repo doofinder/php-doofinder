@@ -189,4 +189,20 @@ class Index extends Resource
             HttpClientInterface::METHOD_POST
         );
     }
+
+    /**
+     * Given a hashId and index name, returns the status of the last scheduled reindexing tasks.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function reindexTaskStatus($hashId, $indexName)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName) . '/_reindex_to_temp',
+            HttpClientInterface::METHOD_GET
+        );
+    }
 }
