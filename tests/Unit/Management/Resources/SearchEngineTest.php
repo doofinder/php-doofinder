@@ -124,7 +124,7 @@ class SearchEngineTest extends BaseResourceTest
         $this->assertTrue($thrownException);
     }
 
-    public function testUpdateSearchEngine()
+    public function testUpdateSearchEngineSuccess()
     {
         $hashId = 'fake_hashid';
 
@@ -344,6 +344,64 @@ class SearchEngineTest extends BaseResourceTest
 
         try {
             $this->createSut()->deleteSearchEngine($hashId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testProcessSearchEngineSuccess()
+    {
+        $hashId = 'fake_hashid';
+
+        $body = [
+            'href' => 'https://test.url.com/fake',
+            'message' => 'PROCESS_CREATED'
+        ];
+
+        $response = HttpResponse::create(HttpStatusCode::CREATED, json_encode($body));
+        $params = [
+            'callback_url' => 'https://test.url.com/fake'
+        ];
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId) . '/_process', HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->processSearchEngine($hashId, $params);
+
+        $this->assertSame(HttpStatusCode::CREATED, $response->getStatusCode());
+        $this->assertSame($body, $response->getBody());
+    }
+
+    public function testProcessSearchEngineNotFound()
+    {
+        $hashId = 'fake_hashid';
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+        $params = [];
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId) . '/_process', HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->processSearchEngine($hashId, $params);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
