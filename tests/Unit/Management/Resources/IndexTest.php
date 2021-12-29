@@ -435,4 +435,53 @@ class IndexTest extends BaseResourceTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testDeleteTemporaryIndexSuccess()
+    {
+        $response = HttpResponse::create(HttpStatusCode::NO_CONTENT);
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName) . '/temp', HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->deleteTemporaryIndex($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
+    }
+
+    public function testDeleteTemporaryIndexNotFound()
+    {
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName) . '/temp', HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+        try {
+            $this->createSut()->deleteTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }

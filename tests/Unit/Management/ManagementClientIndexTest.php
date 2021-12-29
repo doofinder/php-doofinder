@@ -661,4 +661,73 @@ class ManagementClientIndexTest extends BaseManagementClientTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testDeleteTemporaryIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::NO_CONTENT);
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('deleteTemporaryIndex')
+            ->with($hashId, $indexName)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->deleteTemporaryIndex($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
+    }
+
+    public function testDeleteTemporaryIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('deleteTemporaryIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame('The user hasn\'t provided valid authorization.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteTemporaryIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->indexResource
+            ->expects($this->once())
+            ->method('deleteTemporaryIndex')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }

@@ -141,4 +141,20 @@ class Index extends Resource
             HttpClientInterface::METHOD_POST
         );
     }
+
+    /**
+     * Given a hashId and index name, deletes a temporary index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteTemporaryIndex($hashId, $indexName)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName) . '/temp',
+            HttpClientInterface::METHOD_DELETE
+        );
+    }
 }

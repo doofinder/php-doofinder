@@ -334,4 +334,21 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId and index name, deletes a temporary index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteTemporaryIndex($hashId, $indexName)
+    {
+        try {
+            return $this->indexResource->deleteTemporaryIndex($hashId, $indexName);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }
