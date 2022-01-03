@@ -56,7 +56,10 @@ class HttpClient implements HttpClientInterface
      */
     private function getHeader($headers)
     {
-        $header = ['Content-Type: application/json'];
+        $header = [
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ];
         if ($headers) {
             $header = array_merge($header, $headers);
         }

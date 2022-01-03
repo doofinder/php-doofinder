@@ -37,10 +37,10 @@ class Configuration
     /**
      * @param string $host
      * @param string $token
-     * @param string $userId
+     * @param string|null $userId
      * @return Configuration
      */
-    public static function create($host, $token, $userId)
+    public static function create($host, $token, $userId = null)
     {
         return new self($host, $token, $userId);
     }
@@ -62,7 +62,7 @@ class Configuration
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getUserId()
     {

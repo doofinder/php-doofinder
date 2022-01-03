@@ -4,21 +4,54 @@ namespace Doofinder\Search;
 
 use Doofinder\Configuration;
 use Doofinder\Search\Resources\Search;
+use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpClient;
+use Doofinder\Shared\Utils\ErrorHandler;
+use Doofinder\Shared\Interfaces\HttpResponseInterface;
 
+/**
+ * This class is used to do searches through calling an API.
+ */
 class SearchClient
 {
-    private $searchesResource;
+    /**
+     * @var Search
+     */
+    private $searchResource;
 
-    private function __construct($host, $token, $userId)
+    public function __construct(Search $searchResource)
     {
-        $config = Configuration::create($host, $token, $userId);
-        $httpClient = new HttpClient();
-        $this->searchesResource = Search::create($httpClient, $config);
+        $this->searchResource = $searchResource;
     }
 
-    public static function create($host, $token, $userId)
+    /**
+     * @param string $host
+     * @param string $token
+     * @return SearchClient
+     */
+    public static function create($host, $token)
     {
-        return new self($host, $token, $userId);
+        $config = Configuration::create($host, $token);
+        $httpClient = new HttpClient();
+        $searchResource = Search::create($httpClient, $config);
+
+        return new self($searchResource);
+    }
+
+    /**
+     * Search through indexed items of a search engine.
+     *
+     * @param string $hashId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function search($hashId, array $params)
+    {
+        try {
+            return $this->searchResource->search($hashId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
     }
 }
