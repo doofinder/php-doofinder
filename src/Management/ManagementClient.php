@@ -402,4 +402,37 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId schedules a task for processing all search engine's data sources.
+     *
+     * @param string $hashId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function processSearchEngine($hashId, array $params = [])
+    {
+        try {
+            return $this->searchEnginesResource->processSearchEngine($hashId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId gets the status of the last process task.
+     *
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getSearchEngineProcessStatus($hashId)
+    {
+        try {
+            return $this->searchEnginesResource->getSearchEngineProcessStatus($hashId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

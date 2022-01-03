@@ -492,4 +492,186 @@ class ManagementClientSearchEngineTest extends BaseManagementClientTest
 
         $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
     }
+
+    public function testProcessSearchEngineNoAuthorization()
+    {
+        $this->searchEngineResource
+            ->expects($this->once())
+            ->method('processSearchEngine')
+            ->with('fake_hashid', [])
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->processSearchEngine('fake_hashid', []);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testProcessSearchEngineInvalidParams()
+    {
+        $hashId = 'ee859baa0f1d2d6abb7611046f297148';
+        $params = [
+            'callback_url' => 123,
+        ];
+
+        $this->searchEngineResource
+            ->expects($this->once())
+            ->method('processSearchEngine')
+            ->with($hashId, $params)
+            ->willThrowException(new ApiException('', HttpStatusCode::INTERNAL_SERVER_ERROR));
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->processSearchEngine($hashId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::INTERNAL_SERVER_ERROR, $e->getCode());
+            $this->assertSame('Server error.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testProcessSearchEngineInvalidHashid()
+    {
+        $hashId = 'a59357c0ea737666f41f6d6b75cbd3bc';
+
+        $this->searchEngineResource
+            ->expects($this->once())
+            ->method('processSearchEngine')
+            ->with($hashId, [])
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->processSearchEngine($hashId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testProcessSearchEngineSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $params = ['callback_url' => 'https://test.url.com/fake'];
+        $body = [
+            'href' => 'https://doofinder.api.com/api/v2/search_engines/' . $hashId . '/_process',
+            'message' => 'Process created'
+        ];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::CREATED, json_encode($body));
+
+        $managementClient = $this->createSut();
+
+        $this->searchEngineResource
+            ->expects($this->once())
+            ->method('processSearchEngine')
+            ->with($hashId, $params)
+            ->willReturn($httpResponse);
+
+        $response = $managementClient->processSearchEngine($hashId, $params);
+
+        $this->assertSame(HttpStatusCode::CREATED, $response->getStatusCode());
+
+        $this->assertSame($body, $response->getBody());
+    }
+
+    public function testGetSearchEngineProcessStatusNoAuthorization()
+    {
+        $this->searchEngineResource
+            ->expects($this->once())
+            ->method('getSearchEngineProcessStatus')
+            ->with('fake_hashid')
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->getSearchEngineProcessStatus('fake_hashid');
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testGetSearchEngineProcessStatusInvalidHashid()
+    {
+        $hashId = 'a59357c0ea737666f41f6d6b75cbd3bc';
+
+        $this->searchEngineResource
+            ->expects($this->once())
+            ->method('getSearchEngineProcessStatus')
+            ->with($hashId)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->getSearchEngineProcessStatus($hashId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testSearchEngineProcessStatusSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $body = [
+            'status' => 'SUCCESS',
+            'result' => 'OK',
+            'finished_at' => '2021-12-01T10:32:21.158T'
+        ];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $managementClient = $this->createSut();
+
+        $this->searchEngineResource
+            ->expects($this->once())
+            ->method('getSearchEngineProcessStatus')
+            ->with($hashId)
+            ->willReturn($httpResponse);
+
+        $response = $managementClient->getSearchEngineProcessStatus($hashId);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame($body, $response->getBody());
+    }
 }

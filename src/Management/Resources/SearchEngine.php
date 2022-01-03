@@ -25,6 +25,15 @@ class SearchEngine extends Resource
     }
 
     /**
+     * @param string|null $hashId
+     * @return string
+     */
+    private function getBaseUrl($hashId = null)
+    {
+        return $this->baseUrl . '/search_engines' .(!is_null($hashId)? '/' . $hashId : '');
+    }
+
+    /**
      * Creates a new search engine
      *
      * @param array $params
@@ -34,7 +43,7 @@ class SearchEngine extends Resource
     public function createSearchEngine(array $params)
     {
         return $this->requestWithJwt(
-            $this->baseUrl . '/search_engines',
+            $this->getBaseUrl(),
             HttpClientInterface::METHOD_POST,
             SearchEngineModel::class,
             $params
@@ -52,7 +61,7 @@ class SearchEngine extends Resource
     public function updateSearchEngine($hashId, array $params)
     {
         return $this->requestWithJwt(
-            $this->baseUrl . '/search_engines/' . $hashId,
+            $this->getBaseUrl($hashId),
             HttpClientInterface::METHOD_PATCH,
             SearchEngineModel::class,
             $params
@@ -69,7 +78,7 @@ class SearchEngine extends Resource
     public function getSearchEngine($hashId)
     {
         return $this->requestWithJwt(
-            $this->baseUrl . '/search_engines/' . $hashId,
+            $this->getBaseUrl($hashId),
             HttpClientInterface::METHOD_GET,
             SearchEngineModel::class
         );
@@ -83,7 +92,7 @@ class SearchEngine extends Resource
     public function listSearchEngines()
     {
         $httpResponse = $this->requestWithJwt(
-            $this->baseUrl . '/search_engines',
+            $this->getBaseUrl(),
             HttpClientInterface::METHOD_GET
         );
 
@@ -107,8 +116,41 @@ class SearchEngine extends Resource
     public function deleteSearchEngine($hashId)
     {
         return $this->requestWithJwt(
-            $this->baseUrl . '/search_engines/' . $hashId,
+            $this->getBaseUrl($hashId),
             HttpClientInterface::METHOD_DELETE
+        );
+    }
+
+    /**
+     * Given a hashId schedules a task for processing all search engine's data sources.
+     *
+     * @param string $hashId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function processSearchEngine($hashId, array $params)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId) . '/_process',
+            HttpClientInterface::METHOD_POST,
+            null,
+            $params
+        );
+    }
+
+    /**
+     * Given a hashId gets the status of the last process task.
+     *
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getSearchEngineProcessStatus($hashId)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId) . '/_process',
+            HttpClientInterface::METHOD_GET
         );
     }
 }
