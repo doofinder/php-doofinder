@@ -30,7 +30,7 @@ class Search extends SearchResource
      */
     private function getBaseUrl($hashId)
     {
-        return $this->baseUrl . '/' . $hashId . '/_search';
+        return $this->baseUrl . '/' . $hashId;
     }
 
     /**
@@ -44,7 +44,25 @@ class Search extends SearchResource
     public function search($hashId, array $params)
     {
         return $this->requestWithToken(
-            $this->getBaseUrl($hashId),
+            $this->getBaseUrl($hashId) . '/_search',
+            HttpClientInterface::METHOD_GET,
+            null,
+            $params
+        );
+    }
+
+    /**
+     * Given a hashId and suggest params, it returns a suggest list
+     *
+     * @param string $hashId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function suggest($hashId, array $params)
+    {
+        return $this->requestWithToken(
+            $this->getBaseUrl($hashId) . '/_suggest',
             HttpClientInterface::METHOD_GET,
             null,
             $params

@@ -19,7 +19,7 @@ class SearchTest extends BaseResourceTest
 
     private function getUrl($hashId)
     {
-        return self::BASE_URL . '/6/' . $hashId . '/_search';
+        return self::BASE_URL . '/6/' . $hashId;
     }
 
     public function testSearchSuccess()
@@ -95,7 +95,7 @@ class SearchTest extends BaseResourceTest
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with($this->getUrl($hashId), HttpClientInterface::METHOD_GET, $params, ['Authorization: Token ' . self::TOKEN])
+            ->with($this->getUrl($hashId) . '/_search', HttpClientInterface::METHOD_GET, $params, ['Authorization: Token ' . self::TOKEN])
             ->willReturn($response);
 
         $this->setConfig();
@@ -118,7 +118,7 @@ class SearchTest extends BaseResourceTest
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with($this->getUrl($hashId), HttpClientInterface::METHOD_GET, $params, ['Authorization: Token ' . self::TOKEN])
+            ->with($this->getUrl($hashId) . '/_search', HttpClientInterface::METHOD_GET, $params, ['Authorization: Token ' . self::TOKEN])
             ->willReturn($response);
 
         $this->setConfig();
@@ -148,7 +148,7 @@ class SearchTest extends BaseResourceTest
         $this->httpClient
             ->expects($this->once())
             ->method('request')
-            ->with($this->getUrl($hashId), HttpClientInterface::METHOD_GET, $params, ['Authorization: Token ' . self::TOKEN])
+            ->with($this->getUrl($hashId) . '/_search', HttpClientInterface::METHOD_GET, $params, ['Authorization: Token ' . self::TOKEN])
             ->willReturn($response);
 
         $this->setConfig();
@@ -157,6 +157,101 @@ class SearchTest extends BaseResourceTest
 
         try {
             $this->createSut()->search($hashId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testSuggestSuccess()
+    {
+        $body = [
+            'Sugg',
+            'Suggest',
+            'Suggestion',
+        ];
+
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $params = [
+            'indices' =>  [],
+            'query' =>  'Sug',
+            'session_id' =>  'sdfiwyuehfiuwehf',
+            'stats' => false
+        ];
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId) . '/_suggest', HttpClientInterface::METHOD_GET, $params, ['Authorization: Token ' . self::TOKEN])
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->suggest($hashId, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertEquals($response->getBody(), $body);
+    }
+
+    public function testSuggestInvalidParams()
+    {
+        $response = HttpResponse::create(HttpStatusCode::BAD_REQUEST, '{"error" : {"code": "bad_params"}}');
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+
+        $params = [
+            'fake_param' =>  'fake_value',
+        ];
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId) . '/_suggest', HttpClientInterface::METHOD_GET, $params, ['Authorization: Token ' . self::TOKEN])
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->suggest($hashId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('bad_params', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testSuggestHashIdNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+        $params = [];
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId) . '/_suggest', HttpClientInterface::METHOD_GET, $params, ['Authorization: Token ' . self::TOKEN])
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->suggest($hashId, $params);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
