@@ -56,10 +56,16 @@ class ErrorHandler
 
     /**
      * @param string $response
-     * @return array
+     * @return string|array $headers
      */
     private static function getErrorCode($response)
     {
-        return json_decode($response, true)["error"]['code'];
+        $error = json_decode($response, true)["error"];
+
+        if (is_array($error) && array_key_exists('code', $error)) {
+            $error = $error['code'];
+        }
+
+        return $error;
     }
 }

@@ -6,13 +6,12 @@ use Doofinder\Configuration;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\Interfaces\HttpClientInterface;
 use Doofinder\Shared\Interfaces\HttpResponseInterface;
-use Doofinder\Shared\Resource;
 use Doofinder\Management\Model\SearchEngine as SearchEngineModel;
 
 /**
  * SearchEngines class is responsible for making the requests to the search_engine's endpoints and return a response
  */
-class SearchEngine extends Resource
+class SearchEngine extends ManagementResource
 {
     /**
      * @param HttpClientInterface $httpClient

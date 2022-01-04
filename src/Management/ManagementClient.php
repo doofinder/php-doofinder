@@ -32,9 +32,9 @@ class ManagementClient
     private $indexResource;
 
     public function __construct(
-        $searchEnginesResource,
-        $itemsResource,
-        $indexesResource
+        SearchEngine $searchEnginesResource,
+        Item $itemsResource,
+        Index $indexesResource
     ) {
         $this->searchEnginesResource = $searchEnginesResource;
         $this->itemsResource = $itemsResource;

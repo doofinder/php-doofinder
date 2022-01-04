@@ -6,13 +6,12 @@ use Doofinder\Configuration;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\Interfaces\HttpClientInterface;
 use Doofinder\Shared\Interfaces\HttpResponseInterface;
-use Doofinder\Shared\Resource;
 use Doofinder\Management\Model\Index as IndexModel;
 
 /**
  * Index class is responsible for making the requests to the index's endpoints and return a response
  */
-class Index extends Resource
+class Index extends ManagementResource
 {
     /**
      * @param HttpClientInterface $httpClient
