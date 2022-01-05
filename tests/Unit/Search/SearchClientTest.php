@@ -163,4 +163,114 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($thrownException);
     }
+
+    public function testSuggestSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $params = [
+            'indices' => ['test'],
+            'query' => 'iphone c',
+            'stats' => 'false',
+        ];
+
+        $body = [
+            'iphone case',
+            'iphone'
+        ];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->searchResource
+            ->expects($this->once())
+            ->method('suggest')
+            ->with($hashId, $params)
+            ->willReturn($httpResponse);
+
+        $searchClient = $this->createSut();
+        $response = $searchClient->suggest($hashId, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame($body, $response->getBody());
+    }
+
+    public function testSuggestNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $params = [];
+        $forbiddenException = new ApiException('', HttpStatusCode::FORBIDDEN);
+
+        $this->searchResource
+            ->expects($this->once())
+            ->method('suggest')
+            ->with($hashId, $params)
+            ->willThrowException($forbiddenException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->suggest($hashId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::FORBIDDEN, $e->getCode());
+            $this->assertSame('The user does not have permissions to perform this operation.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testSuggestInvalidParams()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $params = [];
+
+        $badParametersException = new ApiException(
+            '{"error":  "Following fields are missing: [\"query\"]"}',
+            HttpStatusCode::BAD_REQUEST
+        );
+
+        $this->searchResource
+            ->expects($this->once())
+            ->method('suggest')
+            ->with($hashId, $params)
+            ->willThrowException($badParametersException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->suggest($hashId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            $this->assertSame('The client made a bad request.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testSuggestNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $params = [];
+
+        $this->searchResource
+            ->expects($this->once())
+            ->method('suggest')
+            ->with($hashId, $params)
+            ->willThrowException($this->notFoundException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->suggest($hashId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }
