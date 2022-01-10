@@ -77,7 +77,7 @@ class Item extends ManagementResource
     }
 
     /**
-     * Given a hashId, indexName, item id and data, it gets an item
+     * Given a hashId, indexName and item id, it gets an item
      *
      * @param string $hashId
      * @param string $indexName
@@ -176,6 +176,24 @@ class Item extends ManagementResource
             HttpClientInterface::METHOD_PATCH,
             ItemModel::class,
             $params
+        );
+    }
+
+    /**
+     * Given a hashId, indexName and item id, it gets an item from temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getItemFromTemporalIndex($hashId, $indexName, $itemId)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName, $itemId, true),
+            HttpClientInterface::METHOD_GET,
+            ItemModel::class
         );
     }
 }
