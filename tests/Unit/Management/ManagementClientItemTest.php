@@ -622,4 +622,127 @@ class ManagementClientItemTest extends BaseManagementClientTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testUpdateItemInTemporalIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('updateItemInTemporalIndex')
+            ->with($hashId, $indexName, $itemId, $this->itemParams)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->updateItemInTemporalIndex($hashId, $indexName, $itemId, $this->itemParams);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateItemInTemporalIndexInvalidParams()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+        $params = [];
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('updateItemInTemporalIndex')
+            ->with($hashId, $indexName, $itemId, $params)
+            ->willThrowException($this->badParametersException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->updateItemInTemporalIndex($hashId, $indexName, $itemId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            $this->assertSame('Request contains wrong parameter or values.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('bad_params', $previousMessage['code']);
+            $this->assertSame('Bad parameters error', $previousMessage['message']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateItemInTemporalIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('updateItemInTemporalIndex')
+            ->with($hashId, $indexName, $itemId, $this->itemParams)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->updateItemInTemporalIndex($hashId, $indexName, $itemId, $this->itemParams);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateItemInTemporalIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $managementClient = $this->createSut();
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK);
+        $httpResponse->setBody($this->item);
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('updateItemInTemporalIndex')
+            ->with($hashId, $indexName, $itemId, $this->itemParams)
+            ->willReturn($httpResponse);
+
+        $response = $managementClient->updateItemInTemporalIndex($hashId, $indexName, $itemId, $this->itemParams);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        /** @var ItemModel $item */
+        $item = $response->getBody();
+
+        $this->assertInstanceOf(ItemModel::class, $item);
+
+        $this->assertSame($this->item->getId(), $item->getId());
+        $this->assertSame($this->item->getDfGroupingId(), $item->getDfGroupingId());
+        $this->assertSame($this->item->getDfGroupLeader(), $item->getDfGroupLeader());
+        $this->assertSame($this->item->getDfManualBoost(), $item->getDfManualBoost());
+        $this->assertSame($this->item->getCategories(), $item->getCategories());
+        $this->assertSame($this->item->getBestPrice(), $item->getBestPrice());
+        $this->assertSame($this->item->getAdditionalFields(), $item->getAdditionalFields());
+    }
 }

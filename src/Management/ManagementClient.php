@@ -453,4 +453,23 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId, indexName, item id and data updates an item on temporal index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItemInTemporalIndex($hashId, $indexName, $itemId, $params)
+    {
+        try {
+            return $this->itemsResource->updateItemInTemporalIndex($hashId, $indexName, $itemId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

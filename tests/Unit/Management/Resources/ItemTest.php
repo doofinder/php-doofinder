@@ -130,7 +130,7 @@ class ItemTest extends BaseResourceTest
         $this->assertTrue($thrownException);
     }
 
-    public function testUpdateItem()
+    public function testUpdateItemSuccess()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $indexName = 'index_test';
@@ -480,6 +480,84 @@ class ItemTest extends BaseResourceTest
             /** @var HttpResponseInterface $response */
             $response = $e->getBody();
             $this->assertSame('Something went wrong', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateInTemporalIndexItemSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+
+        $body = [
+            'best_price' =>  74748791.45018,
+            'categories' =>  [
+                'consectetur',
+                'voluptate do adipisicing consectetur'
+            ],
+            'df_group_leader' =>  true,
+            'df_grouping_id' =>  'commodo enim dolore qui exercitation',
+            'df_manual_boost' =>  94755610.41909
+        ];
+
+        $params = array_merge(
+            $body,
+            ['group_id' =>  'commodo enim dolore qui exercitation']
+        );
+
+        $body['df_grouping_id'] = 'commodo enim dolore qui exercitation';
+        $body['id'] = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, $itemId, true), HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->updateItemInTemporalIndex($hashId, $indexName, $itemId, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertInstanceOf(ItemModel::class, $response->getBody());
+
+        /** @var ItemModel $item */
+        $item = $response->getBody();
+        $this->assertEquals($item->jsonSerialize(), $body);
+    }
+
+    public function testUpdateItemInTemporalIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+        $params = [];
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, $itemId, true), HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->updateItemInTemporalIndex($hashId, $indexName, $itemId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
         }
 
         $this->assertTrue($thrownException);

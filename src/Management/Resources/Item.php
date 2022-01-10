@@ -158,4 +158,24 @@ class Item extends ManagementResource
             $params
         );
     }
+
+    /**
+     * Given a hashId, indexName, item id and data, updates an item in temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItemInTemporalIndex($hashId, $indexName, $itemId, array $params)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName, $itemId, true),
+            HttpClientInterface::METHOD_PATCH,
+            ItemModel::class,
+            $params
+        );
+    }
 }
