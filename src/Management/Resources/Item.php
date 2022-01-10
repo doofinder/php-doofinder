@@ -196,4 +196,21 @@ class Item extends ManagementResource
             ItemModel::class
         );
     }
+
+    /**
+     * Given a hashId, indexName and item id, deletes an item from temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteItemFromTemporalIndex($hashId, $indexName, $itemId)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName, $itemId, true),
+            HttpClientInterface::METHOD_DELETE
+        );
+    }
 }

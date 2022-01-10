@@ -835,4 +835,83 @@ class ManagementClientItemTest extends BaseManagementClientTest
         $this->assertSame($this->item->getBestPrice(), $item->getBestPrice());
         $this->assertSame($this->item->getAdditionalFields(), $item->getAdditionalFields());
     }
+
+    public function testDeleteItemFromTemporalIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('deleteItemFromTemporalIndex')
+            ->with($hashId, $indexName, $itemId)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteItemFromTemporalIndex($hashId, $indexName, $itemId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteItemFromTemporalIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('deleteItemFromTemporalIndex')
+            ->with($hashId, $indexName, $itemId)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteItemFromTemporalIndex($hashId, $indexName, $itemId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteItemFromTemporalIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::NO_CONTENT);
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('deleteItemFromTemporalIndex')
+            ->with($hashId, $indexName, $itemId)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+
+        $response = $managementClient->deleteItemFromTemporalIndex($hashId, $indexName, $itemId);
+
+        $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
+    }
 }

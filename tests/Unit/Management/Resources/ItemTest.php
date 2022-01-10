@@ -631,4 +631,56 @@ class ItemTest extends BaseResourceTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testDeleteItemFromTemporalIndex()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $response = HttpResponse::create(HttpStatusCode::NO_CONTENT);
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, $itemId, true), HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->deleteItemFromTemporalIndex($hashId, $indexName, $itemId);
+
+        $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
+    }
+
+    public function testDeleteItemFromTemporalIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, $itemId, true), HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->deleteItemFromTemporalIndex($hashId, $indexName, $itemId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }
