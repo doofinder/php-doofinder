@@ -683,4 +683,92 @@ class ItemTest extends BaseResourceTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testFindItemsFromTemporalIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $body = [
+            [
+                'id' => 'magna',
+                'found' => true,
+                'item' => [
+                    [
+                        'best_price' =>  74748791.45018,
+                        'categories' =>  [
+                            'consectetur',
+                            'voluptate do adipisicing consectetur'
+                        ],
+                        'df_group_leader' =>  true,
+                        'df_manual_boost' =>  94755610.41909,
+                        'id' =>  'magna'
+                    ]
+                ]
+            ],
+            [
+                'id' => 'fake',
+                'found' => false,
+                'item' => []
+            ],
+        ];
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $params = [
+            ['id' =>  'magna'],
+            ['id' =>  'fake'],
+        ];
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, null, true) . '/_mget', HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->findItemsFromTemporalIndex($hashId, $indexName, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $response = $response->getBody();
+        $this->assertCount(2, $response);
+
+        $this->assertSame('magna', $response[0]['id']);
+        $this->assertTrue($response[0]['found']);
+        $this->assertInstanceOf(ItemModel::class, $response[0]['item'][0]);
+
+        $this->assertSame('fake', $response[1]['id']);
+        $this->assertFalse($response[1]['found']);
+        $this->assertEmpty($response[1]['item']);
+    }
+
+    public function testFindItemsFromTemporalIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, null, true) . '/_mget', HttpClientInterface::METHOD_POST, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->findItemsFromTemporalIndex($hashId, $indexName, []);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }

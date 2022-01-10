@@ -914,4 +914,78 @@ class ManagementClientItemTest extends BaseManagementClientTest
 
         $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
     }
+
+    public function testFindItemsFromTemporalIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK);
+        $httpResponse->setBody([
+            [
+                'id' => 'test',
+                'found' => true,
+                'item' => $this->item,
+            ],
+            [
+                'id' => 'fake',
+                'found' => false,
+                'item' => [],
+            ],
+        ]);
+
+        $params = [
+            ['id' => 'test'],
+            ['id' => 'fake'],
+        ];
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('findItemsFromTemporalIndex')
+            ->with($hashId, $indexName, $params)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->findItemsFromTemporalIndex($hashId, $indexName, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $body = $response->getBody();
+
+        $this->assertCount(2, $body);
+        $this->assertSame('test', $body[0]['id']);
+        $this->assertTrue($body[0]['found']);
+        $this->assertInstanceOf(ItemModel::class, $body[0]['item']);
+
+        $this->assertSame('fake', $body[1]['id']);
+        $this->assertFalse($body[1]['found']);
+        $this->assertEmpty($body[1]['item']);
+    }
+
+    public function testFindItemsFromTemporalIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('findItemsFromTemporalIndex')
+            ->with($hashId, $indexName, [])
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->findItemsFromTemporalIndex($hashId, $indexName, []);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }

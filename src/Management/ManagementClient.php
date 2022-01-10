@@ -508,4 +508,22 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId, indexName and params, it gets an item list from temporal index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function findItemsFromTemporalIndex($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->findItemsFromTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }
