@@ -27,11 +27,14 @@ class Item extends ManagementResource
      * @param string $hashId
      * @param string $indexName
      * @param string|null $itemId
+     * @param bool $isTemporalIndex
      * @return string
      */
-    private function getBaseUrl($hashId, $indexName, $itemId = null)
+    private function getBaseUrl($hashId, $indexName, $itemId = null, $isTemporalIndex = false)
     {
-        return $this->baseUrl . '/search_engines/' . $hashId . '/indices/' . $indexName . '/items' .(!is_null($itemId)? '/' . $itemId : '');
+        $temporalIndex = $isTemporalIndex ? '/temp' : '';
+
+        return $this->baseUrl . '/search_engines/' . $hashId . '/indices/' . $indexName . $temporalIndex . '/items' .(!is_null($itemId)? '/' . $itemId : '');
     }
 
     /**
@@ -134,6 +137,25 @@ class Item extends ManagementResource
         return $this->requestWithJwt(
             $this->getBaseUrl($hashId, $indexName, $itemId),
             HttpClientInterface::METHOD_DELETE
+        );
+    }
+
+    /**
+     * Given a hashId, index name and item data, creates a new item in temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createItemInTemporalIndex($hashId, $indexName, array $params)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName, null, true),
+            HttpClientInterface::METHOD_POST,
+            ItemModel::class,
+            $params
         );
     }
 }

@@ -435,4 +435,22 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId, index id and item data, creates a new item in temporal index
+     *
+     * @param string $hashId
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createItemInTemporalIndex($hashId, $itemId, $params)
+    {
+        try {
+            return $this->itemsResource->createItemInTemporalIndex($hashId, $itemId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

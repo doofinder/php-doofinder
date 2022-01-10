@@ -516,4 +516,110 @@ class ManagementClientItemTest extends BaseManagementClientTest
 
         $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
     }
+
+    public function testCreateItemInTemporalIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::CREATED);
+        $httpResponse->setBody($this->item);
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('createItemInTemporalIndex')
+            ->with($hashId, $indexName, $this->itemParams)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->createItemInTemporalIndex($hashId, $indexName, $this->itemParams);
+
+        $this->assertSame(HttpStatusCode::CREATED, $response->getStatusCode());
+        $item = $response->getBody();
+
+        $this->assertInstanceOf(ItemModel::class, $item);
+
+        $this->assertSame($this->item->getId(), $item->getId());
+        $this->assertSame($this->item->getDfGroupingId(), $item->getDfGroupingId());
+        $this->assertSame($this->item->getDfGroupLeader(), $item->getDfGroupLeader());
+        $this->assertSame($this->item->getDfManualBoost(), $item->getDfManualBoost());
+        $this->assertSame($this->item->getCategories(), $item->getCategories());
+        $this->assertSame($this->item->getBestPrice(), $item->getBestPrice());
+        $this->assertSame($this->item->getAdditionalFields(), $item->getAdditionalFields());
+    }
+
+    public function testCreateItemInTemporalIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('createItemInTemporalIndex')
+            ->with($hashId, $indexName, $this->itemParams)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->createItemInTemporalIndex($hashId, $indexName, $this->itemParams);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame('The user hasn\'t provided valid authorization.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCreateItemInTemporalIndexInvalidParams()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('createItemInTemporalIndex')
+            ->with($hashId, $indexName, [])
+            ->willThrowException($this->badParametersException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->createItemInTemporalIndex($hashId, $indexName, []);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            $this->assertSame('Request contains wrong parameter or values.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCreateItemInTemporalIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('createItemInTemporalIndex')
+            ->with($hashId, $indexName, $this->itemParams)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->createItemInTemporalIndex($hashId, $indexName, $this->itemParams);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }
