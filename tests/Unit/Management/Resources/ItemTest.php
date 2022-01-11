@@ -859,4 +859,59 @@ class ItemTest extends BaseResourceTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testCountItemsSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $body = ['count' => 5];
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName) . '/_count', HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->countItems($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+
+        $response = $response->getBody();
+        $this->assertArrayHasKey('count', $response);
+        $this->assertSame(5, $response['count']);
+    }
+
+    public function testCountItemsNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName) . '/_count', HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->countItems($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }

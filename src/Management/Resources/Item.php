@@ -279,4 +279,20 @@ class Item extends ManagementResource
 
         return $httpResponse;
     }
+
+    /**
+     * Given a hashId and indexName, returns the total number of items in the index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function countItems($hashId, $indexName)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName). '/_count',
+            HttpClientInterface::METHOD_GET
+        );
+    }
 }

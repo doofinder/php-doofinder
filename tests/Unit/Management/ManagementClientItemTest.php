@@ -1040,17 +1040,18 @@ class ManagementClientItemTest extends BaseManagementClientTest
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $indexName = 'index_test';
 
+        $params = [['id' => 'fake_id']];
         $this->itemResource
             ->expects($this->once())
             ->method('findItems')
-            ->with($hashId, $indexName, [])
+            ->with($hashId, $indexName, $params)
             ->willThrowException($this->notFoundException);
 
         $managementClient = $this->createSut();
         $thrownException = false;
 
         try {
-            $managementClient->findItems($hashId, $indexName, []);
+            $managementClient->findItems($hashId, $indexName, $params);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
@@ -1058,6 +1059,85 @@ class ManagementClientItemTest extends BaseManagementClientTest
 
             $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
             $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCountItemsSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode(['count' => 5]));
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('countItems')
+            ->with($hashId, $indexName)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->countItems($hashId, $indexName);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $body = $response->getBody();
+
+        $this->assertArrayHasKey('count', $body);
+        $this->assertSame(5, $body['count']);
+    }
+
+    public function testCountItemsNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('countItems')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->countItems($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCountItemsNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('countItems')
+            ->with($hashId, $indexName)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->countItems($hashId, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
         }
 
         $this->assertTrue($thrownException);
