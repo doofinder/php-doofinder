@@ -526,4 +526,39 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId, indexName and params, it gets an item list.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function findItems($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->findItems($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId and indexName, returns the total number of items in the index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function countItems($hashId, $indexName)
+    {
+        try {
+            return $this->itemsResource->countItems($hashId, $indexName);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }
