@@ -213,8 +213,9 @@ class Item extends ManagementResource
             HttpClientInterface::METHOD_DELETE
         );
     }
+
     /**
-     * Given a hashId, indexName and params, it gets an item list
+     * Given a hashId, indexName and params, it gets an item list from temporal index
      *
      * @param string $hashId
      * @param string $indexName
@@ -226,6 +227,39 @@ class Item extends ManagementResource
     {
         $httpResponse = $this->requestWithJwt(
             $this->getBaseUrl($hashId, $indexName, null, true). '/_mget',
+            HttpClientInterface::METHOD_POST,
+            null,
+            $params
+        );
+
+        $body = array_map(function (array $item) {
+            if ($item['found']) {
+                $item['item'] = ItemModel::createFromArray($item['item']);
+            }
+
+            return $item;
+        }, $httpResponse->getBody());
+
+        $httpResponse->setBody(
+            $body
+        );
+
+        return $httpResponse;
+    }
+
+    /**
+     * Given a hashId, indexName and params, it gets an item list
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function findItems($hashId, $indexName, $params)
+    {
+        $httpResponse = $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName). '/_mget',
             HttpClientInterface::METHOD_POST,
             null,
             $params
