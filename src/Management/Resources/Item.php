@@ -27,11 +27,14 @@ class Item extends ManagementResource
      * @param string $hashId
      * @param string $indexName
      * @param string|null $itemId
+     * @param bool $isTemporalIndex
      * @return string
      */
-    private function getBaseUrl($hashId, $indexName, $itemId = null)
+    private function getBaseUrl($hashId, $indexName, $itemId = null, $isTemporalIndex = false)
     {
-        return $this->baseUrl . '/search_engines/' . $hashId . '/indices/' . $indexName . '/items' .(!is_null($itemId)? '/' . $itemId : '');
+        $temporalIndex = $isTemporalIndex ? '/temp' : '';
+
+        return $this->baseUrl . '/search_engines/' . $hashId . '/indices/' . $indexName . $temporalIndex . '/items' .(!is_null($itemId)? '/' . $itemId : '');
     }
 
     /**
@@ -74,7 +77,7 @@ class Item extends ManagementResource
     }
 
     /**
-     * Given a hashId, indexName, item id and data, it gets an item
+     * Given a hashId, indexName and item id, it gets an item
      *
      * @param string $hashId
      * @param string $indexName
@@ -135,5 +138,111 @@ class Item extends ManagementResource
             $this->getBaseUrl($hashId, $indexName, $itemId),
             HttpClientInterface::METHOD_DELETE
         );
+    }
+
+    /**
+     * Given a hashId, index name and item data, creates a new item in temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createItemInTemporalIndex($hashId, $indexName, array $params)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName, null, true),
+            HttpClientInterface::METHOD_POST,
+            ItemModel::class,
+            $params
+        );
+    }
+
+    /**
+     * Given a hashId, indexName, item id and data, updates an item in temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItemInTemporalIndex($hashId, $indexName, $itemId, array $params)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName, $itemId, true),
+            HttpClientInterface::METHOD_PATCH,
+            ItemModel::class,
+            $params
+        );
+    }
+
+    /**
+     * Given a hashId, indexName and item id, it gets an item from temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getItemFromTemporalIndex($hashId, $indexName, $itemId)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName, $itemId, true),
+            HttpClientInterface::METHOD_GET,
+            ItemModel::class
+        );
+    }
+
+    /**
+     * Given a hashId, indexName and item id, deletes an item from temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteItemFromTemporalIndex($hashId, $indexName, $itemId)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName, $itemId, true),
+            HttpClientInterface::METHOD_DELETE
+        );
+    }
+    /**
+     * Given a hashId, indexName and params, it gets an item list
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function findItemsFromTemporalIndex($hashId, $indexName, $params)
+    {
+        $httpResponse = $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName, null, true). '/_mget',
+            HttpClientInterface::METHOD_POST,
+            null,
+            $params
+        );
+
+        $body = array_map(function (array $item) {
+            if ($item['found']) {
+                $item['item'] = ItemModel::createFromArray($item['item']);
+            }
+
+            return $item;
+        }, $httpResponse->getBody());
+
+        $httpResponse->setBody(
+            $body
+        );
+
+        return $httpResponse;
     }
 }

@@ -435,4 +435,95 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId, index id and item data, creates a new item in temporal index
+     *
+     * @param string $hashId
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createItemInTemporalIndex($hashId, $itemId, $params)
+    {
+        try {
+            return $this->itemsResource->createItemInTemporalIndex($hashId, $itemId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName, item id and data updates an item on temporal index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItemInTemporalIndex($hashId, $indexName, $itemId, $params)
+    {
+        try {
+            return $this->itemsResource->updateItemInTemporalIndex($hashId, $indexName, $itemId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName and item id, it gets an item from temporal index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getItemFromTemporalIndex($hashId, $indexName, $itemId)
+    {
+        try {
+            return $this->itemsResource->getItemFromTemporalIndex($hashId, $indexName, $itemId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName and item id, removes an item from temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteItemFromTemporalIndex($hashId, $indexName, $itemId)
+    {
+        try {
+            return $this->itemsResource->deleteItemFromTemporalIndex($hashId, $indexName, $itemId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName and params, it gets an item list from temporal index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function findItemsFromTemporalIndex($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->findItemsFromTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

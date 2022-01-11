@@ -17,9 +17,11 @@ class ItemTest extends BaseResourceTest
         return Item::create($this->httpClient, $this->config);
     }
 
-    private function getUrl($hashId, $indexName, $itemId = null)
+    private function getUrl($hashId, $indexName, $itemId = null, $isTemporalIndex = false)
     {
-        return self::BASE_URL . '/api/v2/search_engines/' . $hashId . '/indices/' . $indexName . '/items' . (!is_null($itemId)? '/' . $itemId : '');
+        $temporalIndex = $isTemporalIndex ? '/temp' : '';
+
+        return self::BASE_URL . '/api/v2/search_engines/' . $hashId . '/indices/' . $indexName . $temporalIndex . '/items' . (!is_null($itemId)? '/' . $itemId : '');
     }
 
     public function testCreateItemSuccess()
@@ -128,7 +130,7 @@ class ItemTest extends BaseResourceTest
         $this->assertTrue($thrownException);
     }
 
-    public function testUpdateItem()
+    public function testUpdateItemSuccess()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $indexName = 'index_test';
@@ -206,7 +208,7 @@ class ItemTest extends BaseResourceTest
         $this->assertTrue($thrownException);
     }
 
-    public function testGetItem()
+    public function testGetItemSuccess()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $indexName = 'index_test';
@@ -366,6 +368,399 @@ class ItemTest extends BaseResourceTest
 
         try {
             $this->createSut()->deleteItem($hashId, $indexName, $itemId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCreateItemInTemporalIndexSuccess()
+    {
+        $body = [
+            'best_price' =>  74748791.45018,
+            'categories' =>  [
+                'consectetur',
+                'voluptate do adipisicing consectetur'
+            ],
+            'df_group_leader' =>  true,
+            'df_manual_boost' =>  94755610.41909,
+            'id' =>  'magna'
+        ];
+
+        $params = array_merge(
+            $body,
+            ['group_id' =>  'commodo enim dolore qui exercitation']
+        );
+
+        $body['df_grouping_id'] = 'commodo enim dolore qui exercitation';
+
+        $response = HttpResponse::create(HttpStatusCode::CREATED, json_encode($body));
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, null, true), HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->createItemInTemporalIndex($hashId, $indexName, $params);
+
+        $this->assertSame(HttpStatusCode::CREATED, $response->getStatusCode());
+        $this->assertInstanceOf(ItemModel::class, $response->getBody());
+
+        /** @var ItemModel $index */
+        $index = $response->getBody();
+        $this->assertEquals($index->jsonSerialize(), $body);
+    }
+
+    public function testCreateItemIntemporalIndexInvalidParams()
+    {
+        $response = HttpResponse::create(HttpStatusCode::BAD_REQUEST, '{"error" : {"code": "bad_params"}}');
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $params = [
+            'best_price' =>  'fake_price',
+        ];
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, null, true), HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->createItemInTemporalIndex($hashId, $indexName,$params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('bad_params', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCreateItemInTemporalIndexErrorWithNoMessage()
+    {
+        $response = HttpResponse::create(HttpStatusCode::BAD_REQUEST, '{"error": {"code" : "Something went wrong"}}');
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $params = [];
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, null, true), HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->createItemInTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('Something went wrong', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateInTemporalIndexItemSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+
+        $body = [
+            'best_price' =>  74748791.45018,
+            'categories' =>  [
+                'consectetur',
+                'voluptate do adipisicing consectetur'
+            ],
+            'df_group_leader' =>  true,
+            'df_grouping_id' =>  'commodo enim dolore qui exercitation',
+            'df_manual_boost' =>  94755610.41909
+        ];
+
+        $params = array_merge(
+            $body,
+            ['group_id' =>  'commodo enim dolore qui exercitation']
+        );
+
+        $body['df_grouping_id'] = 'commodo enim dolore qui exercitation';
+        $body['id'] = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, $itemId, true), HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->updateItemInTemporalIndex($hashId, $indexName, $itemId, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertInstanceOf(ItemModel::class, $response->getBody());
+
+        /** @var ItemModel $item */
+        $item = $response->getBody();
+        $this->assertEquals($item->jsonSerialize(), $body);
+    }
+
+    public function testUpdateItemInTemporalIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+        $params = [];
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, $itemId, true), HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->updateItemInTemporalIndex($hashId, $indexName, $itemId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testGetItemFromTemporalIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $body = [
+            'best_price' =>  74748791.45018,
+            'categories' =>  [
+                'consectetur',
+                'voluptate do adipisicing consectetur'
+            ],
+            'df_group_leader' =>  true,
+            'df_grouping_id' =>  'commodo enim dolore qui exercitation',
+            'df_manual_boost' =>  94755610.41909,
+            'id' =>  'magna'
+        ];
+
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, $itemId, true), HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->getItemFromTemporalIndex($hashId, $indexName, $itemId);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertInstanceOf(ItemModel::class, $response->getBody());
+
+        /** @var ItemModel $item */
+        $item = $response->getBody();
+        $this->assertEquals($item->jsonSerialize(), $body);
+    }
+
+    public function testGetItemFromTemporalIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, $itemId, true), HttpClientInterface::METHOD_GET, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->getItemFromTemporalIndex($hashId, $indexName, $itemId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteItemFromTemporalIndex()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $response = HttpResponse::create(HttpStatusCode::NO_CONTENT);
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, $itemId, true), HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->deleteItemFromTemporalIndex($hashId, $indexName, $itemId);
+
+        $this->assertSame(HttpStatusCode::NO_CONTENT, $response->getStatusCode());
+    }
+
+    public function testDeleteItemFromTemporalIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $itemId = '5a11c448-bd14-4a78-972a-28070ce6db7d';
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, $itemId, true), HttpClientInterface::METHOD_DELETE, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->deleteItemFromTemporalIndex($hashId, $indexName, $itemId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testFindItemsFromTemporalIndexSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $body = [
+            [
+                'id' => 'magna',
+                'found' => true,
+                'item' => [
+                    [
+                        'best_price' =>  74748791.45018,
+                        'categories' =>  [
+                            'consectetur',
+                            'voluptate do adipisicing consectetur'
+                        ],
+                        'df_group_leader' =>  true,
+                        'df_manual_boost' =>  94755610.41909,
+                        'id' =>  'magna'
+                    ]
+                ]
+            ],
+            [
+                'id' => 'fake',
+                'found' => false,
+                'item' => []
+            ],
+        ];
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $params = [
+            ['id' =>  'magna'],
+            ['id' =>  'fake'],
+        ];
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, null, true) . '/_mget', HttpClientInterface::METHOD_POST, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->findItemsFromTemporalIndex($hashId, $indexName, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $response = $response->getBody();
+        $this->assertCount(2, $response);
+
+        $this->assertSame('magna', $response[0]['id']);
+        $this->assertTrue($response[0]['found']);
+        $this->assertInstanceOf(ItemModel::class, $response[0]['item'][0]);
+
+        $this->assertSame('fake', $response[1]['id']);
+        $this->assertFalse($response[1]['found']);
+        $this->assertEmpty($response[1]['item']);
+    }
+
+    public function testFindItemsFromTemporalIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, null, true) . '/_mget', HttpClientInterface::METHOD_POST, [], $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->findItemsFromTemporalIndex($hashId, $indexName, []);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
