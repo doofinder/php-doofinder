@@ -1223,7 +1223,7 @@ class ManagementClientItemTest extends BaseManagementClientTest
             ->expects($this->once())
             ->method('createItemsInBulkInTemporalIndex')
             ->with($hashId, $indexName, [[]])
-            ->willThrowException($this->notFoundException);
+            ->willThrowException($this->badParametersException);
 
         $managementClient = $this->createSut();
         $thrownException = false;
