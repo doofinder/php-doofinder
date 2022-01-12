@@ -581,6 +581,24 @@ class ManagementClient
     }
 
     /**
+     * Given a hashId, index id and items data, updates items in temporal index
+     *
+     * @param string $hashId
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItemsInBulkInTemporalIndex($hashId, $itemId, $params)
+    {
+        try {
+            return $this->itemsResource->updateItemsInBulkInTemporalIndex($hashId, $itemId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
      * Given a hashId, index id and items id, deletes items in temporal index
      *
      * @param string $hashId

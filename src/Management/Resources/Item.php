@@ -316,6 +316,25 @@ class Item extends ManagementResource
     }
 
     /**
+     * Given a hashId, index name and items data, updates items in temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItemsInBulkInTemporalIndex($hashId, $indexName, array $params)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName, null, true) . '/_bulk',
+            HttpClientInterface::METHOD_PATCH,
+            null,
+            $params
+        );
+    }
+
+    /**
      * Given a hashId, index name and items id, deletes items in temporal index
      *
      * @param string $hashId

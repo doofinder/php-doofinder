@@ -1010,6 +1010,101 @@ class ItemTest extends BaseResourceTest
         $this->assertTrue($thrownException);
     }
 
+    public function testUpdateItemsInBulkInTemporalIndexSuccess()
+    {
+        $params = [
+            [
+                'best_price' =>  74748791.45018,
+                'categories' =>  [
+                    'consectetur',
+                    'voluptate do adipisicing consectetur'
+                ],
+                'df_group_leader' =>  true,
+                'df_manual_boost' =>  94755610.41909,
+                'group_id' =>  'commodo enim dolore qui exercitation',
+                'id' =>  'magna'
+            ]
+        ];
+
+        $body = [
+            'errors' => false,
+            'results' => [
+                [
+                    'id' => 'magna',
+                    'result' => 'updated'
+                ]
+            ]
+        ];
+
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, null, true) . '/_bulk', HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->updateItemsInBulkInTemporalIndex($hashId, $indexName, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $body = $response->getBody();
+        $this->assertArrayHasKey('errors', $body);
+        $this->assertArrayHasKey('results', $body);
+        $this->assertCount(1, $body['results']);
+
+        $this->assertEquals($body['results'][0], ['id' => 'magna', 'result' => 'updated']);
+        $this->assertSame($body['errors'], false);
+    }
+
+    public function testUpdateItemsInBulkInTemporalIndexNotFound()
+    {
+        $params = [
+            [
+                'best_price' =>  74748791.45018,
+                'categories' =>  [
+                    'consectetur',
+                    'voluptate do adipisicing consectetur'
+                ],
+                'df_group_leader' =>  true,
+                'df_manual_boost' =>  94755610.41909,
+                'group_id' =>  'commodo enim dolore qui exercitation',
+                'id' =>  'magna'
+            ]
+        ];
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, null, true) . '/_bulk', HttpClientInterface::METHOD_PATCH, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->updateItemsInBulkInTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
     public function testDeleteItemsInBulkInTemporalIndexSuccess()
     {
         $params = [
