@@ -1009,4 +1009,91 @@ class ItemTest extends BaseResourceTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testDeleteItemsInBulkInTemporalIndexSuccess()
+    {
+        $params = [
+            [
+                'id' =>  'magna'
+            ],
+            [
+                'id' =>  'fake'
+            ]
+        ];
+
+        $body = [
+            'errors' => false,
+            'results' => [
+                [
+                    'id' => 'magna',
+                    'result' => 'deleted'
+                ],
+                [
+                    'id' => 'fake',
+                    'result' => 'deleted'
+                ]
+            ]
+        ];
+
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, null, true) . '/_bulk', HttpClientInterface::METHOD_DELETE, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->deleteItemsInBulkInTemporalIndex($hashId, $indexName, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $body = $response->getBody();
+        $this->assertArrayHasKey('errors', $body);
+        $this->assertArrayHasKey('results', $body);
+        $this->assertCount(2, $body['results']);
+
+        $this->assertEquals($body['results'][0], ['id' => 'magna', 'result' => 'deleted']);
+        $this->assertEquals($body['results'][1], ['id' => 'fake', 'result' => 'deleted']);
+        $this->assertSame($body['errors'], false);
+    }
+
+    public function testDeleteItemsInBulkInTemporalIndexNotFound()
+    {
+        $params = [
+            [
+                'id' =>  'magna'
+            ]
+        ];
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with($this->getUrl($hashId, $indexName, null, true) . '/_bulk', HttpClientInterface::METHOD_DELETE, $params, $this->assertBearerCallback())
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->deleteItemsInBulkInTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }

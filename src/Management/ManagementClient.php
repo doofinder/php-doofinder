@@ -579,4 +579,22 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId, index id and items id, deletes items in temporal index
+     *
+     * @param string $hashId
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteItemsInBulkInTemporalIndex($hashId, $itemId, $params)
+    {
+        try {
+            return $this->itemsResource->deleteItemsInBulkInTemporalIndex($hashId, $itemId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

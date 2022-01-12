@@ -1241,4 +1241,118 @@ class ManagementClientItemTest extends BaseManagementClientTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testDeleteItemsInBulkInTemporalIndexSuccess()
+    {
+        $hashId = 'ab732549b8b738f2a86f8efd9eaf4bcb';
+        $indexName = 'test';
+        $params = [
+            [
+                'id' => 'magna'
+            ]
+        ];
+
+        $body = [
+            'errors' => false,
+            'results' => [
+                [
+                    'id' => 'magna',
+                    'result' => 'deleted'
+                ]
+            ]
+        ];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('deleteItemsInBulkInTemporalIndex')
+            ->with($hashId, $indexName, $params)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->deleteItemsInBulkInTemporalIndex($hashId, $indexName, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $body = $response->getBody();
+
+        $this->assertArrayHasKey('errors', $body);
+        $this->assertArrayHasKey('results', $body);
+        $this->assertCount(1, $body['results']);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $body = $response->getBody();
+        $this->assertArrayHasKey('errors', $body);
+        $this->assertArrayHasKey('results', $body);
+        $this->assertCount(1, $body['results']);
+
+        $this->assertEquals($body['results'][0], ['id' => 'magna', 'result' => 'deleted']);
+        $this->assertSame($body['errors'], false);
+    }
+
+    public function testDeleteItemsInBulkInTemporalIndexNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $params = [
+            [
+                'id' => 'magna'
+            ]
+        ];
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('deleteItemsInBulkInTemporalIndex')
+            ->with($hashId, $indexName, $params)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteItemsInBulkInTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteItemsInBulkInTemporalIndexNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $params = [
+            [
+                'id' => 'magna'
+            ]
+        ];
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('deleteItemsInBulkInTemporalIndex')
+            ->with($hashId, $indexName, $params)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteItemsInBulkInTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }
