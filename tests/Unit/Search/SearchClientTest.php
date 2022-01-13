@@ -3,6 +3,7 @@
 namespace Tests\Unit\Search;
 
 use Doofinder\Search\Resources\Search;
+use Doofinder\Search\Resources\Stat;
 use Doofinder\Search\SearchClient;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpResponse;
@@ -14,6 +15,11 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
      * @var Search
      */
     private $searchResource;
+
+    /**
+     * @var Stat
+     */
+    private $statResource;
 
     /**
      * @var ApiException
@@ -35,6 +41,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->searchResource = $this->createMock(Search::class);
+        $this->statResource = $this->createMock(Stat::class);
 
         $this->unauthorizedException = new ApiException('', HttpStatusCode::UNAUTHORIZED);
         $this->badParametersException = new ApiException(
@@ -50,7 +57,8 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
     private function createSut()
     {
         return new SearchClient(
-            $this->searchResource
+            $this->searchResource,
+            $this->statResource
         );
     }
 
@@ -265,6 +273,78 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
 
         try {
             $searchClient->suggest($hashId, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testStatsSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $body = ['status' => 'registered'];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('initSession')
+            ->with($hashId, $sessionId)
+            ->willReturn($httpResponse);
+
+        $searchClient = $this->createSut();
+        $response = $searchClient->initSession($hashId, $sessionId);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame($body, $response->getBody());
+    }
+
+    public function testStatsNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $forbiddenException = new ApiException('', HttpStatusCode::FORBIDDEN);
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('initSession')
+            ->with($hashId, $sessionId)
+            ->willThrowException($forbiddenException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->initSession($hashId, $sessionId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::FORBIDDEN, $e->getCode());
+            $this->assertSame('The user does not have permissions to perform this operation.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testStatsNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('initSession')
+            ->with($hashId, $sessionId)
+            ->willThrowException($this->notFoundException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->initSession($hashId, $sessionId);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
