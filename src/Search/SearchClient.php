@@ -134,4 +134,21 @@ class SearchClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Logs a checkout event in stats logs.
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function logCheckout($hashId, $sessionId)
+    {
+        try {
+            return $this->statResource->logCheckout($hashId, $sessionId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }
