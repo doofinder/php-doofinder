@@ -1479,4 +1479,341 @@ class ManagementClientItemTest extends BaseManagementClientTest
 
         $this->assertTrue($thrownException);
     }
+
+    public function testCreateItemsInBulkSuccess()
+    {
+        $hashId = 'ab732549b8b738f2a86f8efd9eaf4bcb';
+        $indexName = 'test';
+
+        $body = [
+            'errors' => false,
+            'results' => [
+                [
+                    'id' => 'magna',
+                    'result' => 'created'
+                ]
+            ]
+        ];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('createItemsInBulk')
+            ->with($hashId, $indexName, [$this->itemParams])
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->createItemsInBulk($hashId, $indexName, [$this->itemParams]);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $body = $response->getBody();
+
+        $this->assertArrayHasKey('errors', $body);
+        $this->assertArrayHasKey('results', $body);
+        $this->assertCount(1, $body['results']);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $body = $response->getBody();
+        $this->assertArrayHasKey('errors', $body);
+        $this->assertArrayHasKey('results', $body);
+        $this->assertCount(1, $body['results']);
+
+        $this->assertEquals($body['results'][0], ['id' => 'magna', 'result' => 'created']);
+        $this->assertSame($body['errors'], false);
+    }
+
+    public function testCreateItemsInBulkNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('createItemsInBulk')
+            ->with($hashId, $indexName, [$this->itemParams])
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->createItemsInBulk($hashId, $indexName, [$this->itemParams]);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCreateItemsInBulkInvalidParams()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('createItemsInBulk')
+            ->with($hashId, $indexName, [[]])
+            ->willThrowException($this->badParametersException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->createItemsInBulk($hashId, $indexName, [[]]);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            $this->assertSame('Request contains wrong parameter or values.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testCreateItemsInBulkNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('createItemsInBulk')
+            ->with($hashId, $indexName, [$this->itemParams])
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->createItemsInBulk($hashId, $indexName, [$this->itemParams]);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateItemsInBulkSuccess()
+    {
+        $hashId = 'ab732549b8b738f2a86f8efd9eaf4bcb';
+        $indexName = 'test';
+
+        $body = [
+            'errors' => false,
+            'results' => [
+                [
+                    'id' => 'magna',
+                    'result' => 'updated'
+                ]
+            ]
+        ];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('updateItemsInBulk')
+            ->with($hashId, $indexName, [$this->itemParams])
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->updateItemsInBulk($hashId, $indexName, [$this->itemParams]);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $body = $response->getBody();
+
+        $this->assertArrayHasKey('errors', $body);
+        $this->assertArrayHasKey('results', $body);
+        $this->assertCount(1, $body['results']);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $body = $response->getBody();
+        $this->assertArrayHasKey('errors', $body);
+        $this->assertArrayHasKey('results', $body);
+        $this->assertCount(1, $body['results']);
+
+        $this->assertEquals($body['results'][0], ['id' => 'magna', 'result' => 'updated']);
+        $this->assertSame($body['errors'], false);
+    }
+
+    public function testUpdateItemsInBulkNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('updateItemsInBulk')
+            ->with($hashId, $indexName, [$this->itemParams])
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->updateItemsInBulk($hashId, $indexName, [$this->itemParams]);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testUpdateItemsInBulkNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('updateItemsInBulk')
+            ->with($hashId, $indexName, [$this->itemParams])
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->updateItemsInBulk($hashId, $indexName, [$this->itemParams]);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteItemsInBulkSuccess()
+    {
+        $hashId = 'ab732549b8b738f2a86f8efd9eaf4bcb';
+        $indexName = 'test';
+        $params = [
+            [
+                'id' => 'magna'
+            ]
+        ];
+
+        $body = [
+            'errors' => false,
+            'results' => [
+                [
+                    'id' => 'magna',
+                    'result' => 'deleted'
+                ]
+            ]
+        ];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('deleteItemsInBulk')
+            ->with($hashId, $indexName, $params)
+            ->willReturn($httpResponse);
+
+        $managementClient = $this->createSut();
+        $response = $managementClient->deleteItemsInBulk($hashId, $indexName, $params);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $body = $response->getBody();
+
+        $this->assertArrayHasKey('errors', $body);
+        $this->assertArrayHasKey('results', $body);
+        $this->assertCount(1, $body['results']);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $body = $response->getBody();
+        $this->assertArrayHasKey('errors', $body);
+        $this->assertArrayHasKey('results', $body);
+        $this->assertCount(1, $body['results']);
+
+        $this->assertEquals($body['results'][0], ['id' => 'magna', 'result' => 'deleted']);
+        $this->assertSame($body['errors'], false);
+    }
+
+    public function testDeleteItemsInBulkNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $params = [
+            [
+                'id' => 'magna'
+            ]
+        ];
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('deleteItemsInBulk')
+            ->with($hashId, $indexName, $params)
+            ->willThrowException($this->notFoundException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteItemsInBulk($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+
+            $previousMessage = json_decode($e->getPrevious()->getMessage(), true)['error'];
+            $this->assertSame('not_found', $previousMessage['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testDeleteItemsInBulkNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $indexName = 'index_test';
+        $params = [
+            [
+                'id' => 'magna'
+            ]
+        ];
+
+        $this->itemResource
+            ->expects($this->once())
+            ->method('deleteItemsInBulk')
+            ->with($hashId, $indexName, $params)
+            ->willThrowException($this->unauthorizedException);
+
+        $managementClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $managementClient->deleteItemsInBulk($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::UNAUTHORIZED, $e->getCode());
+            $this->assertSame(
+                'The user hasn\'t provided valid authorization.',
+                $e->getMessage()
+            );
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }

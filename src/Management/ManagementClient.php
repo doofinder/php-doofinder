@@ -615,4 +615,58 @@ class ManagementClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Given a hashId, index id and items data, creates new items
+     *
+     * @param string $hashId
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createItemsInBulk($hashId, $itemId, $params)
+    {
+        try {
+            return $this->itemsResource->createItemsInBulk($hashId, $itemId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, index id and items data, updates items
+     *
+     * @param string $hashId
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItemsInBulk($hashId, $itemId, $params)
+    {
+        try {
+            return $this->itemsResource->updateItemsInBulk($hashId, $itemId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, index id and items id, deletes items
+     *
+     * @param string $hashId
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteItemsInBulk($hashId, $itemId, $params)
+    {
+        try {
+            return $this->itemsResource->deleteItemsInBulk($hashId, $itemId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }
