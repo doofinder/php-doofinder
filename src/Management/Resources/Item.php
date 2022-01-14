@@ -352,4 +352,61 @@ class Item extends ManagementResource
             $params
         );
     }
+
+    /**
+     * Given a hashId, index name and items data, creates new items in index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createItemsInBulk($hashId, $indexName, array $params)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName) . '/_bulk',
+            HttpClientInterface::METHOD_POST,
+            null,
+            $params
+        );
+    }
+
+    /**
+     * Given a hashId, index name and items data, updates items in index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItemsInBulk($hashId, $indexName, array $params)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName) . '/_bulk',
+            HttpClientInterface::METHOD_PATCH,
+            null,
+            $params
+        );
+    }
+
+    /**
+     * Given a hashId, index name and items id, deletes items in index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteItemsInBulk($hashId, $indexName, array $params)
+    {
+        return $this->requestWithJwt(
+            $this->getBaseUrl($hashId, $indexName) . '/_bulk',
+            HttpClientInterface::METHOD_DELETE,
+            null,
+            $params
+        );
+    }
 }

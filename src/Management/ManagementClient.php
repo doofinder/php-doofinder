@@ -566,15 +566,15 @@ class ManagementClient
      * Given a hashId, index id and items data, creates new items in temporal index
      *
      * @param string $hashId
-     * @param string $itemId
+     * @param string $indexName
      * @param array $params
      * @return HttpResponseInterface
      * @throws ApiException
      */
-    public function createItemsInBulkInTemporalIndex($hashId, $itemId, $params)
+    public function createItemsInBulkInTemporalIndex($hashId, $indexName, $params)
     {
         try {
-            return $this->itemsResource->createItemsInBulkInTemporalIndex($hashId, $itemId, $params);
+            return $this->itemsResource->createItemsInBulkInTemporalIndex($hashId, $indexName, $params);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
@@ -584,15 +584,15 @@ class ManagementClient
      * Given a hashId, index id and items data, updates items in temporal index
      *
      * @param string $hashId
-     * @param string $itemId
+     * @param string $indexName
      * @param array $params
      * @return HttpResponseInterface
      * @throws ApiException
      */
-    public function updateItemsInBulkInTemporalIndex($hashId, $itemId, $params)
+    public function updateItemsInBulkInTemporalIndex($hashId, $indexName, $params)
     {
         try {
-            return $this->itemsResource->updateItemsInBulkInTemporalIndex($hashId, $itemId, $params);
+            return $this->itemsResource->updateItemsInBulkInTemporalIndex($hashId, $indexName, $params);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
@@ -602,15 +602,69 @@ class ManagementClient
      * Given a hashId, index id and items id, deletes items in temporal index
      *
      * @param string $hashId
-     * @param string $itemId
+     * @param string $indexName
      * @param array $params
      * @return HttpResponseInterface
      * @throws ApiException
      */
-    public function deleteItemsInBulkInTemporalIndex($hashId, $itemId, $params)
+    public function deleteItemsInBulkInTemporalIndex($hashId, $indexName, $params)
     {
         try {
-            return $this->itemsResource->deleteItemsInBulkInTemporalIndex($hashId, $itemId, $params);
+            return $this->itemsResource->deleteItemsInBulkInTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, index id and items data, creates new items
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createItemsInBulk($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->createItemsInBulk($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, index id and items data, updates items
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItemsInBulk($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->updateItemsInBulk($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, index id and items id, deletes items
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteItemsInBulk($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->deleteItemsInBulk($hashId, $indexName, $params);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
