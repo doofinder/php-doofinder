@@ -4,6 +4,7 @@ namespace Doofinder\Search;
 
 use Doofinder\Configuration;
 use Doofinder\Search\Resources\Search;
+use Doofinder\Search\Resources\Stat;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpClient;
 use Doofinder\Shared\Utils\ErrorHandler;
@@ -19,9 +20,15 @@ class SearchClient
      */
     private $searchResource;
 
-    public function __construct(Search $searchResource)
+    /**
+     * @var Stat
+     */
+    private $statResource;
+
+    public function __construct(Search $searchResource, Stat $statResource)
     {
         $this->searchResource = $searchResource;
+        $this->statResource = $statResource;
     }
 
     /**
@@ -34,8 +41,9 @@ class SearchClient
         $config = Configuration::create($host, $token);
         $httpClient = new HttpClient();
         $searchResource = Search::create($httpClient, $config);
+        $statResource = Stat::create($httpClient, $config);
 
-        return new self($searchResource);
+        return new self($searchResource, $statResource);
     }
 
     /**
@@ -67,6 +75,23 @@ class SearchClient
     {
         try {
             return $this->searchResource->suggest($hashId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Starts a session identified by a session_id. The session is used to "group" events.
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function initSession($hashId, $sessionId)
+    {
+        try {
+            return $this->statResource->initSession($hashId, $sessionId);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
