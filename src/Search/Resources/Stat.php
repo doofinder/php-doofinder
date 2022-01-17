@@ -34,7 +34,7 @@ class Stat extends SearchResource
     }
 
     /**
-     * Given a hashId and search params, makes a search
+     * Given a hashId and search params, starts a session
      *
      * @param string $hashId
      * @param string $sessionId
@@ -48,6 +48,35 @@ class Stat extends SearchResource
             HttpClientInterface::METHOD_PUT,
             null,
             ['session_id' => $sessionId]
+        );
+    }
+
+    /**
+     * Given a hashId and redirection params, log a redirection
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @param string $id
+     * @param string|null $query
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function logRedirection($hashId, $sessionId, $id, $query)
+    {
+        $params = [
+            'session_id' => $sessionId,
+            'id' => $id
+        ];
+
+        if (!is_null($query)) {
+            $params['query'] = $query;
+        }
+
+        return $this->requestWithToken(
+            $this->getBaseUrl($hashId) . '/redirect',
+            HttpClientInterface::METHOD_PUT,
+            null,
+            $params
         );
     }
 }

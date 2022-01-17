@@ -353,4 +353,82 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($thrownException);
     }
+
+    public function testLogRedirectionSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $body = ['status' => 'registered'];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+        $id = 'fake_id';
+        $query = 'fake_query';
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('logRedirection')
+            ->with($hashId, $sessionId, $id, $query)
+            ->willReturn($httpResponse);
+
+        $searchClient = $this->createSut();
+        $response = $searchClient->logRedirection($hashId, $sessionId, $id, $query);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame($body, $response->getBody());
+    }
+
+    public function testLogRedirectionNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $forbiddenException = new ApiException('', HttpStatusCode::FORBIDDEN);
+        $id = 'fake_id';
+        $query = 'fake_query';
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('logRedirection')
+            ->with($hashId, $sessionId, $id, $query)
+            ->willThrowException($forbiddenException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->logRedirection($hashId, $sessionId, $id, $query);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::FORBIDDEN, $e->getCode());
+            $this->assertSame('The user does not have permissions to perform this operation.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testLogRedirectionNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $id = 'fake_id';
+        $query = 'fake_query';
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('logRedirection')
+            ->with($hashId, $sessionId, $id, $query)
+            ->willThrowException($this->notFoundException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->logRedirection($hashId, $sessionId, $id, $query);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }
