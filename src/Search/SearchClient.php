@@ -97,7 +97,6 @@ class SearchClient
         }
     }
 
-
     /**
      * Logs a "redirection triggered" event in stats logs.
      *
@@ -112,6 +111,25 @@ class SearchClient
     {
         try {
             return $this->statResource->logRedirection($hashId, $sessionId, $id, $query);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Logs a "click on banner image" event in stats logs.
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @param string $id
+     * @param string|null $query
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function logBanner($hashId, $sessionId, $id, $query = null)
+    {
+        try {
+            return $this->statResource->logBanner($hashId, $sessionId, $id, $query);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
