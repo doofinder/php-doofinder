@@ -110,7 +110,7 @@ class Stat extends SearchResource
     }
 
     /**
-     * Given a hashId and search params, makes a search
+     * Given a hashId and sessionId, logs a checkout
      *
      * @param string $hashId
      * @param string $sessionId
