@@ -659,4 +659,91 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($thrownException);
     }
+
+    public function testLogAddToCartSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $body = ['status' => 'registered'];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+        $id = 'fake_id';
+        $amount = 2;
+        $indexName = 'fake_index';
+        $price = 123.56;
+        $title = 'fake_title';
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('logAddToCart')
+            ->with($hashId, $sessionId, $amount, $id, $indexName, $price, $title)
+            ->willReturn($httpResponse);
+
+        $searchClient = $this->createSut();
+        $response = $searchClient->logAddToCart($hashId, $sessionId, $amount, $id, $indexName, $price, $title);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame($body, $response->getBody());
+    }
+
+    public function testLogAddToCartNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $forbiddenException = new ApiException('', HttpStatusCode::FORBIDDEN);
+        $id = 'fake_id';
+        $amount = 2;
+        $indexName = 'fake_index';
+        $price = 123.56;
+        $title = 'fake_title';
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('logAddToCart')
+            ->with($hashId, $sessionId, $amount, $id, $indexName, $price, $title)
+            ->willThrowException($forbiddenException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->logAddToCart($hashId, $sessionId, $amount, $id, $indexName, $price, $title);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::FORBIDDEN, $e->getCode());
+            $this->assertSame('The user does not have permissions to perform this operation.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testLogAddToCartNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $id = 'fake_id';
+        $amount = 2;
+        $indexName = 'fake_index';
+        $price = 123.56;
+        $title = 'fake_title';
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('logAddToCart')
+            ->with($hashId, $sessionId, $amount, $id, $indexName, $price, $title)
+            ->willThrowException($this->notFoundException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->logAddToCart($hashId, $sessionId, $amount, $id, $indexName, $price, $title);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }

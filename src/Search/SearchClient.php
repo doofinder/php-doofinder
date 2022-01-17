@@ -171,4 +171,27 @@ class SearchClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+
+    /**
+     * Adds an item to the cart, or creates a new cart for the given session if it does not exists
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @param integer $amount
+     * @param string $itemId
+     * @param string $indexId
+     * @param float $price
+     * @param string $title
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function logAddToCart($hashId, $sessionId, $amount, $itemId, $indexId, $price, $title)
+    {
+        try {
+            return $this->statResource->logAddToCart($hashId, $sessionId, $amount, $itemId, $indexId, $price, $title);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }
