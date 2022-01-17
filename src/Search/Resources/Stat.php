@@ -126,4 +126,33 @@ class Stat extends SearchResource
             ['session_id' => $sessionId]
         );
     }
+
+    /**
+     * Given a hashId, session id, item id and click params, log a click
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @param string $itemId
+     * @param string|null $query
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function logClick($hashId, $sessionId, $itemId, $query)
+    {
+        $params = [
+            'session_id' => $sessionId,
+            'dfid' => $itemId
+        ];
+
+        if (!is_null($query)) {
+            $params['query'] = $query;
+        }
+
+        return $this->requestWithToken(
+            $this->getBaseUrl($hashId) . '/click',
+            HttpClientInterface::METHOD_PUT,
+            null,
+            $params
+        );
+    }
 }

@@ -151,4 +151,24 @@ class SearchClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+
+    /**
+     * Save click event on doofinder statistics
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @param string $itemId
+     * @param string|null $query
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function logClick($hashId, $sessionId, $itemId, $query = null)
+    {
+        try {
+            return $this->statResource->logClick($hashId, $sessionId, $itemId, $query);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }
