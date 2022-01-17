@@ -79,4 +79,33 @@ class Stat extends SearchResource
             $params
         );
     }
+
+    /**
+     * Given a hashId and banner params, log a banner click
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @param string $id
+     * @param string|null $query
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function logBanner($hashId, $sessionId, $id, $query)
+    {
+        $params = [
+            'session_id' => $sessionId,
+            'id' => $id
+        ];
+
+        if (!is_null($query)) {
+            $params['query'] = $query;
+        }
+
+        return $this->requestWithToken(
+            $this->getBaseUrl($hashId) . '/image',
+            HttpClientInterface::METHOD_PUT,
+            null,
+            $params
+        );
+    }
 }
