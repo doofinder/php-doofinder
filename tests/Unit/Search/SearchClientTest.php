@@ -282,7 +282,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($thrownException);
     }
 
-    public function testStatsSuccess()
+    public function testInitSessionSuccess()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $sessionId = 'fake_session_id';
@@ -303,7 +303,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($body, $response->getBody());
     }
 
-    public function testStatsNoAuthorization()
+    public function testInitSessionNoAuthorization()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $sessionId = 'fake_session_id';
@@ -329,7 +329,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($thrownException);
     }
 
-    public function testStatsNotFound()
+    public function testInitSessionNotFound()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $sessionId = 'fake_session_id';
@@ -345,6 +345,78 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
 
         try {
             $searchClient->initSession($hashId, $sessionId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testLogCheckoutSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $body = ['status' => 'registered'];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('logCheckout')
+            ->with($hashId, $sessionId)
+            ->willReturn($httpResponse);
+
+        $searchClient = $this->createSut();
+        $response = $searchClient->logCheckout($hashId, $sessionId);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame($body, $response->getBody());
+    }
+
+    public function testLogCheckoutNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $forbiddenException = new ApiException('', HttpStatusCode::FORBIDDEN);
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('logCheckout')
+            ->with($hashId, $sessionId)
+            ->willThrowException($forbiddenException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->logCheckout($hashId, $sessionId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::FORBIDDEN, $e->getCode());
+            $this->assertSame('The user does not have permissions to perform this operation.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testLogCheckoutNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('logCheckout')
+            ->with($hashId, $sessionId)
+            ->willThrowException($this->notFoundException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->logCheckout($hashId, $sessionId);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());

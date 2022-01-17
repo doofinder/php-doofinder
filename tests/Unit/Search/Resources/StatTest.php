@@ -22,7 +22,7 @@ class StatTest extends BaseResourceTest
         return self::BASE_URL . '/6/' . $hashId . '/stats';
     }
 
-    public function testStatSuccess()
+    public function testInitSessionSuccess()
     {
         $body = ['result' => 'registered'];
 
@@ -50,7 +50,7 @@ class StatTest extends BaseResourceTest
         $this->assertEquals($response->getBody(), $body);
     }
 
-    public function testStatInvalidParams()
+    public function testInitSessionInvalidParams()
     {
         $response = HttpResponse::create(HttpStatusCode::BAD_REQUEST, '{"error" : {"code": "bad_params"}}');
         $hashId = '3a0811e861d36f76cedca60723e03291';
@@ -84,7 +84,7 @@ class StatTest extends BaseResourceTest
         $this->assertTrue($thrownException);
     }
 
-    public function testStatHashIdNotFound()
+    public function testInitSessionHashIdNotFound()
     {
         $hashId = '3a0811e861d36f76cedca60723e03291';
 
@@ -108,6 +108,103 @@ class StatTest extends BaseResourceTest
 
         try {
             $this->createSut()->initSession($hashId, $sessionId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testLogCheckoutSuccess()
+    {
+        $body = ['result' => 'registered'];
+
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $sessionId = 'rand_fake_session_id';
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with(
+                $this->getUrl($hashId) . '/checkout',
+                HttpClientInterface::METHOD_PUT,
+                ['session_id' => $sessionId],
+                ['Authorization: Token ' . self::TOKEN]
+            )
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->logCheckout($hashId, $sessionId);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertEquals($response->getBody(), $body);
+    }
+
+    public function testLogCheckoutInvalidParams()
+    {
+        $response = HttpResponse::create(HttpStatusCode::BAD_REQUEST, '{"error" : {"code": "bad_params"}}');
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'rand_fake_session_id';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with(
+                $this->getUrl($hashId) . '/checkout',
+                HttpClientInterface::METHOD_PUT,
+                ['session_id' => $sessionId],
+                ['Authorization: Token ' . self::TOKEN]
+            )
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->logCheckout($hashId, $sessionId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('bad_params', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testLogCheckoutHashIdNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+        $sessionId = 'rand_fake_session_id';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with(
+                $this->getUrl($hashId) . '/checkout',
+                HttpClientInterface::METHOD_PUT,
+                ['session_id' => $sessionId],
+                ['Authorization: Token ' . self::TOKEN]
+            )
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->logCheckout($hashId, $sessionId);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());

@@ -108,4 +108,22 @@ class Stat extends SearchResource
             $params
         );
     }
+
+    /**
+     * Given a hashId and sessionId, logs a checkout
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function logCheckout($hashId, $sessionId)
+    {
+        return $this->requestWithToken(
+            $this->getBaseUrl($hashId) . '/checkout',
+            HttpClientInterface::METHOD_PUT,
+            null,
+            ['session_id' => $sessionId]
+        );
+    }
 }
