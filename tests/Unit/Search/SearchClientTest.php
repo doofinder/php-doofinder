@@ -581,4 +581,82 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($thrownException);
     }
+
+    public function testLogClickSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $body = ['status' => 'registered'];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+        $itemId = 'fake_id';
+        $query = 'fake_query';
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('logClick')
+            ->with($hashId, $sessionId, $itemId, $query)
+            ->willReturn($httpResponse);
+
+        $searchClient = $this->createSut();
+        $response = $searchClient->logClick($hashId, $sessionId, $itemId, $query);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame($body, $response->getBody());
+    }
+
+    public function testLogClickNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $forbiddenException = new ApiException('', HttpStatusCode::FORBIDDEN);
+        $itemId = 'fake_id';
+        $query = 'fake_query';
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('logClick')
+            ->with($hashId, $sessionId, $itemId, $query)
+            ->willThrowException($forbiddenException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->logClick($hashId, $sessionId, $itemId, $query);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::FORBIDDEN, $e->getCode());
+            $this->assertSame('The user does not have permissions to perform this operation.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testLogClickNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $itemId = 'fake_id';
+        $query = 'fake_query';
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('logClick')
+            ->with($hashId, $sessionId, $itemId, $query)
+            ->willThrowException($this->notFoundException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->logClick($hashId, $sessionId, $itemId, $query);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }
