@@ -155,4 +155,33 @@ class Stat extends SearchResource
             $params
         );
     }
+
+    /**
+     * Log an "Add to cart" event
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @param integer $amount
+     * @param string $itemId
+     * @param string $indexId
+     * @param float $price
+     * @param string $title
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function logAddToCart($hashId, $sessionId, $amount, $itemId, $indexId, $price, $title)
+    {
+        return $this->requestWithToken(
+            $this->getBaseUrl($hashId) . '/cart/' . $sessionId,
+            HttpClientInterface::METHOD_PUT,
+            null,
+            [
+                'amount' => $amount,
+                'id' => $itemId,
+                'index' => $indexId,
+                'price' => $price,
+                'title' => $title
+            ]
+        );
+    }
 }
