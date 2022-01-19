@@ -528,7 +528,7 @@ class StatTest extends BaseResourceTest
                 HttpClientInterface::METHOD_PUT,
                 [
                     'session_id' => $sessionId,
-                    'id' => $itemId,
+                    'dfid' => $itemId,
                     'query' => $query
                 ],
                 ['Authorization: Token ' . self::TOKEN]
@@ -569,7 +569,7 @@ class StatTest extends BaseResourceTest
                 HttpClientInterface::METHOD_PUT,
                 [
                     'session_id' => $sessionId,
-                    'id' => $itemId,
+                    'dfid' => $itemId,
                     'query' => $query
                 ],
                 ['Authorization: Token ' . self::TOKEN]
@@ -830,6 +830,103 @@ class StatTest extends BaseResourceTest
 
         try {
             $this->createSut()->logRemoveFromCart($hashId, $sessionId, $amount, $id, $indexName);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('not_found', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testClearCartSuccess()
+    {
+        $body = ['result' => 'registered'];
+
+        $response = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $sessionId = 'rand_fake_session_id';
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with(
+                $this->getUrl($hashId) . '/cart/' . $sessionId,
+                HttpClientInterface::METHOD_DELETE,
+                [],
+                ['Authorization: Token ' . self::TOKEN]
+            )
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $response = $this->createSut()->clearCart($hashId, $sessionId);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertEquals($response->getBody(), $body);
+    }
+
+    public function testClearCartInvalidParams()
+    {
+        $response = HttpResponse::create(HttpStatusCode::BAD_REQUEST, '{"error" : {"code": "bad_params"}}');
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'rand_fake_session_id';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with(
+                $this->getUrl($hashId) . '/cart/' . $sessionId,
+                HttpClientInterface::METHOD_DELETE,
+                [],
+                ['Authorization: Token ' . self::TOKEN]
+            )
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->clearCart($hashId, $sessionId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::BAD_REQUEST, $e->getCode());
+            /** @var HttpResponseInterface $response */
+            $response = $e->getBody();
+            $this->assertSame('bad_params', $response->getBody()['error']['code']);
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testClearCartHashIdNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+
+        $response = HttpResponse::create(HttpStatusCode::NOT_FOUND, '{"error" : {"code": "not_found"}}');
+        $sessionId = 'rand_fake_session_id';
+
+        $this->httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with(
+                $this->getUrl($hashId) . '/cart/' . $sessionId,
+                HttpClientInterface::METHOD_DELETE,
+                [],
+                ['Authorization: Token ' . self::TOKEN]
+            )
+            ->willReturn($response);
+
+        $this->setConfig();
+
+        $thrownException = false;
+
+        try {
+            $this->createSut()->clearCart($hashId, $sessionId);
         } catch (ApiException $e) {
             $thrownException = true;
             $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());

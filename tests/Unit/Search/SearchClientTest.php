@@ -827,4 +827,76 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($thrownException);
     }
+
+    public function testClearCartSuccess()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $body = ['status' => 'registered'];
+
+        $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('clearCart')
+            ->with($hashId, $sessionId)
+            ->willReturn($httpResponse);
+
+        $searchClient = $this->createSut();
+        $response = $searchClient->clearCart($hashId, $sessionId);
+
+        $this->assertSame(HttpStatusCode::OK, $response->getStatusCode());
+        $this->assertSame($body, $response->getBody());
+    }
+
+    public function testClearCartNoAuthorization()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+        $forbiddenException = new ApiException('', HttpStatusCode::FORBIDDEN);
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('clearCart')
+            ->with($hashId, $sessionId)
+            ->willThrowException($forbiddenException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->clearCart($hashId, $sessionId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::FORBIDDEN, $e->getCode());
+            $this->assertSame('The user does not have permissions to perform this operation.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
+
+    public function testClearCartNotFound()
+    {
+        $hashId = '3a0811e861d36f76cedca60723e03291';
+        $sessionId = 'fake_session_id';
+
+        $this->statResource
+            ->expects($this->once())
+            ->method('clearCart')
+            ->with($hashId, $sessionId)
+            ->willThrowException($this->notFoundException);
+
+        $searchClient = $this->createSut();
+        $thrownException = false;
+
+        try {
+            $searchClient->clearCart($hashId, $sessionId);
+        } catch (ApiException $e) {
+            $thrownException = true;
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $e->getCode());
+            $this->assertSame('Not Found.', $e->getMessage());
+        }
+
+        $this->assertTrue($thrownException);
+    }
 }

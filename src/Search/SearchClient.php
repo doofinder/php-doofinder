@@ -215,4 +215,21 @@ class SearchClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * This call will erase completely a cart identified by the pair of hashid and session ID, if it does exist
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function clearCart($hashId, $sessionId)
+    {
+        try {
+            return $this->statResource->clearCart($hashId, $sessionId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

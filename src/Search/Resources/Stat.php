@@ -209,4 +209,20 @@ class Stat extends SearchResource
             ]
         );
     }
+
+    /**
+     * Erase completely a cart
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function clearCart($hashId, $sessionId)
+    {
+        return $this->requestWithToken(
+            $this->getBaseUrl($hashId) . '/cart/' . $sessionId,
+            HttpClientInterface::METHOD_DELETE
+        );
+    }
 }
