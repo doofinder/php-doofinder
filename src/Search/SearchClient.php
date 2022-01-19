@@ -194,4 +194,25 @@ class SearchClient
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
+
+    /**
+     * Removes an amount from the given item in the cart, removing it completely if the amount present in the cart minus
+     * the amount specified in this call is zero or negative, else, it will be updated with the new calculated amount.
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @param integer $amount
+     * @param string $itemId
+     * @param string $indexId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function logRemoveFromCart($hashId, $sessionId, $amount, $itemId, $indexId)
+    {
+        try {
+            return $this->statResource->logRemoveFromCart($hashId, $sessionId, $amount, $itemId, $indexId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
 }

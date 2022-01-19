@@ -184,4 +184,29 @@ class Stat extends SearchResource
             ]
         );
     }
+
+    /**
+     * Log "Remove from cart" event
+     *
+     * @param string $hashId
+     * @param string $sessionId
+     * @param integer $amount
+     * @param string $itemId
+     * @param string $indexId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function logRemoveFromCart($hashId, $sessionId, $amount, $itemId, $indexId)
+    {
+        return $this->requestWithToken(
+            $this->getBaseUrl($hashId) . '/cart/' . $sessionId,
+            HttpClientInterface::METHOD_PATCH,
+            null,
+            [
+                'amount' => $amount,
+                'id' => $itemId,
+                'index' => $indexId
+            ]
+        );
+    }
 }
