@@ -53,6 +53,7 @@
   },
   "scripts": {
     "remove-documentation" : "rm -rf doc/*",
-    "generate-documentation" : "php phpDocumentor.phar -d src/  -t doc/"
+    "generate-documentation" : "php phpDocumentor.phar -d src/  -t doc/",
+    "tests" : "php ./vendor/bin/phpunit tests/"
   }
 }
