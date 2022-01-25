@@ -102,7 +102,7 @@
     Index
 
         <span class="phpdocumentor-element__extends">
-        extends <a href="classes/Doofinder-Shared-Resource.html"><abbr title="\Doofinder\Shared\Resource">Resource</abbr></a>
+        extends <a href="classes/Doofinder-Management-Resources-ManagementResource.html"><abbr title="\Doofinder\Management\Resources\ManagementResource">ManagementResource</abbr></a>
     </span>
     
             <div class="phpdocumentor-element__package">
@@ -118,7 +118,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">15</span>
+    <span class="phpdocumentor-element-found-in__line">14</span>
 
     </aside>
 
@@ -141,21 +141,21 @@
                 <dt class="phpdocumentor-table-of-contents__entry -property -protected">
     <a href="classes/Doofinder-Shared-Resource.html#property_baseUrl">$baseUrl</a>
     <span>
-                &nbsp;: mixed            </span>
+                &nbsp;: string            </span>
 </dt>
 <dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -protected">
     <a href="classes/Doofinder-Shared-Resource.html#property_config">$config</a>
     <span>
-                &nbsp;: mixed            </span>
+                &nbsp;: <a href="classes/Doofinder-Configuration.html"><abbr title="\Doofinder\Configuration">Configuration</abbr></a>            </span>
 </dt>
 <dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -protected">
     <a href="classes/Doofinder-Shared-Resource.html#property_httpClient">$httpClient</a>
     <span>
-                &nbsp;: mixed            </span>
+                &nbsp;: <a href="classes/Doofinder-Shared-Interfaces-HttpClientInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpClientInterface">HttpClientInterface</abbr></a>            </span>
 </dt>
 <dd></dd>
 
@@ -174,11 +174,25 @@
 <dd>Given a hashId and index data, creates a new index</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Doofinder-Management-Resources-Index.html#method_createTemporaryIndex">createTemporaryIndex()</a>
+    <span>
+                        &nbsp;: <a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a>    </span>
+</dt>
+<dd>Given a hashId and index name, creates a new temporary index</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Doofinder-Management-Resources-Index.html#method_deleteIndex">deleteIndex()</a>
     <span>
                         &nbsp;: <a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a>    </span>
 </dt>
 <dd>Given a hashId and indexName, deletes an index</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Doofinder-Management-Resources-Index.html#method_deleteTemporaryIndex">deleteTemporaryIndex()</a>
+    <span>
+                        &nbsp;: <a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a>    </span>
+</dt>
+<dd>Given a hashId and index name, deletes a temporary index</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Doofinder-Management-Resources-Index.html#method_getIndex">getIndex()</a>
@@ -188,11 +202,39 @@
 <dd>Given a hashId, indexName and data, it gets an index</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Doofinder-Shared-Resource.html#method_getUrl">getUrl()</a>
+    <span>
+                        &nbsp;: string    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Doofinder-Management-Resources-Index.html#method_listIndexes">listIndexes()</a>
     <span>
                         &nbsp;: <a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a>    </span>
 </dt>
 <dd>Given a hashId, lists index&#039;s search engine</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Doofinder-Management-Resources-Index.html#method_reindexIntoTemporary">reindexIntoTemporary()</a>
+    <span>
+                        &nbsp;: <a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a>    </span>
+</dt>
+<dd>Given a hashId and index name, reindex all items from real and index them onto the temporary.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Doofinder-Management-Resources-Index.html#method_reindexTaskStatus">reindexTaskStatus()</a>
+    <span>
+                        &nbsp;: <a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a>    </span>
+</dt>
+<dd>Given a hashId and index name, returns the status of the last scheduled reindexing tasks.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Doofinder-Management-Resources-Index.html#method_replaceIndex">replaceIndex()</a>
+    <span>
+                        &nbsp;: <a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a>    </span>
+</dt>
+<dd>Given a hashId and index name, replaces the content of the current &quot;production&quot; index with the content of the temporary one</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Doofinder-Management-Resources-Index.html#method_updateIndex">updateIndex()</a>
@@ -215,12 +257,26 @@
 </dt>
 <dd>It does a http request with Jwt authentication. If there is an error throws an ApiException</dd>
 
+            <dt class="phpdocumentor-table-of-contents__entry -method -protected">
+    <a href="classes/Doofinder-Shared-Resource.html#method_requestWithToken">requestWithToken()</a>
+    <span>
+                        &nbsp;: <a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a>    </span>
+</dt>
+<dd>It does a http request with Token authentication. If there is an error throws an ApiException</dd>
+
             <dt class="phpdocumentor-table-of-contents__entry -method -private">
     <a href="classes/Doofinder-Management-Resources-Index.html#method_getBaseUrl">getBaseUrl()</a>
     <span>
                         &nbsp;: string    </span>
 </dt>
 <dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -private">
+    <a href="classes/Doofinder-Shared-Resource.html#method_request">request()</a>
+    <span>
+                        &nbsp;: <a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a>    </span>
+</dt>
+<dd>It does a http request. If there is an error throws an ApiException</dd>
 
         </dl>
 
@@ -250,21 +306,19 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Shared/Resource.php"><a href="files/src-shared-resource.html"><abbr title="src/Shared/Resource.php">Resource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">19</span>
+    <span class="phpdocumentor-element-found-in__line">30</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">protected</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
+        <span class="phpdocumentor-signature__type">string</span>
     <span class="phpdocumentor-signature__name">$baseUrl</span>
     </code>
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -284,21 +338,19 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Shared/Resource.php"><a href="files/src-shared-resource.html"><abbr title="src/Shared/Resource.php">Resource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">18</span>
+    <span class="phpdocumentor-element-found-in__line">25</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">protected</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
+        <span class="phpdocumentor-signature__type"><a href="classes/Doofinder-Configuration.html"><abbr title="\Doofinder\Configuration">Configuration</abbr></a></span>
     <span class="phpdocumentor-signature__name">$config</span>
     </code>
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -318,21 +370,19 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Shared/Resource.php"><a href="files/src-shared-resource.html"><abbr title="src/Shared/Resource.php">Resource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">17</span>
+    <span class="phpdocumentor-element-found-in__line">20</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">protected</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
+        <span class="phpdocumentor-signature__type"><a href="classes/Doofinder-Shared-Interfaces-HttpClientInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpClientInterface">HttpClientInterface</abbr></a></span>
     <span class="phpdocumentor-signature__name">$httpClient</span>
     </code>
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -356,7 +406,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">22</span>
+    <span class="phpdocumentor-element-found-in__line">21</span>
 
     </aside>
 
@@ -405,7 +455,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">45</span>
+    <span class="phpdocumentor-element-found-in__line">44</span>
 
     </aside>
 
@@ -462,6 +512,70 @@
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_createTemporaryIndex">
+        createTemporaryIndex()
+        <a href="classes/Doofinder-Management-Resources-Index.html#method_createTemporaryIndex" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">136</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Given a hashId and index name, creates a new temporary index</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">createTemporaryIndex</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$hashId</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$indexName</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$hashId</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$indexName</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Doofinder-Shared-Exceptions-ApiException.html"><abbr title="\Doofinder\Shared\Exceptions\ApiException">ApiException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                        </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_deleteIndex">
         deleteIndex()
         <a href="classes/Doofinder-Management-Resources-Index.html#method_deleteIndex" class="headerlink"><i class="fas fa-link"></i></a>
@@ -469,7 +583,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">121</span>
+    <span class="phpdocumentor-element-found-in__line">120</span>
 
     </aside>
 
@@ -526,6 +640,70 @@
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_deleteTemporaryIndex">
+        deleteTemporaryIndex()
+        <a href="classes/Doofinder-Management-Resources-Index.html#method_deleteTemporaryIndex" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">152</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Given a hashId and index name, deletes a temporary index</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">deleteTemporaryIndex</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$hashId</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$indexName</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$hashId</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$indexName</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Doofinder-Shared-Exceptions-ApiException.html"><abbr title="\Doofinder\Shared\Exceptions\ApiException">ApiException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                        </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_getIndex">
         getIndex()
         <a href="classes/Doofinder-Management-Resources-Index.html#method_getIndex" class="headerlink"><i class="fas fa-link"></i></a>
@@ -533,7 +711,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">82</span>
+    <span class="phpdocumentor-element-found-in__line">81</span>
 
     </aside>
 
@@ -588,6 +766,38 @@
         class="phpdocumentor-element
             -method
             -public
+                        -abstract                                "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getUrl">
+        getUrl()
+        <a href="classes/Doofinder-Shared-Resource.html#method_getUrl" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Shared/Resource.php"><a href="files/src-shared-resource.html"><abbr title="src/Shared/Resource.php">Resource.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">46</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+    <span class="phpdocumentor-signature__abstract">abstract</span>            <span class="phpdocumentor-signature__name">getUrl</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">string</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
                                                         "
 >
     <h4 class="phpdocumentor-element__name" id="method_listIndexes">
@@ -597,7 +807,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">98</span>
+    <span class="phpdocumentor-element-found-in__line">97</span>
 
     </aside>
 
@@ -647,6 +857,198 @@
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_reindexIntoTemporary">
+        reindexIntoTemporary()
+        <a href="classes/Doofinder-Management-Resources-Index.html#method_reindexIntoTemporary" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">184</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Given a hashId and index name, reindex all items from real and index them onto the temporary.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">reindexIntoTemporary</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$hashId</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$indexName</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$hashId</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$indexName</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Doofinder-Shared-Exceptions-ApiException.html"><abbr title="\Doofinder\Shared\Exceptions\ApiException">ApiException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                        </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_reindexTaskStatus">
+        reindexTaskStatus()
+        <a href="classes/Doofinder-Management-Resources-Index.html#method_reindexTaskStatus" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">200</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Given a hashId and index name, returns the status of the last scheduled reindexing tasks.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">reindexTaskStatus</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$hashId</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$indexName</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$hashId</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$indexName</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Doofinder-Shared-Exceptions-ApiException.html"><abbr title="\Doofinder\Shared\Exceptions\ApiException">ApiException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                        </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_replaceIndex">
+        replaceIndex()
+        <a href="classes/Doofinder-Management-Resources-Index.html#method_replaceIndex" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">168</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Given a hashId and index name, replaces the content of the current &quot;production&quot; index with the content of the temporary one</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">replaceIndex</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$hashId</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$indexName</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$hashId</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$indexName</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Doofinder-Shared-Exceptions-ApiException.html"><abbr title="\Doofinder\Shared\Exceptions\ApiException">ApiException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                        </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_updateIndex">
         updateIndex()
         <a href="classes/Doofinder-Management-Resources-Index.html#method_updateIndex" class="headerlink"><i class="fas fa-link"></i></a>
@@ -654,7 +1056,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">64</span>
+    <span class="phpdocumentor-element-found-in__line">63</span>
 
     </aside>
 
@@ -725,7 +1127,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Shared/Resource.php"><a href="files/src-shared-resource.html"><abbr title="src/Shared/Resource.php">Resource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">25</span>
+    <span class="phpdocumentor-element-found-in__line">36</span>
 
     </aside>
 
@@ -774,7 +1176,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Shared/Resource.php"><a href="files/src-shared-resource.html"><abbr title="src/Shared/Resource.php">Resource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">43</span>
+    <span class="phpdocumentor-element-found-in__line">97</span>
 
     </aside>
 
@@ -783,6 +1185,91 @@
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">protected</span>
                 <span class="phpdocumentor-signature__name">requestWithJwt</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$method</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">class-string<\Doofinder\Shared\Interfaces\ModelInterface>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$model</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$params</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$headers</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$url</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$method</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$model</span>
+                : <span class="phpdocumentor-signature__argument__return-type">class-string<\Doofinder\Shared\Interfaces\ModelInterface></span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$params</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">[]</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$headers</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">[]</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Doofinder-Shared-Exceptions-ApiException.html"><abbr title="\Doofinder\Shared\Exceptions\ApiException">ApiException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                        </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -protected
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_requestWithToken">
+        requestWithToken()
+        <a href="classes/Doofinder-Shared-Resource.html#method_requestWithToken" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Shared/Resource.php"><a href="files/src-shared-resource.html"><abbr title="src/Shared/Resource.php">Resource.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">116</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">It does a http request with Token authentication. If there is an error throws an ApiException</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">protected</span>
+                <span class="phpdocumentor-signature__name">requestWithToken</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$method</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">class-string<\Doofinder\Shared\Interfaces\ModelInterface>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$model</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$params</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$headers</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -859,7 +1346,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Management/Resources/Index.php"><a href="files/src-management-resources-index.html"><abbr title="src/Management/Resources/Index.php">Index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">32</span>
+    <span class="phpdocumentor-element-found-in__line">31</span>
 
     </aside>
 
@@ -891,6 +1378,91 @@
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">string</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -private
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_request">
+        request()
+        <a href="classes/Doofinder-Shared-Resource.html#method_request" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Shared/Resource.php"><a href="files/src-shared-resource.html"><abbr title="src/Shared/Resource.php">Resource.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">59</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">It does a http request. If there is an error throws an ApiException</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">private</span>
+                <span class="phpdocumentor-signature__name">request</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$method</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">class-string<\Doofinder\Shared\Interfaces\ModelInterface>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$model</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$params</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$headers</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$url</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$method</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$model</span>
+                : <span class="phpdocumentor-signature__argument__return-type">class-string<\Doofinder\Shared\Interfaces\ModelInterface></span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$params</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">[]</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$headers</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">[]</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Doofinder-Shared-Exceptions-ApiException.html"><abbr title="\Doofinder\Shared\Exceptions\ApiException">ApiException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                        </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/Doofinder-Shared-Interfaces-HttpResponseInterface.html"><abbr title="\Doofinder\Shared\Interfaces\HttpResponseInterface">HttpResponseInterface</abbr></a></span>
             &mdash;
         
     

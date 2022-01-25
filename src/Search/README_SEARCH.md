@@ -141,7 +141,7 @@ $searchClient->clearCart($hashId, $sessionId);
 ]
 ```
 
-#### Banner response
+#### Banner
 ```php
 [
     'blank' => '(boolean) Display the banner link in a new window.'
@@ -153,7 +153,7 @@ $searchClient->clearCart($hashId, $sessionId);
 ]
 ```
 
-#### Term facet response
+#### Term facet
 ```php
 [
     'items' => '(array of Items)',
