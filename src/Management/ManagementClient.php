@@ -63,8 +63,25 @@ class ManagementClient
      * Creates a new search engine with the provided data. It is not possible to run searches against the new search
      * engine as it does not have any index yet. You must create an index belonging to the new search engine to be able
      * to make searches.
+     * @example $params = [
+     *  'currency' => string,
+     *  'language' => string,
+     *  'name' => string,
+     *  'site_url' => string|null,
+     *  'stopwords' => boolean Default: false,
+     *  'platform' => string,
+     *  'has_grouping' => boolean,
+     * ]
      *
-     * @param array $params
+     * @param array<string, mixed> $params = [
+     *  'currency' => string, // Default: "EUR" ("AED", "ARS", "AUD", "BAM", "BDT", "BGN", "BOB", "BRL", "BYN", "CAD", "CHF", "CLP", "CNY", "COP", "CZK", "DKK", "DOP", "EGP", "EUR", "GBP", "HKD", "HRK", "HUF", "IDR", "ILS", "INR", "IRR", "ISK", "JPY", "KRW", "KWD", "MXN", "MYR", "NOK", "NZD", "PEN", "PLN", "RON", "RSD", "RUB", "SAR", "SEK", "TRY", "TWD", "UAH", "USD", "VEF", "VND", "XPF", "ZAR")
+     *  'language' => string, // ("ar", "hy", "eu", "pt-br", "bg", "ca", "cs", "da", "nl", "en", "fi", "fr", "de", "el", "hi", "hu", "id", "it", "no", "pt", "ro", "ru", "es", "sv", "tr"),
+     *  'name' => string,
+     *  'site_url' => string|null,
+     *  'stopwords' => boolean Default: false,
+     *  'platform' => string, // Default: ("api", "api", "shopify", "woocommerce", "bigcommerce", "crawler", "ecommerce", "ekm", "file", "magento", "magento2", "opencart", "oscommerce", "prestashop", "shopify"),
+     *  'has_grouping' => boolean, // Default: false
+     * ]
      * @return HttpResponseInterface
      * @throws ApiException
      *
@@ -440,15 +457,15 @@ class ManagementClient
      * Given a hashId, index id and item data, creates a new item in temporal index
      *
      * @param string $hashId
-     * @param string $itemId
+     * @param string $indexName
      * @param array $params
      * @return HttpResponseInterface
      * @throws ApiException
      */
-    public function createItemInTemporalIndex($hashId, $itemId, $params)
+    public function createItemInTemporalIndex($hashId, $indexName, $params)
     {
         try {
-            return $this->itemsResource->createItemInTemporalIndex($hashId, $itemId, $params);
+            return $this->itemsResource->createItemInTemporalIndex($hashId, $indexName, $params);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
