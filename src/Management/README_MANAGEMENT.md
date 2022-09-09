@@ -64,6 +64,7 @@ composer install
 require_once(__DIR__ . '/vendor/autoload.php');
 
 define('YOUR_HOST', 'https://eu1-api.doofinder.com');
+//Get from account overview -> User -> API Tokens -> Website API Key
 define('YOUR_API_KEY', '384fdag73c7ff0a59g589xf9f4083bxb9727f9c3');
 
 $client = new Doofinder\Management\ManagementClient(YOUR_HOST, YOUR_API_KEY);
@@ -80,10 +81,10 @@ $se_body = '{
   }';
 
 // Create a Search Engine
-$client->createSearchEngine($body);
+$client->createSearchEngine($se_body);
 
 // List Search Engines
-$client->listSearchEngines();
+print_R($client->listSearchEngines());
 
 
 // Get a Search Engine
@@ -146,7 +147,7 @@ $client->createBulk($hashid, $index_name, $bulk_body);
 
 // Delete an item
 
-$item_id = "1234"
+$item_id = "1234";
 
 $client->deleteItem($hashid, $item_id, $index_name);
 
