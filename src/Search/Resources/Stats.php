@@ -10,14 +10,14 @@ use Doofinder\Shared\Resource;
 
 
 /**
- * Stat class is responsible for making the requests to the stat's endpoint and return a response
+ * Stats class is responsible for making the requests to the Stats's endpoint and return a response
  */
-class Stat extends SearchResource
+class Stats extends SearchResource
 {
     /**
      * @param HttpClientInterface $httpClient
      * @param Configuration $config
-     * @return Stat
+     * @return Stats
      */
     public static function create(HttpClientInterface $httpClient, Configuration $config)
     {

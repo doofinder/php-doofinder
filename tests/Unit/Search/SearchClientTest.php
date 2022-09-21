@@ -3,7 +3,7 @@
 namespace Tests\Unit\Search;
 
 use Doofinder\Search\Resources\Search;
-use Doofinder\Search\Resources\Stat;
+use Doofinder\Search\Resources\Stats;
 use Doofinder\Search\SearchClient;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpResponse;
@@ -17,9 +17,9 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
     private $searchResource;
 
     /**
-     * @var Stat
+     * @var Stats
      */
-    private $statResource;
+    private $statsResource;
 
     /**
      * @var ApiException
@@ -41,7 +41,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->searchResource = $this->createMock(Search::class);
-        $this->statResource = $this->createMock(Stat::class);
+        $this->statsResource = $this->createMock(Stats::class);
 
         $this->unauthorizedException = new ApiException('', HttpStatusCode::UNAUTHORIZED);
         $this->badParametersException = new ApiException(
@@ -58,7 +58,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
     {
         return new SearchClient(
             $this->searchResource,
-            $this->statResource
+            $this->statsResource
         );
     }
 
@@ -290,7 +290,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
 
         $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('initSession')
             ->with($hashId, $sessionId)
@@ -309,7 +309,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $sessionId = 'fake_session_id';
         $forbiddenException = new ApiException('', HttpStatusCode::FORBIDDEN);
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('initSession')
             ->with($hashId, $sessionId)
@@ -334,7 +334,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $sessionId = 'fake_session_id';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('initSession')
             ->with($hashId, $sessionId)
@@ -362,7 +362,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
 
         $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logCheckout')
             ->with($hashId, $sessionId)
@@ -381,7 +381,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $sessionId = 'fake_session_id';
         $forbiddenException = new ApiException('', HttpStatusCode::FORBIDDEN);
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logCheckout')
             ->with($hashId, $sessionId)
@@ -406,7 +406,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $sessionId = 'fake_session_id';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logCheckout')
             ->with($hashId, $sessionId)
@@ -436,7 +436,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $id = 'fake_id';
         $query = 'fake_query';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logRedirection')
             ->with($hashId, $sessionId, $id, $query)
@@ -457,7 +457,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $id = 'fake_id';
         $query = 'fake_query';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logRedirection')
             ->with($hashId, $sessionId, $id, $query)
@@ -484,7 +484,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $id = 'fake_id';
         $query = 'fake_query';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logRedirection')
             ->with($hashId, $sessionId, $id, $query)
@@ -514,7 +514,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $id = 'fake_id';
         $query = 'fake_query';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logBanner')
             ->with($hashId, $sessionId, $id, $query)
@@ -535,7 +535,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $id = 'fake_id';
         $query = 'fake_query';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logBanner')
             ->with($hashId, $sessionId, $id, $query)
@@ -562,7 +562,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $id = 'fake_id';
         $query = 'fake_query';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logBanner')
             ->with($hashId, $sessionId, $id, $query)
@@ -592,7 +592,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $itemId = 'fake_id';
         $query = 'fake_query';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logClick')
             ->with($hashId, $sessionId, $itemId, $query)
@@ -613,7 +613,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $itemId = 'fake_id';
         $query = 'fake_query';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logClick')
             ->with($hashId, $sessionId, $itemId, $query)
@@ -640,7 +640,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $itemId = 'fake_id';
         $query = 'fake_query';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logClick')
             ->with($hashId, $sessionId, $itemId, $query)
@@ -673,7 +673,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $price = 123.56;
         $title = 'fake_title';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logAddToCart')
             ->with($hashId, $sessionId, $amount, $id, $indexName, $price, $title)
@@ -697,7 +697,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $price = 123.56;
         $title = 'fake_title';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logAddToCart')
             ->with($hashId, $sessionId, $amount, $id, $indexName, $price, $title)
@@ -727,7 +727,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $price = 123.56;
         $title = 'fake_title';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logAddToCart')
             ->with($hashId, $sessionId, $amount, $id, $indexName, $price, $title)
@@ -758,7 +758,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $amount = 2;
         $indexName = 'fake_index';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logRemoveFromCart')
             ->with($hashId, $sessionId, $amount, $id, $indexName)
@@ -780,7 +780,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $indexName = 'fake_index';
         $forbiddenException = new ApiException('', HttpStatusCode::FORBIDDEN);
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logRemoveFromCart')
             ->with($hashId, $sessionId, $amount, $id, $indexName)
@@ -808,7 +808,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $amount = 2;
         $indexName = 'fake_index';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('logRemoveFromCart')
             ->with($hashId, $sessionId, $amount, $id, $indexName)
@@ -836,7 +836,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
 
         $httpResponse = HttpResponse::create(HttpStatusCode::OK, json_encode($body));
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('clearCart')
             ->with($hashId, $sessionId)
@@ -855,7 +855,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $sessionId = 'fake_session_id';
         $forbiddenException = new ApiException('', HttpStatusCode::FORBIDDEN);
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('clearCart')
             ->with($hashId, $sessionId)
@@ -880,7 +880,7 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
         $hashId = '3a0811e861d36f76cedca60723e03291';
         $sessionId = 'fake_session_id';
 
-        $this->statResource
+        $this->statsResource
             ->expects($this->once())
             ->method('clearCart')
             ->with($hashId, $sessionId)
