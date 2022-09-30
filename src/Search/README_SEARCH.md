@@ -5,20 +5,20 @@ For more information, please visit [https://doofinder.com/support](https://app.d
 <!-- TOC depthFrom:2 -->
 
 - [Requirements](#requirements)
-- [Installation & Usage](#installation--usage)
-  - [Download Method](#download--method)
-  - [Using Composer](#using--composer)
+- [Installation & Usage](#installation-usage)
+  - [Download Method](#download-method)
+  - [Using Composer](#using-composer)
   - [Authorization](#authorization)
-- [Quick & Dirty](#quick--dirty)
+- [Quick & Dirty](#quick-dirty)
   - [Search](#search) 
-  - [Documentation for Client's Methods](#documentation--for--clients--methods)
+  - [Documentation for Client's Methods](#documentation-for-clients-methods)
 - [Responses](#responses)
     - [Search](#search)
     - [Banner](#banner)
-    - [Term facet](#term--facet)
+    - [Term facet](#term-facet)
     - [Items](#items)
-    - [Status response](#status--response)
-- [Api Reference](#api--reference)
+    - [Status response](#status)
+- [API Reference](#api-reference)
 - [Tests](#tests)
 <!-- /TOC -->
 
@@ -163,7 +163,7 @@ $searchClient->clearCart($hashId, $sessionId);
 ]
 ```
 
-#### Banner
+### Banner
 ```php
 [
     'blank' => '(boolean) Display the banner link in a new window.'
@@ -175,7 +175,7 @@ $searchClient->clearCart($hashId, $sessionId);
 ]
 ```
 
-#### Term facet
+### Term facet
 ```php
 [
     'items' => '(array of Items)',
@@ -183,7 +183,7 @@ $searchClient->clearCart($hashId, $sessionId);
 ]
 ```
 
-#### Items
+### Items
 ```php
 [
     'count' => '(integer) number of elements',
@@ -191,7 +191,7 @@ $searchClient->clearCart($hashId, $sessionId);
 ]
 ```
 
-### Status response
+### Status
 ```php
 [
   'status' => 'registered'
