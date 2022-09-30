@@ -1,6 +1,5 @@
 {
   "name": "doofinder/php-doofinder",
-  "version": "6.2.0",
   "type": "library",
   "description": "Doofinder PHP API Client",
   "keywords": [
@@ -30,13 +29,19 @@
       "name": "Gabriel Lagunilla",
       "email": "gabriel@doofinder.com",
       "role": "Developer"
+    },
+    {
+      "name": "Carlos Axel Castex Gudiño",
+      "email": "carlos.castex@doofinder.com",
+      "role": "Developer"
     }
   ],
   "require": {
     "php": ">=5.6",
     "ext-curl": "*",
     "ext-json": "*",
-    "ext-dom": "*"
+    "ext-dom": "*",
+    "doofinder/doofinder": "^6.2"
   },
   "autoload": {
     "psr-4": {
@@ -52,8 +57,8 @@
     "phpunit/phpunit": "5.*"
   },
   "scripts": {
-    "remove-documentation" : "rm -rf doc/*",
-    "generate-documentation" : "php phpDocumentor.phar -d src/  -t doc/",
-    "tests" : "php ./vendor/bin/phpunit tests/"
+    "remove-documentation": "rm -rf doc/*",
+    "generate-documentation": "php phpDocumentor.phar -d src/  -t doc/",
+    "tests": "php ./vendor/bin/phpunit tests/"
   }
 }
