@@ -1,5 +1,4 @@
-name: PHP Composer
-
+name: CI
 on: [push, pull_request]
 
 permissions:
@@ -8,7 +7,12 @@ permissions:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ ubuntu-latest, windows-latest ]
+        php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4' ]
+    name: PHP ${{ matrix.php }} sample
 
     steps:
     - uses: actions/checkout@v3
@@ -26,11 +30,10 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      php_version: 5.6
       run: composer install --prefer-dist --no-progress
-
+ 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
-    # - name: Run test suite
-    #   run: composer run-script test
+    - name: Run test suite
+      run: vendor/bin/phpunit tests
