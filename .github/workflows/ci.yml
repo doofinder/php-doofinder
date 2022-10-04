@@ -1,16 +1,11 @@
 name: CI
-#on: [push, pull_request]
-on:
-  push:
-    branches:
-      - carlosaxel/a-team-70/php-doofinder-lib-update-to-use-v6
+on: [push, pull_request]
 
 jobs:
   build:
     name: PHP ${{ matrix.php }} Build
     runs-on: ${{ matrix.operating-system }}
     strategy:
-      fast_finish: true
       matrix:
         operating-system: [ ubuntu-latest ]
         php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4' ]
@@ -39,7 +34,6 @@ jobs:
     name: PHP ${{ matrix.php }} Unit Tests
     runs-on: ${{ matrix.operating-system }}
     strategy:
-      fast_finish: true
       matrix:
         operating-system: [ ubuntu-latest ]
         php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4' ]
