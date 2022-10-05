@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b1a405946cd4835a5125939f0494f356",
+    "content-hash": "434863a07b669a20040a476680387872",
     "packages": [
         {
             "name": "doofinder/doofinder",
