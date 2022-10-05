@@ -4,7 +4,7 @@ namespace Doofinder\Search;
 
 use Doofinder\Configuration;
 use Doofinder\Search\Resources\Search;
-use Doofinder\Search\Resources\Stat;
+use Doofinder\Search\Resources\Stats;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpClient;
 use Doofinder\Shared\Utils\ErrorHandler;
@@ -21,14 +21,14 @@ class SearchClient
     private $searchResource;
 
     /**
-     * @var Stat
+     * @var Stats
      */
-    private $statResource;
+    private $statsResource;
 
-    public function __construct(Search $searchResource, Stat $statResource)
+    public function __construct(Search $searchResource, Stats $statsResource)
     {
         $this->searchResource = $searchResource;
-        $this->statResource = $statResource;
+        $this->statsResource = $statsResource;
     }
 
     /**
@@ -41,9 +41,9 @@ class SearchClient
         $config = Configuration::create($host, $token);
         $httpClient = new HttpClient();
         $searchResource = Search::create($httpClient, $config);
-        $statResource = Stat::create($httpClient, $config);
+        $statsResource = Stats::create($httpClient, $config);
 
-        return new self($searchResource, $statResource);
+        return new self($searchResource, $statsResource);
     }
 
     /**
@@ -91,7 +91,7 @@ class SearchClient
     public function initSession($hashId, $sessionId)
     {
         try {
-            return $this->statResource->initSession($hashId, $sessionId);
+            return $this->statsResource->initSession($hashId, $sessionId);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
@@ -110,7 +110,7 @@ class SearchClient
     public function logRedirection($hashId, $sessionId, $id, $query = null)
     {
         try {
-            return $this->statResource->logRedirection($hashId, $sessionId, $id, $query);
+            return $this->statsResource->logRedirection($hashId, $sessionId, $id, $query);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
@@ -129,7 +129,7 @@ class SearchClient
     public function logBanner($hashId, $sessionId, $id, $query = null)
     {
         try {
-            return $this->statResource->logBanner($hashId, $sessionId, $id, $query);
+            return $this->statsResource->logBanner($hashId, $sessionId, $id, $query);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
@@ -146,7 +146,7 @@ class SearchClient
     public function logCheckout($hashId, $sessionId)
     {
         try {
-            return $this->statResource->logCheckout($hashId, $sessionId);
+            return $this->statsResource->logCheckout($hashId, $sessionId);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
@@ -166,7 +166,7 @@ class SearchClient
     public function logClick($hashId, $sessionId, $itemId, $query = null)
     {
         try {
-            return $this->statResource->logClick($hashId, $sessionId, $itemId, $query);
+            return $this->statsResource->logClick($hashId, $sessionId, $itemId, $query);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
@@ -189,7 +189,7 @@ class SearchClient
     public function logAddToCart($hashId, $sessionId, $amount, $itemId, $indexId, $price, $title)
     {
         try {
-            return $this->statResource->logAddToCart($hashId, $sessionId, $amount, $itemId, $indexId, $price, $title);
+            return $this->statsResource->logAddToCart($hashId, $sessionId, $amount, $itemId, $indexId, $price, $title);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
@@ -210,7 +210,7 @@ class SearchClient
     public function logRemoveFromCart($hashId, $sessionId, $amount, $itemId, $indexId)
     {
         try {
-            return $this->statResource->logRemoveFromCart($hashId, $sessionId, $amount, $itemId, $indexId);
+            return $this->statsResource->logRemoveFromCart($hashId, $sessionId, $amount, $itemId, $indexId);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
@@ -227,7 +227,7 @@ class SearchClient
     public function clearCart($hashId, $sessionId)
     {
         try {
-            return $this->statResource->clearCart($hashId, $sessionId);
+            return $this->statsResource->clearCart($hashId, $sessionId);
         } catch (ApiException $e) {
             throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }

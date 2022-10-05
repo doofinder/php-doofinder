@@ -1,48 +1,69 @@
-# Doofinder Management API
-
-Doofinder's management API allows you to perform the same administrative tasks you can do on your search engines using the Doofinder control panel, directly from your code.
-
-- API version: 2.0
+# Official PHP Search Client for Doofinder
 
 For more information, please visit [https://doofinder.com/support](https://app.doofinder.com/api/v2/)
 
 <!-- TOC depthFrom:2 -->
 
 - [Requirements](#requirements)
-- [Installation & Usage](#installation--usage)
-  - [Composer](#composer)
-  - [Manual Installation](#manual-installation)
+- [Installation & Usage](#installation-usage)
+  - [Download Method](#download-method)
+  - [Using Composer](#using-composer)
+  - [Authorization](#authorization)
+- [Quick & Dirty](#quick-dirty)
+  - [Search](#search) 
+  - [Documentation for Client's Methods](#documentation-for-clients-methods)
+- [Responses](#responses)
+    - [Search](#search)
+    - [Banner](#banner)
+    - [Term facet](#term-facet)
+    - [Items](#items)
+    - [Status response](#status)
+- [API Reference](#api-reference)
 - [Tests](#tests)
-- [Quick & Dirty](#quick--dirty)
-- [Documentation](#documentation-for-clients-methods)
-
 <!-- /TOC -->
 
 ## Requirements
 
-PHP 5.6 and later
+Requires PHP 5.6 or later. Not tested in previous versions.
 
 ## Installation & Usage
-### Composer
+To install the library you can download it from the project's [releases](https://github.com/doofinder/php-doofinder/releases) page or use [Composer](https://packagist.org/packages/doofinder/doofinder).
 
-To install the bindings via [Composer](http://getcomposer.org/), run the following:
 
-`composer install`
 
-### Manual Installation
+### Download Method
 
-Download the files and include `autoload.php`:
+Include the provided autoload.php file and use:
 
 ```php
     require_once('/path/to/php-doofinder/vendor/autoload.php');
 ```
 
-## Tests
+### Using Composer
 
-To run the unit tests:
+Add Doofinder to your `composer.json` file by running:
 
+```bash
+$ composer require doofinder/doofinder
 ```
-composer tests
+If you're already using composer your autoload.php file will be updated. If not, a new one will be generated and you will have to include it:
+
+```php
+<?php
+require_once dirname(__FILE__)."/vendor/autoload.php";
+
+use \Doofinder\Search\Client as SearchClient;
+
+$client = new SearchClient(HASHID, API_KEY);
+```
+
+
+## Authorization
+We use Api token in http header for authenticate requests.
+```
+{
+  "Authorization" : "Token {my_api_token}"
+}
 ```
 
 ## Quick & Dirty
@@ -129,7 +150,8 @@ $searchClient->clearCart($hashId, $sessionId);
 | **logRemoveFromCart** | Removes an amount from the given item in the cart                                           | [Status response](#status-response) |
 | **clearCart**         | his call will erase completely a cart identified by the pair of hashid and session ID       | [Status response](#status-response) |
 
-### Search response
+## Responses
+### Search
 ```php
 [
   'banner' => 'Banner response for a query search.',
@@ -141,7 +163,7 @@ $searchClient->clearCart($hashId, $sessionId);
 ]
 ```
 
-#### Banner
+### Banner
 ```php
 [
     'blank' => '(boolean) Display the banner link in a new window.'
@@ -153,7 +175,7 @@ $searchClient->clearCart($hashId, $sessionId);
 ]
 ```
 
-#### Term facet
+### Term facet
 ```php
 [
     'items' => '(array of Items)',
@@ -161,7 +183,7 @@ $searchClient->clearCart($hashId, $sessionId);
 ]
 ```
 
-#### Items
+### Items
 ```php
 [
     'count' => '(integer) number of elements',
@@ -169,17 +191,61 @@ $searchClient->clearCart($hashId, $sessionId);
 ]
 ```
 
-### Status response
+### Status
 ```php
 [
   'status' => 'registered'
 ]
 ```
 
-## Authorization
-We use Api token in http header for authenticate requests.
+## API reference
+
+#### `\Doofinder\Search\Client`
+
+```php
+$client->searchParams($params, $options);                               // Import search params from a request into an array
+$client->dumpParams($options);                                          // Export latest search params in client into an array
+$client->qs();                                                          // Export latest search params in client to a string
+
+$client->search($params);                                               // Perform search
+$client->getNextPage();                                                 // Perform a search for the next page of results
+$client->getPreviousPage();                                             // Perform a search for the previous page of results
+
+$client->getSearchParam($paramName, $defaultValue);                     // Get a search parameter from the client for the latest search done
+
+$client->createSessionId();                                             // Create a hash to be used as session id
+$client->registerSession($sessionId, $hashid);                          // Initializes session for the search client
+$client->registerClick($sessionId, $hashid, $id, $options);             // Register a click in Doofinder
+$client->registerCheckout($sessionId, $hashid);                         // Register a checkout in Doofinder
+$client->registerImageClick($sessionId, $hashid, $imageId);             // Register a banner click in Doofinder
+$client->registerRedirection($sessionId, $hashid,
+                             $redirectionId, $link, $options);          // Register a redirection in Doofinder
+
+$client->addToCart($sessionId, $hashid, $id, $amount, $options);        // Add an amount of item to the cart in the current session
+$client->removeFromCart($sessionId, $hashid, $id, $amount, $options);   // Remove an amount of item from the cart in the current session
+$client->clearCart($sessionId, $hashid);                                // Clear the cart in the current session
+
+$client->setCustomHeaders($headers);                                    // Add custom headers to all requests
 ```
-{
-  "Authorization" : "Token {my_api_token}"
-}
+
+#### `\Doofinder\Search\Results`
+
+```php
+$results->getProperty($propertyName); // Get the property $propertyName
+$results->getResults();               // Get results
+$results->getFacetsNames();           // Array with facet names
+$results->getFacet($facetName);       // Obtain search results for facet $facetName
+$results->getFacets();                // All facets
+$results->getAppliedFilters();        // Filters that have been applied to obtain these results
+$results->isOk();                     // Checks if all went OK
+$results->status;                     // Account status info. 'success', 'exhausted', 'notfound'
+```
+
+
+## Tests
+
+To run the unit tests:
+
+```
+composer tests
 ```

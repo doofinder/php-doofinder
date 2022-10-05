@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Search\Resources;
 
-use Doofinder\Search\Resources\Stat;
+use Doofinder\Search\Resources\Stats;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpResponse;
 use Doofinder\Shared\HttpStatusCode;
@@ -14,7 +14,7 @@ class StatTest extends BaseResourceTest
 {
     private function createSut()
     {
-        return Stat::create($this->httpClient, $this->config);
+        return Stats::create($this->httpClient, $this->config);
     }
 
     private function getUrl($hashId)
