@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [7.0.0] - 2022-10-06
+### Changed
+- Tests changed.
+    - Travis CI tests enhancements deleted
+    - Github CI tests implemented
+- Client for Search API v6.
+
 ## [6.1.2] - 2020-10-20
 ### Changed
 - Added response body to error classes.

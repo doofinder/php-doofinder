@@ -1,719 +1,689 @@
 <?php
-/**
- * Class with all the capabilities described in the API
- *
- * see https://redocly.github.io/redoc/?url=https://app.doofinder.com/api/v2/swagger.json#tag/SearchEngines
- */
 
 namespace Doofinder\Management;
 
-use Doofinder\Management\Errors\Utils;
-use DoofinderManagement\Api\SearchEnginesApi;
-use DoofinderManagement\Api\ItemsApi;
-use DoofinderManagement\Api\IndicesApi;
-use DoofinderManagement\Configuration;
-use DoofinderManagement\ApiException;
-use GuzzleHttp\Client;
+use Doofinder\Configuration;
+use Doofinder\Management\Resources\Index;
+use Doofinder\Management\Resources\Item;
+use Doofinder\Management\Resources\SearchEngine;
+use Doofinder\Shared\Exceptions\ApiException;
+use Doofinder\Shared\HttpClient;
+use Doofinder\Shared\Interfaces\HttpResponseInterface;
+use Doofinder\Shared\Utils\ErrorHandler;
 
-
-class ManagementClient {
-    protected $config = null;
-    protected $client = null;
-    protected $host = null;
-    protected $token = null;
-
-    protected $searchEnginesClient = null;
-    protected $ItemsClient = null;
-    protected $IndicesClient = null;
-  
+/**
+ * This class is used to do management actions against search engines, index and items through calling an API.
+ */
+class ManagementClient
+{
     /**
-     * Create a new ManagementClient instance
-     * 
-     * @param Array $credentials. (required)
-     * @return ManagementClient instance created.
+     * @var SearchEngine
      */
-    public function __construct($host, $token) {
-      $this->config = Configuration::getDefaultConfiguration();
-      $this->client = new Client();
-      $this->setHost($host);
-      $this->setApiKey($token);
+    private $searchEnginesResource;
 
-      $this->searchEngineClient = new SearchEnginesApi(
-        $this->client,
-        $this->config
-      );
-      
-      $this->ItemsClient = new ItemsApi(
-        $this->client,
-        $this->config
-      );
-      
-      $this->IndicesClient = new IndicesApi(
-        $this->client,
-        $this->config
-      );
-    }
+    /**
+     * @var Item
+     */
+    private $itemsResource;
 
-    public function getConfig() {
-        return $this->config;
-    }
+    /**
+     * @var Index
+     */
+    private $indexResource;
 
-    public function setApiKey($value) {
-        $this->config->setApiKey('Authorization', $value);
-        $this->config->setApiKeyPrefix('Authorization', 'Token');
-    }
-
-    public function setBearerToken($value) {
-        $this->config->setApiKey('Authorization', $value);
-        $this->config->setApiKeyPrefix('Authorization', 'Bearer');
-    }
-
-    public function setHost($host) {
-        $this->config->setHost($host);
+    public function __construct(
+        SearchEngine $searchEnginesResource,
+        Item $itemsResource,
+        Index $indexesResource
+    ) {
+        $this->searchEnginesResource = $searchEnginesResource;
+        $this->itemsResource = $itemsResource;
+        $this->indexResource = $indexesResource;
     }
 
     /**
-     * Process all search engine's data sources.
-     * 
-     * @param string $hashid Unique id of a search engine. (required)
-     * 
-     * @return \DoofinderManagement\Model\ProcessingTask
+     * @param string $host
+     * @param string $token
+     * @param string $userId
+     * @return ManagementClient
      */
-    public function processSearchEngine($hashid) {
+    public static function create($host, $token, $userId)
+    {
+        $config = Configuration::create($host, $token, $userId);
+        $httpClient = new HttpClient();
+
+        return new self(
+            SearchEngine::create($httpClient, $config),
+            Item::create($httpClient, $config),
+            Index::create($httpClient, $config)
+        );
+    }
+
+    /**
+     * Creates a new search engine with the provided data. It is not possible to run searches against the new search
+     * engine as it does not have any index yet. You must create an index belonging to the new search engine to be able
+     * to make searches.
+     * @example $params = [
+     *  'currency' => string,
+     *  'language' => string,
+     *  'name' => string,
+     *  'site_url' => string|null,
+     *  'stopwords' => boolean Default: false,
+     *  'platform' => string,
+     *  'has_grouping' => boolean,
+     * ]
+     *
+     * @param array<string, mixed> $params = [
+     *  'currency' => string, // Default: "EUR" ("AED", "ARS", "AUD", "BAM", "BDT", "BGN", "BOB", "BRL", "BYN", "CAD", "CHF", "CLP", "CNY", "COP", "CZK", "DKK", "DOP", "EGP", "EUR", "GBP", "HKD", "HRK", "HUF", "IDR", "ILS", "INR", "IRR", "ISK", "JPY", "KRW", "KWD", "MXN", "MYR", "NOK", "NZD", "PEN", "PLN", "RON", "RSD", "RUB", "SAR", "SEK", "TRY", "TWD", "UAH", "USD", "VEF", "VND", "XPF", "ZAR")
+     *  'language' => string, // ("ar", "hy", "eu", "pt-br", "bg", "ca", "cs", "da", "nl", "en", "fi", "fr", "de", "el", "hi", "hu", "id", "it", "no", "pt", "ro", "ru", "es", "sv", "tr"),
+     *  'name' => string,
+     *  'site_url' => string|null,
+     *  'stopwords' => boolean Default: false,
+     *  'platform' => string, // Default: ("api", "api", "shopify", "woocommerce", "bigcommerce", "crawler", "ecommerce", "ekm", "file", "magento", "magento2", "opencart", "oscommerce", "prestashop", "shopify"),
+     *  'has_grouping' => boolean, // Default: false
+     * ]
+     * @return HttpResponseInterface
+     * @throws ApiException
+     *
+     */
+    public function createSearchEngine(array $params)
+    {
         try {
-            return $this->searchEngineClient->process($hashid);
+            return $this->searchEnginesResource->createSearchEngine($params);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
-        }
-    }
-  
-    /**
-     * Gets the status of the process task.
-     * 
-     * @param string $hashid Unique id of a search engine. (required)
-     * 
-     * @return \DoofinderManagement\Model\ProcessingTask
-     */
-    public function getProcessStatus($hashid) {
-        try {
-            return $this->searchEngineClient->processStatus($hashid);
-        } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Create SearchEngine
-     * 
-     * @param object $body attributes to create a Search Engine. (required)
-     * 
-     * @return \DoofinderManagement\Model\SearchEngine
-     */
-    public function createSearchEngine($body) {
-        try {
-            return $this->searchEngineClient->searchEngineCreate($body);
-        } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
-        }
-    }
-    
-    /**
-     * Get SearchEngine
+     * Given a hashId and data updates a search engine.
      *
-     * @param string $hashid Unique id of a search engine. (required)
-     * 
-     * @return \DoofinderManagement\Model\SearchEngine
+     * @param string $hashId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function getSearchEngine($hashid) {
+    public function updateSearchEngine($hashId, array $params)
+    {
         try {
-            return $this->searchEngineClient->searchEngineShow($hashid);
+            return $this->searchEnginesResource->updateSearchEngine($hashId, $params);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
-        }
-    }
-    
-    /**
-     * Delete SearchEngine
-     *
-     * @param string $hashid Unique id of a search engine. (required)
-     */
-    public function deleteSearchEngine($hashid) {
-        try {
-            $this->searchEngineClient->searchEngineDelete($hashid);
-        } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Update SearchEngine
+     * Given a hashId gets a search engine details.
      *
-     * @param  object $body (required)
-     * @param  string $hashid Unique id of a search engine. (required)
-     * 
-     * @return \DoofinderManagement\Model\SearchEngine
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function updateSearchEngine($hashid, $body){
+    public function getSearchEngine($hashId)
+    {
         try {
-            return $this->searchEngineClient->searchEngineUpdate($body, $hashid);
+            return $this->searchEnginesResource->getSearchEngine($hashId);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * List SearchEngines
+     * Lists all user's search engines.
      *
-     * @return \DoofinderManagement\Model\SearchEngines
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function listSearchEngines(){
+    public function listSearchEngines()
+    {
         try {
-            return $this->searchEngineClient->searchEngineList();
+            return $this->searchEnginesResource->listSearchEngines();
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Return the status of the current reindexing task.
-     * 
-     * @param string $hashid Unique id of a search engine. (required)
-     * @param string $name Name of an index. (required)
-     * @return \DoofinderManagement\Model\ReindexingTask
-     */
-    public function returnReindexingStatus($hashid, $name) {
-        try {
-            return $this->IndicesClient->getReindexingStatus($hashid, $name);
-        } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
-        }
-    }
-    
-    /**
-     * Creates an Index.
-     * 
-     * @param string $hashid Unique id of a search engine. (required)
-     * @param object $body attributes to create an Index. (required)
-     * @return \DoofinderManagement\Model\Index
-     */
-    public function createIndex($hashid, $body) {
-        try {
-            return $this->IndicesClient->indexCreate($body, $hashid);
-        } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
-        }
-    }
-    
-    /**
-     * Deletes an Index.
+     * Given a hashId deletes a search engine.
      *
-     * @param string $hashid Unique id of a search engine. (required)
-     * @param string $name Name of an index. (required)
-     * @return void
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function deleteIndex($hashid, $name) {
+    public function deleteSearchEngine($hashId)
+    {
         try {
-            $this->IndicesClient->indexDelete($hashid, $name);
+            return $this->searchEnginesResource->deleteSearchEngine($hashId);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * List Indices
-     * 
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @return \DoofinderManagement\Model\Indices
-     */
-    public function listIndices($hashid){
-        try {
-            return $this->IndicesClient->indexIndex($hashid);
-        } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
-        }
-    }
-    
-    /**
-     * Gets an Index
+     * Given a hashId and index data, creates a new index
      *
-     * @param string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * @return \DoofinderManagement\Model\Index
+     * @param string $hashId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function getIndex($hashid, $name) {
+    public function createIndex($hashId, $params)
+    {
         try {
-            return $this->IndicesClient->indexShow($hashid, $name);
+            return $this->indexResource->createIndex($hashId, $params);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
-        }
-    }
-  
-    /**
-     * Updates Index
-     *
-     * @param  object $body body (required)
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * 
-     * @return \DoofinderManagement\Model\Index
-     */
-    public function updateIndex($hashid, $name, $body){
-        try {
-            return $this->IndicesClient->indexUpdate($body, $hashid, $name);
-        } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
-        }
-    }
-  
-    /**
-     * Reindex the content of the real index into the temporary one.
-     *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * 
-     * @return object
-     */
-    public function reindex($hashid, $name){
-        try {
-            return $this->IndicesClient->reindexToTemp($hashid, $name);
-        } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
-        }
-    }
-  
-    /**
-     * Replace the real index with the temporary one.
-     *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * 
-     * @return object
-     */
-    public function replace($hashid, $name){
-        try {
-            return $this->IndicesClient->replaceByTemp($hashid, $name);
-        } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
-        }
-    }
-  
-    /**
-     * Creates a temporary index.
-     *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * 
-     * @return object
-     */
-    public function createTemporaryIndex($hashid, $name){
-        try {
-            return $this->IndicesClient->temporaryIndexCreate($hashid, $name);
-        } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
-        }
-    }
-  
-    /**
-     * Deletes a temporary index.
-     *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * 
-     * @return void
-     */
-    public function deleteTemporaryIndex($hashid, $name){
-        try {
-            return $this->IndicesClient->temporaryIndexDelete($hashid, $name);
-        } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Creates an item.
-     * 
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * @param  map[string,object] $body body (required)
-     * 
-     * @return \DoofinderManagement\Model\Item
+     * Given a hashId, indexName and data updates an index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function createItem($hashid, $name, $body) {
+    public function updateIndex($hashId, $indexName, $params)
+    {
         try {
-            return $this->ItemsClient->itemCreate($body, $hashid, $name);
+            return $this->indexResource->updateIndex($hashId, $indexName, $params);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
-        }
-    }
-  
-    /**
-     * Deletes an item from the index.
-     * 
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $item_id Unique identifier of an item inside an index. (required)
-     * @param  string $name Name of an index. (required)
-     * 
-     * @return void
-     */
-    public function deleteItem($hashid, $item_id, $name) {
-        try {
-            return $this->ItemsClient->itemDelete($hashid, $name, $item_id);
-        } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Scrolls through all index items
+     * Given a hashId and indexName, it gets an index.
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * @param  string $scroll_id Unique identifier for the scroll. The scroll saves a "pointer" to the last fetched page so each successive request to the same scroll_id return a new page. (optional)
-     * @param  int $rpp _Results per page_. How many items are fetched per page/request. (optional)
- 
-    * 
-    * @return \DoofinderManagement\Model\Scroller
-    */
-    public function scrollsItems($hashid, $name, $scroll_id = null, $rpp = null) {
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getIndex($hashId, $indexName)
+    {
         try {
-            return $this->ItemsClient->itemIndex($hashid, $name, $scroll_id, $rpp);
+            return $this->indexResource->getIndex($hashId, $indexName);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Gets an item from the index.
+     * Given a hashId, list index's search engine.
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $item_id Unique identifier of an item inside an index. (required)
-     * @param  string $name Name of an index. (required)
-     *
-     * @return \DoofinderManagement\Model\Item
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function getItem($hashid, $item_id, $name) {
+    public function listIndexes($hashId)
+    {
         try {
-            return $this->ItemsClient->itemShow($hashid, $name, $item_id);
+            return $this->indexResource->listIndexes($hashId);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Creates an item in the temporal index.
+     * Given a hashId and indexName, removes an index
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * @param  map[string,object] $body body (required)
-     *
-     * @return \DoofinderManagement\Model\Item
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function createTempItem($hashid, $name, $body) {
+    public function deleteIndex($hashId, $indexName)
+    {
         try {
-            return $this->ItemsClient->itemTempCreate($body, $hashid, $name);
+            return $this->indexResource->deleteIndex($hashId, $indexName);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Deletes an item in the temporal index.
+     * Given a hashId, index id and item data, creates a new item
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $item_id Unique identifier of an item inside an index. (required)
-     * @param  string $name Name of an index. (required)
-     *
-     * @return void
+     * @param string $hashId
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function deleteTempItem($hashid, $item_id, $name) {
+    public function createItem($hashId, $itemId, $params)
+    {
         try {
-            return $this->ItemsClient->itemTempDelete($hashid, $name, $item_id);
+            return $this->itemsResource->createItem($hashId, $itemId, $params);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Gets an item from the temporal index.
+     * Given a hashId, indexName, item id and data updates an item.
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $item_id Unique identifier of an item inside an index. (required)
-     * @param  string $name Name of an index. (required)
-     *
-     * @return \DoofinderManagement\Model\Item
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function getTempItem($hashid, $item_id, $name) {
+    public function updateItem($hashId, $indexName, $itemId, $params)
+    {
         try {
-            return $this->ItemsClient->itemTempShow($hashid, $name, $item_id);
+            return $this->itemsResource->updateItem($hashId, $indexName, $itemId, $params);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Partially updates an item in the temporal index.
+     * Given a hashId, indexName and item id, it gets an item.
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $item_id Unique identifier of an item inside an index. (required)
-     * @param  string $name Name of an index. (required)
-     * @param  map[string,object] $body body (required)
-     *
-     * @return \DoofinderManagement\Model\Item
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function updateTempItem($hashid, $item_id, $name, $body) {
+    public function getItem($hashId, $indexName, $itemId)
+    {
         try {
-            return $this->ItemsClient->itemTempUpdate($body, $hashid, $name, $item_id);
+            return $this->itemsResource->getItem($hashId, $indexName, $itemId);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Partially updates an item in the index.
+     * Given a hashId and index name, scrolls index
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $item_id Unique identifier of an item inside an index. (required)
-     * @param  string $name Name of an index. (required)
-     * @param  map[string,object] $body body (required)
-     *
-     * @return \DoofinderManagement\Model\Item
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function updateItem($hashid, $item_id, $name, $body) {
+    public function scrollIndex($hashId, $indexName, $params = [])
+    {
         try {
-            return $this->ItemsClient->itemUpdate($body, $hashid, $name, $item_id);
+            return $this->itemsResource->scrollIndex($hashId, $indexName, $params);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Creates a bulk of item in the index.
+     * Given a hashId, indexName and item id, removes an item
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * @param  \DoofinderManagement\Model\ItemsIdsInner[] $body body (required)
-     *
-     * @return \DoofinderManagement\Model\BulkResult
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function createBulk($hashid, $name, $body) {
+    public function deleteItem($hashId, $indexName, $itemId)
+    {
         try {
-            return $this->ItemsClient->itemsBulkCreate($body, $hashid, $name);
+            return $this->itemsResource->deleteItem($hashId, $indexName, $itemId);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Deletes a bulk of items from the index.
+     * Given a hashId and index name, creates a new temporary index
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * @param  \DoofinderManagement\Model\Item[] $body body (required)
-     *
-     * @return \DoofinderManagement\Model\BulkResult
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function deleteBulk($hashid, $name, $body) {
+    public function createTemporaryIndex($hashId, $indexName)
+    {
         try {
-            return $this->ItemsClient->itemsBulkDelete($body, $hashid, $name);
+            return $this->indexResource->createTemporaryIndex($hashId, $indexName);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Partial updates a bulk of items in the index.
+     * Given a hashId and index name, deletes a temporary index
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * @param  \DoofinderManagement\Model\Item[] $body body (required)
-     *
-     * @return \DoofinderManagement\Model\BulkResult
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function updateBulk($hashid, $name, $body) {
+    public function deleteTemporaryIndex($hashId, $indexName)
+    {
         try {
-            return $this->ItemsClient->itemsBulkUpdate($body, $hashid, $name);
+            return $this->indexResource->deleteTemporaryIndex($hashId, $indexName);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Creates a bulk of items in the temporal index.
+     * Given a hashId and index name, replaces the content of the current "production" index with the content of the temporary one
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * @param  \DoofinderManagement\Model\Item[] $body body (required)
-     *
-     * @return \DoofinderManagement\Model\BulkResult
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function createTempBulk($hashid, $name, $body) {
+    public function replaceIndex($hashId, $indexName)
+    {
         try {
-            return $this->ItemsClient->itemsTempBulkCreate($body, $hashid, $name);
+            return $this->indexResource->replaceIndex($hashId, $indexName);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Deletes items in bulk in the temporal index.
+     * Given a hashId and index name, reindex all items from real and index them onto the temporary.
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * @param  \DoofinderManagement\Model\ItemsIdsInner[] $body body (required)
-     *
-     * @return \DoofinderManagement\Model\BulkResult
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function deleteTempBulk($hashid, $name, $body) {
+    public function reindexIntoTemporary($hashId, $indexName)
+    {
         try {
-            return $this->ItemsClient->itemsTempBulkDelete($body, $hashid, $name);
+            return $this->indexResource->reindexIntoTemporary($hashId, $indexName);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
 
     /**
-     * Partial updates a bulk of items in the temporal index.
+     * Given a hashId and index name, returns the status of the last scheduled reindexing tasks.
      *
-     * @param  string $hashid Unique id of a search engine. (required)
-     * @param  string $name Name of an index. (required)
-     * @param  \DoofinderManagement\Model\Item[] $body body (required)
-     *
-     * @return \DoofinderManagement\Model\BulkResult
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
      */
-    public function updateTempBulk($hashid, $name, $body) {
+    public function reindexTaskStatus($hashId, $indexName)
+    {
         try {
-            return $this->ItemsClient->itemsTempBulkUpdate($body, $hashid, $name);
+            return $this->indexResource->reindexTaskStatus($hashId, $indexName);
         } catch (ApiException $e) {
-            $statusCode = $e->getCode();
-            $contentResponse = $e->getResponseBody();
-            $error = Utils::handleErrors($statusCode, $contentResponse, $e);
-            
-            throw $error;
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
         }
     }
-  }
-  
+
+    /**
+     * Given a hashId schedules a task for processing all search engine's data sources.
+     *
+     * @param string $hashId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function processSearchEngine($hashId, array $params = [])
+    {
+        try {
+            return $this->searchEnginesResource->processSearchEngine($hashId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId gets the status of the last process task.
+     *
+     * @param string $hashId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getSearchEngineProcessStatus($hashId)
+    {
+        try {
+            return $this->searchEnginesResource->getSearchEngineProcessStatus($hashId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, index id and item data, creates a new item in temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createItemInTemporalIndex($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->createItemInTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName, item id and data updates an item on temporal index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItemInTemporalIndex($hashId, $indexName, $itemId, $params)
+    {
+        try {
+            return $this->itemsResource->updateItemInTemporalIndex($hashId, $indexName, $itemId, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName and item id, it gets an item from temporal index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function getItemFromTemporalIndex($hashId, $indexName, $itemId)
+    {
+        try {
+            return $this->itemsResource->getItemFromTemporalIndex($hashId, $indexName, $itemId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName and item id, removes an item from temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param string $itemId
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteItemFromTemporalIndex($hashId, $indexName, $itemId)
+    {
+        try {
+            return $this->itemsResource->deleteItemFromTemporalIndex($hashId, $indexName, $itemId);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName and params, it gets an item list from temporal index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function findItemsFromTemporalIndex($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->findItemsFromTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, indexName and params, it gets an item list.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function findItems($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->findItems($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId and indexName, returns the total number of items in the index.
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function countItems($hashId, $indexName)
+    {
+        try {
+            return $this->itemsResource->countItems($hashId, $indexName);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, index id and items data, creates new items in temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createItemsInBulkInTemporalIndex($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->createItemsInBulkInTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, index id and items data, updates items in temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItemsInBulkInTemporalIndex($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->updateItemsInBulkInTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, index id and items id, deletes items in temporal index
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteItemsInBulkInTemporalIndex($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->deleteItemsInBulkInTemporalIndex($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, index id and items data, creates new items
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function createItemsInBulk($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->createItemsInBulk($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, index id and items data, updates items
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function updateItemsInBulk($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->updateItemsInBulk($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Given a hashId, index id and items id, deletes items
+     *
+     * @param string $hashId
+     * @param string $indexName
+     * @param array $params
+     * @return HttpResponseInterface
+     * @throws ApiException
+     */
+    public function deleteItemsInBulk($hashId, $indexName, $params)
+    {
+        try {
+            return $this->itemsResource->deleteItemsInBulk($hashId, $indexName, $params);
+        } catch (ApiException $e) {
+            throw ErrorHandler::create($e->getCode(), $e->getMessage(), $e);
+        }
+    }
+}

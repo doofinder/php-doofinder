@@ -1,0 +1,49 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: PHP ${{ matrix.php }} Build
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ ubuntu-latest ]
+        php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4' ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Validate composer.json and composer.lock
+        id: composer-validate
+        run: composer validate --no-check-all # Do not emit a warning if requirements in composer.json use unbound or overly strict version constraints.
+      
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php- 
+      
+      - name: Install dependencies
+        id: composer-install
+        run: composer install --prefer-dist --no-progress --ignore-platform-reqs
+
+  php-unit-tests:
+    name: PHP ${{ matrix.php }} Unit Tests
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ ubuntu-latest ]
+        php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4' ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install composer dependencies
+        run: composer install --prefer-dist --no-progress --ignore-platform-reqs
+
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit tests
