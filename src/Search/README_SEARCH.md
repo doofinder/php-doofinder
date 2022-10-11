@@ -1,6 +1,6 @@
 # Official PHP Search Client for Doofinder
 
-For more information, please visit [https://doofinder.com/support](https://app.doofinder.com/api/v2/)
+For more information, please visit the documentation: [Search-API](https://docs.doofinder.com/#section/Search-API)
 
 <!-- TOC depthFrom:2 -->
 
@@ -73,7 +73,7 @@ We use Api token in http header for authenticate requests.
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
-const HOST = 'https://eu1-api.doofinder.com';
+const HOST = 'https://eu1-search.doofinder.com';
 const TOKEN = 'your_api_token';
 
 $searchClient = \Doofinder\Search\SearchClient::create(

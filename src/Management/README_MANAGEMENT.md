@@ -4,7 +4,7 @@ Doofinder's management API allows you to perform the same administrative tasks y
 
 - API version: 2.0
 
-For more information, please visit [https://doofinder.com/support](https://app.doofinder.com/api/v2/)
+For more information, please visit the documentation: [Management API](https://docs.doofinder.com/#section/Management-API)
 
 <!-- TOC depthFrom:2 -->
 
