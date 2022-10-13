@@ -35,12 +35,12 @@ class HttpClient implements HttpClientInterface
         curl_setopt($s, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($s, CURLOPT_HTTPHEADER, $this->getHeader($headers));
 
-        if (($response = curl_exec($s)) === false) {
+        if (($response = curl_exec($s)) !== false) {
+            $response = HttpResponse::create(curl_getinfo($s)['http_code'], $response);
+        } else {
             $error = curl_error($s);
             curl_close($s);
             throw new RequestException('curl_error', $error);
-        } else {
-            $response = HttpResponse::create(curl_getinfo($s)['http_code'], $response);
         }
 
         curl_close($s);
