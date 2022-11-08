@@ -1,64 +1,140 @@
-# Doofinder Management API
+# Official PHP client for the Doofinder Management API
 
 Doofinder's management API allows you to perform the same administrative tasks you can do on your search engines using the Doofinder control panel, directly from your code.
 
 - API version: 2.0
 
-For more information, please visit the documentation: [Management API](https://docs.doofinder.com/#section/Management-API)
+For more information, please visit the documentation: [Management API V2](https://docs.doofinder.com/api/management/v2/)
 
 <!-- TOC depthFrom:2 -->
 
 - [Requirements](#requirements)
 - [Installation & Usage](#installation--usage)
-    - [Composer](#composer)
+    - [Using Composer](#using-composer)
     - [Manual Installation](#manual-installation)
+- [Authorization](#authorization)
+  - [API Token](#api-token)
+  - [JKW](#jkw)
 - [Tests](#tests)
-- [Quick & Dirty](#quick--dirty)
-- [Documentation](#documentation-for-clients-methods)
+- [API for Search Engine](#search-engine)
+- [API for Index](#index)
+- [API for Items](#items)
+- [Responses](#responses)
+    - [Search Engine response](#search-engine-response)
+    - [Index response](#index-response)
+    - [Index Options response](#index-options-response)
+    - [Data Source response](#data-source-response)
+    - [Item response](#item-response)
+    - [Status response](#status-response)
 
 <!-- /TOC -->
 
 ## Requirements
 
-PHP 5.6 and later
+Requires PHP 5.6 or later. Not tested in previous versions.
 
 ## Installation & Usage
-### Composer
 
-To install the bindings via [Composer](http://getcomposer.org/), run the following:
+### Using Composer
 
-`composer install`
+You can also download the library using [Composer](https://packagist.org/packages/doofinder/doofinder). 
+
+Run this command to add the Doofinder library to your `composer.json` file:
+
+```bash
+composer require doofinder/doofinder
+```
+
+If you are already using Composer your `autoload.php` file will be updated. If not, a new one will be generated and you will have to include it:
+
+```php
+<?php
+require_once dirname(__FILE__)."/vendor/autoload.php";
+
+use \Doofinder\Management\ManagementClient;
+
+$client = new ManagementClient(HASHID, API_KEY, USER_ID);
+```
 
 ### Manual Installation
 
-Download the files and include `autoload.php`:
+To install the library you can download it from the [releases](https://github.com/doofinder/php-doofinder/releases) page of the project and include the `autoload.php` file provided to use it:
 
 ```php
-    require_once('/path/to/php-doofinder/vendor/autoload.php');
+require_once('/path/to/php-doofinder/vendor/autoload.php');
+```
+
+## Authorization
+
+To authenticate you need a Doofinder `API key`. If you don't have one you can generate it in the Doofinder Admin by going to your Account and then to API Keys, [here](https://app.doofinder.com/es/admin/api/).
+
+```plaintext
+ab46030xza33960aac71a10248489b6c26172f07
+```
+
+### API Token
+
+You can authenticate with the previous API key. The correct way to authenticate is to send a `HTTP Header` with the name `Authorization` and the value `Token {api-key}`.
+
+```bash
+{
+  "Authorization" : "Token {my_api_token}"
+}
+```
+
+For example, for the key shown above:
+
+```plaintext
+Authorization: Token ab46030xza33960aac71a10248489b6c26172f07
+```
+
+### JKW
+
+If you prefer you can authenticate with a [JSON Web Token](https://jwt.io/). The token must be signed with an API management key and there are some claims required in the JWT payload. These claims are:
+
+* `iat` (issued at): Creation datetime timestamp, i.e. the moment when the JWT was created.
+
+* `exp` (expiration time): Expiration datetime timestamp, i.e. the moment when the JWT is going to expire and will no longer be valid. The time span between issued and expiration dates must be shorter than a week.
+
+* `name`: Your user code. It is your unique identifier as doofinder user. You can find this code in your profile page in the Doofinder's administration panel.
+
+To authenticate using JWT you must send a `HTTP header` with the name `Authorization` and the value `Bearer {JWT-token}`.
+
+```bash
+{
+  "Authorization" : "Bearer {my_jwt_token}"
+}
+```
+
+For example:
+```plaintext
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlhdCI6MTUxNjIzOTAyMn0.QX_3HF-T2-vlvzGDbAzZyc1Cd-J9qROSes3bxlgB4uk
 ```
 
 ## Tests
 
 To run the unit tests:
 
-```
+```bash
 composer tests
 ```
 
-## Quick & Dirty
-### Search Engine
+## Search Engine
+
+All search engines CRUD operations, including handling data sources processing.
+
 ```php
 <?php
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
 const HOST = 'https://eu1-api.doofinder.com';
-const TOKEN = 'your_api_token';
+const API_KEY = 'your_api_token';
 const USER_ID = 'your_user_id';
 
 $managementClient = \Doofinder\Management\ManagementClient::create(
     HOST,
-    TOKEN,
+    API_KEY,
     USER_ID
 );
 
@@ -108,19 +184,34 @@ $managementClient->getSearchEngineProcessStatus($searchEngine->getHashid());
 $managementClient->deleteSearchEngine($searchEngine->getHashid());
 ```
 
-### Index
+### Documentation for Search Engine methods
+
+| Method | Description | Return type |
+|-|-|-|
+| **createSearchEngine** | Creates a search engine | [Search Engine response](#search-engine-response) |
+| **updateSearchEngine** | Updates a search engine | [Search Engine response](#search-engine-response) |
+| **getSearchEngine** | Gets a search engine | [Search Engine response](#search-engine-response) |
+| **listSearchEngines** | Gets a list of search engines | Array of [Search Engine response](#search-engine-response) |
+| **deleteSearchEngine** | Deletes a search engine | void |
+| **processSearchEngine** | Schedules a task for processing all search engine's data sources. | Array |
+| **getSearchEngineProcessStatus** | Gets the status of the last process task | Array |
+
+## Index
+
+All indices and temporary indices CRUD operations.
+
 ```php
 <?php
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
 const HOST = 'https://eu1-api.doofinder.com';
-const TOKEN = 'your_api_token';
+const API_KEY = 'your_api_token';
 const USER_ID = 'your_user_id';
 
 $managementClient = \Doofinder\Management\ManagementClient::create(
     HOST,
-    TOKEN,
+    API_KEY,
     USER_ID
 );
 
@@ -174,7 +265,7 @@ $managementClient->reindexIntoTemporary($searchEngine->getHashid(), $index->getN
 //// **** Reindex status ****
 $managementClient->reindexTaskStatus($searchEngine->getHashid(), $index->getName());
 
-// **** Reindex status ****
+// **** Replace status ****
 $managementClient->replaceIndex($searchEngine->getHashid(), $index->getName());
 
 // **** Deletes temporary index ****
@@ -184,19 +275,37 @@ $managementClient->deleteTemporaryIndex($searchEngine->getHashid(), $index->getN
 $managementClient->deleteIndex($searchEngine->getHashid(), $index->getName());
 ```
 
-### Items
+### Documentation for Index methods
+
+| Method | Description | Return type |
+|-|-|-|
+| **createIndex** | Creates an index | [Index response](#index-response) |
+| **updateIndex** | Updates an index | [Index response](#index-response) |
+| **getIndex** | Gets an index | [Index response](#index-response) |
+| **listIndexes** | Gets a list of index | Array of  [Index response](#index-response) |
+| **deleteIndex** | Deletes an index | void |
+| **createTemporaryIndex** | Creates a temporary index | [Status response](#status-response) |
+| **deleteTemporaryIndex** | Deletes a temporary index | void |
+| **replaceIndex** | Replaces an index with the temporary index | [Status response](#status-response) |
+| **reindexIntoTemporary** | Reindex between from production index to temporary one | [Status response](#status-response) |
+| **reindexTaskStatus** | Gets the status of the last scheduled reindexing tasks | Array |
+
+## Items
+
+Handling content of indices. Allows to retrieve and update the items of an index.
+
 ```php
 <?php
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
 const HOST = 'https://eu1-api.doofinder.com';
-const TOKEN = 'your_api_token';
+const API_KEY = 'your_api_token';
 const USER_ID = 'your_user_id';
 
 $managementClient = \Doofinder\Management\ManagementClient::create(
     HOST,
-    TOKEN,
+    API_KEY,
     USER_ID
 );
 
@@ -242,13 +351,12 @@ $managementClient->countItems($searchEngine->getHashid(), $index->getName());
 
 // **** Find items ****
 $idParams = [
-    [
-        'id' => 'this_is_my_item_id',
-    ]
+    ['id' => 'item_id'],
+    ['id' => 'other_item_id'],
 ];
 $response = $managementClient->findItems($searchEngine->getHashid(), $index->getName(), $idParams);
-/** @var \Doofinder\Management\Model\Item $item */
-$item = $response->getBody()[0]['item'];
+/** @var \Doofinder\Management\Model\Item[] $items */
+$items = $response->getBody();
 
 // **** Scroll index ****
 $scrollParams = [
@@ -300,9 +408,8 @@ $items = $response->getBody();
 
 // **** Delete items in bulk ****
 $itemParams = [
-    [
-        'id' => 'this_is_my_item_id_2',
-    ],
+    ['id' => 'this_is_my_item_id_1'],
+    ['id' => 'this_is_my_item_id_2']
 ];
 $managementClient->deleteItemsInBulk($searchEngine->getHashid(), $index->getName(), $itemParams);
 
@@ -371,50 +478,97 @@ $itemParams = [
 ];
 $managementClient->deleteItemsInBulkInTemporalIndex($searchEngine->getHashid(), $index->getName(), $itemParams);
 ```
-## Documentation for Client's Methods
 
-| Method                               | Description                                                                     | Return type                                                                |
-|--------------------------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| **createSearchEngine**               | Creates a search engine                                                         | [Doofinder\Management\Model\SearchEngine](Model/SearchEngine.php)          |
-| **updateSearchEngine**               | Updates a search engine                                                         | [Doofinder\Management\Model\SearchEngine](Model/SearchEngine.php)          |
-| **getSearchEngine**                  | Gets a search engine                                                            | [Doofinder\Management\Model\SearchEngine](Model/SearchEngine.php)          |
-| **listSearchEngines**                | Gets a list of search engines                                                   | Array of [Doofinder\Management\Model\SearchEngine](Model/SearchEngine.php) |
-| **deleteSearchEngine**               | Deletes a search engine                                                         | void                                                                       |
-| **processSearchEngine**              | Schedules a task for processing all search engine's data sources.               | Array                                                                      |
-| **getSearchEngineProcessStatus**     | Gets the status of the last process task                                        | Array                                                                      |
-| **createIndex**                      | Creates an index                                                                | [Doofinder\Management\Model\Index](Model/Index.php)                        |
-| **updateIndex**                      | Updates an index                                                                | [Doofinder\Management\Model\Index](Model/Index.php)                        |
-| **getIndex**                         | Gets an index                                                                   | [Doofinder\Management\Model\Index](Model/Index.php)                        |
-| **listIndexes**                      | Gets a list of index                                                            | Array of  [Doofinder\Management\Model\Index](Model/Index.php)              |
-| **deleteIndex**                      | Deletes an index                                                                | void                                                                       |
-| **createItem**                       | Creates an item                                                                 | [Doofinder\Management\Model\Item](Model/Item.php)                          |
-| **updateItem**                       | Updates an item                                                                 | [Doofinder\Management\Model\Item](Model/Item.php)                          |
-| **getItem**                          | Gets an item                                                                    | [Doofinder\Management\Model\Item](Model/Item.php)                          |
-| **scrollIndex**                      | Scrolls an index and return an item list                                        | Array                                                                      |
-| **deleteItem**                       | Deletes an item                                                                 | void                                                                       |
-| **createTemporaryIndex**             | Creates a temporary index                                                       | Array                                                                      |
-| **deleteTemporaryIndex**             | Deletes a temporary index                                                       | void                                                                       |
-| **replaceIndex**                     | Replaces an index with the temporary index content                              | Array                                                                      |
-| **reindexIntoTemporary**             | Reindex between from production index to temporary one                          | Array                                                                      |
-| **reindexTaskStatus**                | Gets the status of the last scheduled reindexing tasks                          | Array                                                                      |
-| **createItemInTemporalIndex**        | Creates an item with the data provided in the temporal index                    | [Doofinder\Management\Model\Item](Model/Item.php)                          |
-| **updateItemInTemporalIndex**        | Partially updates an item in the temporal index given its id                    | [Doofinder\Management\Model\Item](Model/Item.php)                          |
-| **getItemFromTemporalIndex**         | Gets an item from the temporal index by its id                                  | [Doofinder\Management\Model\Item](Model/Item.php)                          |
-| **deleteItemFromTemporalIndex**      | Deletes an item from the temporal index given its id                            | void                                                                       |
-| **findItemsFromTemporalIndex**       | Finds a list items from a temporal index in a single operation by a list of ids | Array of [Doofinder\Management\Model\Item](Model/Item.php)                 |
-| **findItems**                        | Finds a list items in a single operation by a list of ids                       | Array of [Doofinder\Management\Model\Item](Model/Item.php)                 |
-| **countItems**                       | Returns the total number of items in an index                                   | Array                                                                      |
-| **createItemsInBulkInTemporalIndex** | Creates a list of items in the temporal index in a single bulk operation        | Array of [Doofinder\Management\Model\Item](Model/Item.php)                 |
-| **updateItemsInBulkInTemporalIndex** | Updates a list of items in the temporal index in a single bulk operation        | Array of [Doofinder\Management\Model\Item](Model/Item.php)                 |
-| **deleteItemsInBulkInTemporalIndex** | Deletes a list of items in the temporal index in a single bulk operation        | Array                                                                      |
-| **createItemsInBulk**                | Creates a list of items in the index in a single bulk operation                 | Array of [Doofinder\Management\Model\Item](Model/Item.php)                 |
-| **updateItemsInBulk**                | Updates a list of items from the index in a single bulk operation               | Array of [Doofinder\Management\Model\Item](Model/Item.php)                 |
-| **deleteItemsInBulk**                | Deletes a list of items from the index in a single bulk operation               | Array                                                                      |
+### Documentation for Item methods
 
-## Authorization
-We use [JWT](https://en.wikipedia.org/wiki/JSON_Web_Token) in http header for authenticate requests.
+| Method | Description | Return type |
+|-|-|-|
+| **createItem** | Creates an item | [Item response](#item-response) |
+| **updateItem** | Updates an item | [Item response](#item-response) |
+| **getItem** | Gets an item | [Item response](#item-response) |
+| **scrollIndex** | Scrolls an index and return an item list | Array of [Item response](#item-response) |
+| **deleteItem** | Deletes an item | void |
+| **createItemInTemporalIndex** | Creates an item with the data provided in the temporal index | [Item response](#item-response) |
+| **updateItemInTemporalIndex** | Partially updates an item in the temporal index given its id | Array of list of results of each bulk operation |
+| **getItemFromTemporalIndex** | Gets an item from the temporal index by its id | [Item response](#item-response) |
+| **deleteItemFromTemporalIndex** | Deletes an item from the temporal index given its id | void |
+| **findItemsFromTemporalIndex** | Finds a list items from a temporal index in a single operation by a list of ids | Array of [Item response](#item-response) |
+| **findItems** | Finds a list items in a single operation by a list of ids | Array of [Item response](#item-response) |
+| **countItems** | Returns the total number of items in an index | Array |
+| **createItemsInBulkInTemporalIndex** | Creates a list of items in the temporal index in a single bulk operation | Array of list of results of each bulk operation |
+| **updateItemsInBulkInTemporalIndex** | Updates a list of items in the temporal index in a single bulk operation | Array of list of results of each bulk operation |
+| **deleteItemsInBulkInTemporalIndex** | Deletes a list of items in the temporal index in a single bulk operation | Array of list of results of each bulk operation |
+| **createItemsInBulk** | Creates a list of items in the index in a single bulk operation | Array of list of results of each bulk operation |
+| **updateItemsInBulk** | Updates a list of items from the index in a single bulk operation | Array of list of results of each bulk operation |
+| **deleteItemsInBulk** | Deletes a list of items from the index in a single bulk operation | Array of list of results of each bulk operation |
+
+## Responses
+
+#### Search Engine response
+
+```php
+[
+    "currency" => "(string) Currency used in the search engine in ISO 4217 Code",
+    "hashid" => "(string) A unique code that identifies a search engine.",
+    "indices" => "(Array) A list of indices for a search engine.", # Show Index response
+    "inactive" => "(boolean) Indicates if the search engine has been deactivated and therefore it can not receive requests.",
+    "language" => "(string) An ISO 639-1 language code that determines the language of the search engine. The language affects how the words indexed are tokenized and which stopwords to use.",
+    "name" => "(string) A short name that helps identifying the search engine.",
+    "search_url" => "(string) Indicates the search server domain for this search engine. You should use this domain to perform searches to this search engine.",
+    "site_url" => "(string or null) The URL of the site to be integrated with the search engine. It determines the default allowed domains for requests",
+    "stopwords" => "(boolean) Default: false. Ignores high-frequency terms like 'the', 'and', 'is'. These words have a low weight and contribute little to the relevance score.",
+    "platform" => "(string) Indicates which platform the search engine is associated with.",
+    "has_grouping" => "(boolean) When this option is selected, only one of the item variants is returned in the search results. This only works if the indexed item have the group_id field."
+]
 ```
-{
-  "Authorization" : "Bearer {my_jwt_token}"
-}
+
+#### Index response
+
+```php
+[ 
+    "name" => "(string) Name of the Index. It works as the index identifier.",
+    "preset" => "(string) Enum: ['generic' 'product' 'page' 'category'] Preset of the index. The preset defines a set of configuration parameters for the index like basic fields to be included, and field transformations. For instance, the product preset creates the best_price field.",
+    "options" => "(Array (Index Options)) Options for an index.", # Show Index Options response
+    "datasources" => "(Array (Data Sources)) List of datasources of an index." # Show Data Sources response
+]
+```
+
+#### Index Options response
+
+```php
+[
+    "exclude_out_of_stock_items" => "(boolean) When this option is selected, products without stock are not included in search results. In order to identify which of your products are out of stock you must use the availability field with 'in stock' / 'out of stock' values."
+]
+```
+
+#### Data Source response
+
+```php
+[ 
+    "type" => "(string) Enum: 'bigcommerce' 'ekm' 'file' 'magento2' 'shopify'. Type of datasource",
+    "options" => "(Array of EKM Source Options or Magento2 Source Options or File Source Options) DataSource general options. They define required parameters for the DataSource to work or options that modify the access to the data feed."
+]
+```
+
+#### Item response
+
+```php
+[
+    "id" => "(string) Item id", 
+    "group_id" => "(string or null) This field indicates the group to which this item belongs to. All items with the same group_id will be collapsed into one in search results, returning the most relevant one or the group leader if they all have the same score.",
+    "df_group_leader" => "(boolean or null) This field indicates the item chosen as the default among its group. It will be returned in search results if there is no other item with a higher score.",
+    "df_manual_boost" => "(number or null) A numeric score boosting. It multiplies the natural score of the item for a search. For instance, if boost is greater than 1.0 the item will appear higher in the results. If it is lower than 1.0, it will appear lower. The minimum value is 0.0.",
+    "categories" => "(Array of strings or string) This field has special behaviour when Indice has product preset",
+    "best_price" => "(number or null) Auto created field that gets the min value between price or sale_price fields, if added in the document. It gets null if doesn't find any of these fields.",
+    "price" => "(number or null) A numeric field that indicates the price.",
+    "sale_price" => "(number or null) A numeric field that indicates the actual sale price."
+]
+```
+
+#### Status response
+
+```php
+[
+    "status" => "OK"
+]
 ```

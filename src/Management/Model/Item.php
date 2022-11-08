@@ -9,7 +9,7 @@ use Doofinder\Shared\Interfaces\ModelInterface;
  */
 class Item implements ModelInterface
 {
-    const SETTED_FIELDS = ['id', 'df_grouping_id', 'df_group_leader', 'df_manual_boost', 'categories', 'best_price'];
+    const SETTED_FIELDS = ['title', 'description', 'link', 'image_link', 'availability', 'price', 'sale_price', 'brand', 'gtin', 'mpn'];
 
     /**
      * @var string
