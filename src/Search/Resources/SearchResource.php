@@ -13,6 +13,6 @@ abstract class SearchResource extends Resource
      */
     public function getUrl()
     {
-        return $this->config->getBaseUrl() . '/6';
+        return str_replace('api', 'search', $this->config->getBaseUrl()) . '/6';
     }
 }
