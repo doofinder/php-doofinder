@@ -44,7 +44,10 @@ require_once dirname(__FILE__)."/vendor/autoload.php";
 
 use \Doofinder\Search\SearchClient;
 
-$client = new SearchClient(HASHID, API_KEY);
+const HOST = 'https://eu1-search.doofinder.com';
+const API_KEY = 'your_api_token';
+
+$searchClient = SearchClient::create(HOST, API_KEY);
 ```
 
 ### Manual Installation
