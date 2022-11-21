@@ -53,7 +53,11 @@ require_once dirname(__FILE__)."/vendor/autoload.php";
 
 use \Doofinder\Management\ManagementClient;
 
-$client = new ManagementClient(HASHID, API_KEY, USER_ID);
+const HOST = 'https://eu1-api.doofinder.com';
+const API_KEY = 'your_api_token';
+const USER_ID = 'your_user_id';
+
+$managementClient = ManagementClient::create(HOST, API_KEY, USER_ID);
 ```
 
 ### Manual Installation
