@@ -45,11 +45,6 @@ class SearchEngine implements ModelInterface
     private $searchUrl;
 
     /**
-     * @var string|null
-     */
-    private $siteUrl;
-
-    /**
      * @var bool
      */
     private $stopwords;
@@ -72,7 +67,6 @@ class SearchEngine implements ModelInterface
         $indices,
         $inactive,
         $searchUrl,
-        $siteUrl,
         $stopwords,
         $platform,
         $hasGrouping
@@ -84,7 +78,6 @@ class SearchEngine implements ModelInterface
         $this->indices = $indices;
         $this->inactive = $inactive;
         $this->searchUrl = $searchUrl;
-        $this->siteUrl = $siteUrl;
         $this->stopwords = $stopwords;
         $this->platform = $platform;
         $this->hasGrouping = $hasGrouping;
@@ -104,7 +97,6 @@ class SearchEngine implements ModelInterface
             $data['indices'],
             $data['inactive'],
             $data['search_url'],
-            $data['site_url'],
             $data['stopwords'],
             $data['platform'],
             $data['has_grouping']
@@ -168,14 +160,6 @@ class SearchEngine implements ModelInterface
     }
 
     /**
-     * @return string|null
-     */
-    public function getSiteUrl()
-    {
-        return $this->siteUrl;
-    }
-
-    /**
      * @return bool
      */
     public function isStopwords()
@@ -212,7 +196,6 @@ class SearchEngine implements ModelInterface
             'indices' => $this->indices,
             'inactive' => $this->inactive,
             'search_url' => $this->searchUrl,
-            'site_url' => $this->siteUrl,
             'stopwords' => $this->stopwords,
             'platform' => $this->platform,
             'has_grouping' => $this->hasGrouping

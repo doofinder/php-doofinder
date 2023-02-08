@@ -67,7 +67,6 @@ class ManagementClient
      *  'currency' => string,
      *  'language' => string,
      *  'name' => string,
-     *  'site_url' => string|null,
      *  'stopwords' => boolean Default: false,
      *  'platform' => string,
      *  'has_grouping' => boolean,
@@ -77,7 +76,6 @@ class ManagementClient
      *  'currency' => string, // Default: "EUR" ("AED", "ARS", "AUD", "BAM", "BDT", "BGN", "BOB", "BRL", "BYN", "CAD", "CHF", "CLP", "CNY", "COP", "CZK", "DKK", "DOP", "EGP", "EUR", "GBP", "HKD", "HRK", "HUF", "IDR", "ILS", "INR", "IRR", "ISK", "JPY", "KRW", "KWD", "MXN", "MYR", "NOK", "NZD", "PEN", "PLN", "RON", "RSD", "RUB", "SAR", "SEK", "TRY", "TWD", "UAH", "USD", "VEF", "VND", "XPF", "ZAR")
      *  'language' => string, // ("ar", "hy", "eu", "pt-br", "bg", "ca", "cs", "da", "nl", "en", "fi", "fr", "de", "el", "hi", "hu", "id", "it", "no", "pt", "ro", "ru", "es", "sv", "tr"),
      *  'name' => string,
-     *  'site_url' => string|null,
      *  'stopwords' => boolean Default: false,
      *  'platform' => string, // Default: ("api", "api", "shopify", "woocommerce", "bigcommerce", "crawler", "ecommerce", "ekm", "file", "magento", "magento2", "opencart", "oscommerce", "prestashop", "shopify"),
      *  'has_grouping' => boolean, // Default: false
