@@ -26,7 +26,6 @@ class ManagementClientSearchEngineTest extends BaseManagementClientTest
                 'currency' => 'EUR',
                 'language' => 'es',
                 'name' => 'test_create',
-                'site_url' => 'http://test.url.com/fake',
                 'search_url' => 'http://search.url.com/fake',
                 'stopwords' => false,
                 'platform' => 'shopify',
@@ -68,7 +67,6 @@ class ManagementClientSearchEngineTest extends BaseManagementClientTest
             [[
                 'currency' => 'fake_currency',
                 'language' => 'fake_language',
-                'site_url' => '',
                 'stop_words' => '',
                 'platform' => '',
                 'has_grouping' => '',
@@ -111,7 +109,6 @@ class ManagementClientSearchEngineTest extends BaseManagementClientTest
             'currency' => 'EUR',
             'language' => 'lslsls',
             'name' => 'test_create',
-            'site_url' => 'http://test.url.com/fake',
             'stopwords' => false,
             'platform' => 'shopify',
             'has_grouping' => false,
@@ -141,7 +138,6 @@ class ManagementClientSearchEngineTest extends BaseManagementClientTest
         $this->assertSame($this->searchEngine->getLanguage(), $searchEngine->getLanguage());
         $this->assertSame($this->searchEngine->getName(), $searchEngine->getName());
         $this->assertSame($this->searchEngine->getSearchUrl(), $searchEngine->getSearchUrl());
-        $this->assertSame($this->searchEngine->getSiteUrl(), $searchEngine->getSiteUrl());
         $this->assertSame($this->searchEngine->isStopwords(), $searchEngine->isStopwords());
         $this->assertSame($this->searchEngine->getPlatform(), $searchEngine->getPlatform());
         $this->assertSame($this->searchEngine->isHasGrouping(), $searchEngine->isHasGrouping());
@@ -209,7 +205,6 @@ class ManagementClientSearchEngineTest extends BaseManagementClientTest
             'currency' => 'EUR',
             'language' => 'es',
             'name' => 'test_create',
-            'site_url' => 'http://test.url.com/fake',
             'stopwords' => false,
             'platform' => 'shopify',
             'has_grouping' => false,
@@ -246,7 +241,6 @@ class ManagementClientSearchEngineTest extends BaseManagementClientTest
             'currency' => 'USD',
             'language' => 'es',
             'name' => 'another_name',
-            'site_url' => 'fake_url',
             'stopwords' => true,
             'platform' => 'shopify',
             'has_grouping' => true,
@@ -276,7 +270,6 @@ class ManagementClientSearchEngineTest extends BaseManagementClientTest
         $this->assertSame($this->searchEngine->getLanguage(), $searchEngine->getLanguage());
         $this->assertSame($this->searchEngine->getName(), $searchEngine->getName());
         $this->assertSame($this->searchEngine->getSearchUrl(), $searchEngine->getSearchUrl());
-        $this->assertSame($this->searchEngine->getSiteUrl(), $searchEngine->getSiteUrl());
         $this->assertSame($this->searchEngine->isStopwords(), $searchEngine->isStopwords());
         $this->assertSame($this->searchEngine->getPlatform(), $searchEngine->getPlatform());
         $this->assertSame($this->searchEngine->isHasGrouping(), $searchEngine->isHasGrouping());
@@ -361,7 +354,6 @@ class ManagementClientSearchEngineTest extends BaseManagementClientTest
         $this->assertSame($this->searchEngine->getLanguage(), $searchEngine->getLanguage());
         $this->assertSame($this->searchEngine->getName(), $searchEngine->getName());
         $this->assertSame($this->searchEngine->getSearchUrl(), $searchEngine->getSearchUrl());
-        $this->assertSame($this->searchEngine->getSiteUrl(), $searchEngine->getSiteUrl());
         $this->assertSame($this->searchEngine->isStopwords(), $searchEngine->isStopwords());
         $this->assertSame($this->searchEngine->getPlatform(), $searchEngine->getPlatform());
         $this->assertSame($this->searchEngine->isHasGrouping(), $searchEngine->isHasGrouping());
@@ -418,7 +410,6 @@ class ManagementClientSearchEngineTest extends BaseManagementClientTest
         $this->assertSame($this->searchEngine->getLanguage(), $searchEngine->getLanguage());
         $this->assertSame($this->searchEngine->getName(), $searchEngine->getName());
         $this->assertSame($this->searchEngine->getSearchUrl(), $searchEngine->getSearchUrl());
-        $this->assertSame($this->searchEngine->getSiteUrl(), $searchEngine->getSiteUrl());
         $this->assertSame($this->searchEngine->isStopwords(), $searchEngine->isStopwords());
         $this->assertSame($this->searchEngine->getPlatform(), $searchEngine->getPlatform());
         $this->assertSame($this->searchEngine->isHasGrouping(), $searchEngine->isHasGrouping());

@@ -636,11 +636,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Doofinder-Management-Model-SearchEngine.html#method_getSearchUrl"
         },                {
-            "fqsen": "\\Doofinder\\Management\\Model\\SearchEngine\u003A\u003AgetSiteUrl\u0028\u0029",
-            "name": "getSiteUrl",
-            "summary": "",
-            "url": "classes/Doofinder-Management-Model-SearchEngine.html#method_getSiteUrl"
-        },                {
             "fqsen": "\\Doofinder\\Management\\Model\\SearchEngine\u003A\u003AisStopwords\u0028\u0029",
             "name": "isStopwords",
             "summary": "",
@@ -695,11 +690,6 @@ Search.appendIndex(
             "name": "searchUrl",
             "summary": "",
             "url": "classes/Doofinder-Management-Model-SearchEngine.html#property_searchUrl"
-        },                {
-            "fqsen": "\\Doofinder\\Management\\Model\\SearchEngine\u003A\u003A\u0024siteUrl",
-            "name": "siteUrl",
-            "summary": "",
-            "url": "classes/Doofinder-Management-Model-SearchEngine.html#property_siteUrl"
         },                {
             "fqsen": "\\Doofinder\\Management\\Model\\SearchEngine\u003A\u003A\u0024stopwords",
             "name": "stopwords",
