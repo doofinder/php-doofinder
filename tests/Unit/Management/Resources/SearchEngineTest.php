@@ -33,7 +33,7 @@ class SearchEngineTest extends BaseResourceTest
             'indices' => [],
             'inactive' => false,
             'search_url' => 'fake_search_url',
-            'site_url' => 'http://test.url.com/fake',
+            'site_url' => null,
             'stopwords' => false,
             'platform' => 'shopify',
             'has_grouping' => false
@@ -44,7 +44,6 @@ class SearchEngineTest extends BaseResourceTest
             'currency' => 'EUR',
             'language' => 'es',
             'name' => 'test_create',
-            'site_url' => 'http://test.url.com/fake',
             'stopwords' => false,
             'platform' => 'shopify',
             'has_grouping' => false,
@@ -136,7 +135,7 @@ class SearchEngineTest extends BaseResourceTest
             'indices' => [],
             'inactive' => false,
             'search_url' => 'fake_search_url',
-            'site_url' => 'http://test.url.com/fake',
+            'site_url' => null,
             'stopwords' => false,
             'platform' => 'shopify',
             'has_grouping' => false
@@ -147,7 +146,6 @@ class SearchEngineTest extends BaseResourceTest
             'currency' => 'EUR',
             'language' => 'es',
             'name' => 'test_update',
-            'site_url' => 'http://test.url.com/fake',
             'stopwords' => false,
             'platform' => 'shopify',
             'has_grouping' => false,
@@ -213,7 +211,7 @@ class SearchEngineTest extends BaseResourceTest
             'indices' => [],
             'inactive' => false,
             'search_url' => 'fake_search_url',
-            'site_url' => 'http://test.url.com/fake',
+            'site_url' => null,
             'stopwords' => false,
             'platform' => 'shopify',
             'has_grouping' => false
@@ -280,7 +278,7 @@ class SearchEngineTest extends BaseResourceTest
             'indices' => [],
             'inactive' => false,
             'search_url' => 'fake_search_url',
-            'site_url' => 'http://test.url.com/fake',
+            'site_url' => null,
             'stopwords' => false,
             'platform' => 'shopify',
             'has_grouping' => false
