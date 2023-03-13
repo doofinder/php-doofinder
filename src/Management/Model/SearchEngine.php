@@ -46,6 +46,7 @@ class SearchEngine implements ModelInterface
 
     /**
      * @var string|null
+     * @deprecated 7.0.4
      */
     private $siteUrl;
 
@@ -104,7 +105,7 @@ class SearchEngine implements ModelInterface
             $data['indices'],
             $data['inactive'],
             $data['search_url'],
-            $data['site_url'],
+            isset($data['site_url']) ? $data['site_url'] : null,
             $data['stopwords'],
             $data['platform'],
             $data['has_grouping']
@@ -169,6 +170,7 @@ class SearchEngine implements ModelInterface
 
     /**
      * @return string|null
+     * @deprecated 7.0.4
      */
     public function getSiteUrl()
     {
