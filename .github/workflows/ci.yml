@@ -30,6 +30,9 @@ jobs:
         id: composer-install
         run: composer install --prefer-dist --no-progress --ignore-platform-reqs
 
+      - name: Print PHP version
+        run: php -v
+
   php-unit-tests:
     name: PHP ${{ matrix.php }} Unit Tests
     runs-on: ${{ matrix.operating-system }}
