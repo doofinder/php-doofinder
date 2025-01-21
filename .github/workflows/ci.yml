@@ -13,12 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup PHP
+        id: setup-php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
       - name: Validate composer.json and composer.lock
         id: composer-validate
         run: composer validate --no-check-all # Do not emit a warning if requirements in composer.json use unbound or overly strict version constraints.
-
-      - name: Print PHP version
-        run: php -v
 
       - name: Cache Composer packages
         id: composer-cache
@@ -44,6 +47,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Setup PHP
+        id: setup-php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
 
       - name: Install composer dependencies
         run: composer install --prefer-dist --no-progress --ignore-platform-reqs
