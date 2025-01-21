@@ -34,7 +34,7 @@ jobs:
 
       - name: Install dependencies
         id: composer-install
-        run: composer install --prefer-dist --no-progress --ignore-platform-reqs
+        run: composer install --prefer-dist --no-progress
 
   php-unit-tests:
     name: PHP ${{ matrix.php }} Unit Tests
@@ -55,7 +55,7 @@ jobs:
           php-version: ${{ matrix.php }}
 
       - name: Install composer dependencies
-        run: composer install --prefer-dist --no-progress --ignore-platform-reqs
+        run: composer install --prefer-dist --no-progress
 
       - name: Print PHP version
         run: php -v
