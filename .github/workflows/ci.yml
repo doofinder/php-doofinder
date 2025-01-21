@@ -26,7 +26,6 @@ jobs:
       - name: Update composer dependencies
         run: composer update
 
-
       - name: Cache Composer packages
         id: composer-cache
         uses: actions/cache@v3
