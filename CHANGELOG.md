@@ -4,8 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-### Fixed
+## [7.0.5] - 2025-01-20
+### Fixed (@felipegear4music)
 - The code passed to the Exception parent should be an integer
   - Exception::__construct(): Argument #2 ($code) must be of type int
 
