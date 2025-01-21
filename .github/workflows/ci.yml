@@ -16,6 +16,10 @@ jobs:
       - name: Validate composer.json and composer.lock
         id: composer-validate
         run: composer validate --no-check-all # Do not emit a warning if requirements in composer.json use unbound or overly strict version constraints.
+
+      - name: Print PHP version
+        run: php -v
+
       - name: Cache Composer packages
         id: composer-cache
         uses: actions/cache@v3
@@ -24,6 +28,7 @@ jobs:
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-php-
+
       - name: Install dependencies
         id: composer-install
         run: composer install --prefer-dist --no-progress --ignore-platform-reqs
@@ -42,6 +47,9 @@ jobs:
 
       - name: Install composer dependencies
         run: composer install --prefer-dist --no-progress --ignore-platform-reqs
+
+      - name: Print PHP version
+        run: php -v
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit tests
