@@ -19,6 +19,9 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
 
+      - name: Update composer dependencies
+        run: composer update
+
       - name: Validate composer.json and composer.lock
         id: composer-validate
         run: composer validate --no-check-all # Do not emit a warning if requirements in composer.json use unbound or overly strict version constraints.
@@ -53,6 +56,9 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+
+      - name: Update composer dependencies
+        run: composer update
 
       - name: Install composer dependencies
         run: composer install --prefer-dist --no-progress
