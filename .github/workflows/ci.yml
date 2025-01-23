@@ -7,16 +7,25 @@ jobs:
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        operating-system: [ ubuntu-latest ]
+        operating-system: [ ubuntu-20.04 ]
         php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4' ]
 
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup PHP
+        id: setup-php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+      
       - name: Validate composer.json and composer.lock
         id: composer-validate
         run: composer validate --no-check-all # Do not emit a warning if requirements in composer.json use unbound or overly strict version constraints.
-      
+
+      - name: Update composer dependencies
+        run: composer update
+
       - name: Cache Composer packages
         id: composer-cache
         uses: actions/cache@v3
@@ -24,26 +33,38 @@ jobs:
           path: vendor
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-php- 
-      
+            ${{ runner.os }}-php-
+
       - name: Install dependencies
         id: composer-install
-        run: composer install --prefer-dist --no-progress --ignore-platform-reqs
+        run: composer install --prefer-dist --no-progress
 
   php-unit-tests:
     name: PHP ${{ matrix.php }} Unit Tests
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        operating-system: [ ubuntu-latest ]
+        operating-system: [ ubuntu-20.04 ]
         php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4' ]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup PHP
+        id: setup-php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      - name: Update composer dependencies
+        run: composer update
+
       - name: Install composer dependencies
-        run: composer install --prefer-dist --no-progress --ignore-platform-reqs
+        run: composer install --prefer-dist --no-progress
+
+      - name: Print PHP version
+        run: php -v
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit tests
