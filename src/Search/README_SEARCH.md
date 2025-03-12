@@ -60,7 +60,7 @@ require_once('/path/to/php-doofinder/vendor/autoload.php');
 
 ## Authorization
 
-To authenticate you need a Doofinder `API key`. If you don't have one you can generate it in the Doofinder Admin by going to your Account and then to API Keys, [here](https://app.doofinder.com/es/admin/api/).
+To authenticate you need a Doofinder `API key`. If you don't have one you can generate it in the Doofinder Admin by going to your Account and then to API Keys, [here](https://admin.doofinder.com/admin/account/api).
 
 ```plaintext
 eu1-ab46030xza33960aac71a10248489b6c26172f07
