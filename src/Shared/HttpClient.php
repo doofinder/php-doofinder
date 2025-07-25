@@ -38,7 +38,7 @@ class HttpClient implements HttpClientInterface
         if (($response = curl_exec($s)) === false) {
             $error = curl_error($s);
             curl_close($s);
-            throw new RequestException('curl_error', $error);
+            throw new RequestException('curl_error: ' . $error);
         } else {
             $response = HttpResponse::create(curl_getinfo($s)['http_code'], $response);
         }
