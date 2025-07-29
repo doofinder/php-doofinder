@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [7.0.6]
+### Fixed
+- Pass the curl error message as the first argument when constructing `RequestException`
+
 ## [7.0.5] - 2025-01-20
 ### Fixed (@felipegear4music)
 - The code passed to the Exception parent should be an integer
