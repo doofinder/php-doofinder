@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added CURL error code mapping to appropriate HTTP status codes (408 for timeouts, 503 for connection errors, 500 for other errors)
 - Set HTTP client timeout to 30 seconds to match server configuration
 
-## [7.0.6]
+## [7.0.6] - 2025-07-29
 ### Fixed
 - Pass the curl error message as the first argument when constructing `RequestException`
 
