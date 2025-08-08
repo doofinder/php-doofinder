@@ -34,10 +34,8 @@ class HttpClient implements HttpClientInterface
         curl_setopt($s, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($s, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($s, CURLOPT_HTTPHEADER, $this->getHeader($headers));
-        
-        // Set very short timeout for testing (1 millisecond)
-        curl_setopt($s, CURLOPT_TIMEOUT, 1);
-        curl_setopt($s, CURLOPT_CONNECTTIMEOUT, 1);
+        curl_setopt($s, CURLOPT_TIMEOUT, 30);
+        curl_setopt($s, CURLOPT_CONNECTTIMEOUT, 30);
 
         if (($response = curl_exec($s)) === false) {
             $error = curl_error($s);
