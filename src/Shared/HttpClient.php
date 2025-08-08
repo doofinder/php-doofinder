@@ -34,11 +34,38 @@ class HttpClient implements HttpClientInterface
         curl_setopt($s, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($s, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($s, CURLOPT_HTTPHEADER, $this->getHeader($headers));
+        
+        // Set very short timeout for testing (1 millisecond)
+        curl_setopt($s, CURLOPT_TIMEOUT, 1);
+        curl_setopt($s, CURLOPT_CONNECTTIMEOUT, 1);
 
         if (($response = curl_exec($s)) === false) {
             $error = curl_error($s);
+            $errno = curl_errno($s);
             curl_close($s);
-            throw new RequestException('curl_error: ' . $error);
+            
+            // Map CURL error codes to appropriate HTTP status codes
+            $httpCode = 500; // Default to 500 for unknown errors
+            
+            switch ($errno) {
+                case CURLE_OPERATION_TIMEDOUT:
+                case CURLE_OPERATION_TIMEOUTED:
+                    $httpCode = 408; // Request Timeout
+                    break;
+                case CURLE_COULDNT_CONNECT:
+                case CURLE_COULDNT_RESOLVE_HOST:
+                    $httpCode = 503; // Service Unavailable
+                    break;
+                case CURLE_SSL_CONNECT_ERROR:
+                case CURLE_SSL_CACERT:
+                    $httpCode = 495; // SSL Certificate Error
+                    break;
+                default:
+                    $httpCode = 500; // Internal Server Error
+                    break;
+            }
+            
+            throw new RequestException('curl_error: ' . $error, $httpCode);
         } else {
             $response = HttpResponse::create(curl_getinfo($s)['http_code'], $response);
         }
