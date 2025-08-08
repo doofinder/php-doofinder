@@ -58,9 +58,6 @@ class HttpClient implements HttpClientInterface
                 case CURLE_SSL_CACERT:
                     $httpCode = 495; // SSL Certificate Error
                     break;
-                default:
-                    $httpCode = 500; // Internal Server Error
-                    break;
             }
             
             throw new RequestException('curl_error: ' . $error, $httpCode);
