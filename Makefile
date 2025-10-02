@@ -33,4 +33,8 @@ ci: clean install test
 lint:
 	@echo "No linter defined; add php-cs-fixer or similar if needed"
 
-.PHONY: install build test test-composer clean ci lint
+# Generate documentation
+docs:
+	docker run --rm -v $(PWD):/app -w /app $(IMAGE):$(PHP_VERSION) php phpDocumentor.phar -d src/ -t doc/
+
+.PHONY: install build test test-composer clean ci lint docs
