@@ -22,8 +22,8 @@ abstract class BaseResourceTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->httpClient = $this->createMock(HttpClient::class);
-        $this->config = $this->createMock(Configuration::class);
+        $this->httpClient = $this->getMock(HttpClient::class, [], [], '', false);
+        $this->config = $this->getMock(Configuration::class, [], [], '', false);
 
     }
 

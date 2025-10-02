@@ -54,9 +54,9 @@ abstract class BaseManagementClientTest extends \PHPUnit_Framework_TestCase
             '{"error": {"code" : "not_found"}}',
             HttpStatusCode::NOT_FOUND
         );
-        $this->searchEngineResource = $this->createMock(SearchEngine::class);
-        $this->itemResource = $this->createMock(Item::class);
-        $this->indexResource = $this->createMock(Index::class);
+        $this->searchEngineResource = $this->getMock(SearchEngine::class, [], [], '', false);
+        $this->itemResource = $this->getMock(Item::class, [], [], '', false);
+        $this->indexResource = $this->getMock(Index::class, [], [], '', false);
     }
 
     /**

@@ -1,0 +1,11 @@
+# docker-compose.yml for php-doofinder (tests only; single service)
+version: '3.8'
+services:
+  tests:
+    build: .  # Uses Dockerfile
+    image: php-doofinder-tests
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: composer tests  # Default: run tests
+    # To install first: docker-compose run --rm tests composer install --dev

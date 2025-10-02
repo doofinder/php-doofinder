@@ -39,7 +39,7 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase
     public function testCreate($statusCode, $expectedMessage, $errorCode = null)
     {
         $response = '{"error": {"code":"' . $errorCode . '"}}';
-        $exception = $this->createMock(Exception::class);
+        $exception = $this->getMock(Exception::class, [], [], '', false);
 
         /** @var ApiException $apiException */
         $apiException = ErrorHandler::create($statusCode, $response, $exception);

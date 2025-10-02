@@ -40,8 +40,8 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->searchResource = $this->createMock(Search::class);
-        $this->statsResource = $this->createMock(Stats::class);
+        $this->searchResource = $this->getMock(Search::class, [], [], '', false);
+        $this->statsResource = $this->getMock(Stats::class, [], [], '', false);
 
         $this->unauthorizedException = new ApiException('', HttpStatusCode::UNAUTHORIZED);
         $this->badParametersException = new ApiException(
