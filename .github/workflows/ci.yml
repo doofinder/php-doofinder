@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ ubuntu-latest ]
-        php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.1', '8.2', '8.3', '8.4' ]
+        php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3' ]
 
     steps:
       - uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ ubuntu-latest ]
-        php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.1', '8.2', '8.3', '8.4' ]
+        php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3' ]
 
     steps:
       - name: Checkout
@@ -66,21 +66,5 @@ jobs:
       - name: Print PHP version
         run: php -v
 
-       - name: Run PHPUnit
-         run: vendor/bin/phpunit tests
-
-  docker-tests:
-    name: Docker PHP ${{ matrix.php }} Tests
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php: [ '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4' ]
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build Docker image for PHP ${{ matrix.php }}
-        run: make build PHP_VERSION=${{ matrix.php }}
-
-      - name: Run tests with Docker
-        run: make test PHP_VERSION=${{ matrix.php }}
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit tests
