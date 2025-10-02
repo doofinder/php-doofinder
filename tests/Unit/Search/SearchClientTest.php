@@ -9,7 +9,7 @@ use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpResponse;
 use Doofinder\Shared\HttpStatusCode;
 
-class SearchClientTest extends \PHPUnit_Framework_TestCase
+class SearchClientTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Search
@@ -36,12 +36,12 @@ class SearchClientTest extends \PHPUnit_Framework_TestCase
      */
     protected $notFoundException;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->searchResource = $this->getMock(Search::class, [], [], '', false);
-        $this->statsResource = $this->getMock(Stats::class, [], [], '', false);
+        $this->searchResource = $this->createMock(Search::class);
+        $this->statsResource = $this->createMock(Stats::class);
 
         $this->unauthorizedException = new ApiException('', HttpStatusCode::UNAUTHORIZED);
         $this->badParametersException = new ApiException(

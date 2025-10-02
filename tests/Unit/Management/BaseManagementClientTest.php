@@ -8,23 +8,23 @@ use Doofinder\Management\Resources\Item;
 use Doofinder\Management\Resources\SearchEngine;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpStatusCode;
-use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 
-abstract class BaseManagementClientTest extends \PHPUnit_Framework_TestCase
+abstract class BaseManagementClientTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
-     * @var PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     protected $searchEngineResource;
 
     /**
-     * @var PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     protected $itemResource;
 
     /**
-     * @var PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     protected $indexResource;
 
@@ -43,7 +43,7 @@ abstract class BaseManagementClientTest extends \PHPUnit_Framework_TestCase
      */
     protected $notFoundException;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->unauthorizedException = new ApiException('', HttpStatusCode::UNAUTHORIZED);
         $this->badParametersException = new ApiException(
@@ -54,9 +54,9 @@ abstract class BaseManagementClientTest extends \PHPUnit_Framework_TestCase
             '{"error": {"code" : "not_found"}}',
             HttpStatusCode::NOT_FOUND
         );
-        $this->searchEngineResource = $this->getMock(SearchEngine::class, [], [], '', false);
-        $this->itemResource = $this->getMock(Item::class, [], [], '', false);
-        $this->indexResource = $this->getMock(Index::class, [], [], '', false);
+        $this->searchEngineResource = $this->createMock(SearchEngine::class);
+        $this->itemResource = $this->createMock(Item::class);
+        $this->indexResource = $this->createMock(Index::class);
     }
 
     /**
