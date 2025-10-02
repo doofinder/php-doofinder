@@ -10,6 +10,10 @@ COMPOSER_IMAGE ?= composer:latest
 install:
 	docker run --rm -v $(PWD):/app -w /app $(COMPOSER_IMAGE) install --no-scripts --dev
 
+# Update composer.lock using Composer update (defaults to PHP 8.3)
+update-lock:
+	docker run --rm -v $(PWD):/app -w /app $(COMPOSER_IMAGE) update --prefer-dist --no-interaction --no-progress
+
 # Build custom Docker image (if using Dockerfile)
 # Tags images as: php-doofinder-<version>
 build:
@@ -30,20 +34,23 @@ clean:
 # Full cycle: clean, install, test
 ci: clean install test
 
-# Test all supported PHP versions (7.4 and 8.3)
+# Test all supported PHP versions (5.6, 7.4 and 8.3)
 test-all:
-	@for version in 7.4 8.3; do \
+	@for version in 5.6 7.4 8.3; do \
 		echo "Testing PHP $$version..."; \
 		make test PHP_VERSION=$$version; \
 	done
 
-# Specific convenience targets to run tests for 7.4 and 8.3
+# Specific convenience targets to run tests for 5.6, 7.4 and 8.3
 # They build and run a local image named `php-doofinder-<version>`
 test-7.4:
 	@$(MAKE) test PHP_VERSION=7.4
 
 test-8.3:
 	@$(MAKE) test PHP_VERSION=8.3
+
+test-5.6:
+	@$(MAKE) test PHP_VERSION=5.6
 
 # Lint/check (if you add later; placeholder)
 lint:
@@ -53,4 +60,4 @@ lint:
 docs:
 	docker run --rm -v $(PWD):/app -w /app $(IMAGE_BASE)-$(PHP_VERSION) php phpDocumentor.phar -d src/ -t doc/
 
-.PHONY: install build test test-composer clean ci lint docs test-7.4 test-8.3 test-all
+.PHONY: install build test test-composer clean ci lint docs test-7.4 test-8.3 test-5.6 test-all
