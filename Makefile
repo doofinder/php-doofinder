@@ -34,23 +34,20 @@ clean:
 # Full cycle: clean, install, test
 ci: clean install test
 
-# Test all supported PHP versions (5.6, 7.4 and 8.3)
+# Test all supported PHP versions (7.1, 7.4 and 8.3)
 test-all:
-	@for version in 5.6 7.4 8.3; do \
+	@for version in 7.1 7.4 8.3; do \
 		echo "Testing PHP $$version..."; \
 		make test PHP_VERSION=$$version; \
 	done
 
-# Specific convenience targets to run tests for 5.6, 7.4 and 8.3
+# Specific convenience targets to run tests for 7.4 and 8.3
 # They build and run a local image named `php-doofinder-<version>`
 test-7.4:
 	@$(MAKE) test PHP_VERSION=7.4
 
 test-8.3:
 	@$(MAKE) test PHP_VERSION=8.3
-
-test-5.6:
-	@$(MAKE) test PHP_VERSION=5.6
 
 # Lint/check (if you add later; placeholder)
 lint:
