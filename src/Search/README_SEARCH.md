@@ -247,14 +247,6 @@ $body = $response->getBody();
 // **** Logs add to cart ****
 $response = $searchClient->logAddToCart($hashId, $sessionId, $amount, $itemId, $indexId, $price, $title);
 $body = $response->getBody();
-
-// **** Logs remove from cart ****
-$response = $searchClient->logRemoveFromCart($hashId, $sessionId, $amount, $itemId, $indexId);
-$body = $response->getBody();
-
-// **** Logs clear cart ****
-$response = $searchClient->clearCart($hashId, $sessionId);
-$body = $response->getBody();
 ```
 
 ### Documentation for Stats methods
@@ -267,8 +259,6 @@ $body = $response->getBody();
 | **logCheckout** | Logs a checkout event in stats logs | [Status response](#status-response) |
 | **logClick** | Save click event on doofinder statistics | [Status response](#status-response) |
 | **logAddToCart** | Adds an item to the cart, or creates a new cart for the given session if it does not exists | [Status response](#status-response) |
-| **logRemoveFromCart** | Removes an amount from the given item in the cart | [Status response](#status-response) |
-| **clearCart** | his call will erase completely a cart identified by the pair of hashid and session ID | [Status response](#status-response) |
 
 #### Status response
 
