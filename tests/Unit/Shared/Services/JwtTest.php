@@ -3,8 +3,9 @@
 namespace Tests\Unit\Shared\Services;
 
 use Doofinder\Shared\Services\Jwt;
+use PHPUnit\Framework\TestCase;
 
-class JwtTest extends \PHPUnit_Framework_TestCase
+class JwtTest extends TestCase
 {
     public function testGenerateToken()
     {

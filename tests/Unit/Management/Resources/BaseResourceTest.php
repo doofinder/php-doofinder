@@ -4,23 +4,24 @@ namespace Tests\Unit\Management\Resources;
 
 use Doofinder\Configuration;
 use Doofinder\Shared\HttpClient;
+use PHPUnit\Framework\MockObject\MockObject;
 
-abstract class BaseResourceTest extends \PHPUnit_Framework_TestCase
+abstract class BaseResourceTest extends \PHPUnit\Framework\TestCase
 {
     const BASE_URL = 'https://fake_url.com/random';
     const TOKEN = 'fake_token';
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     protected $httpClient;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     protected $config;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->httpClient = $this->createMock(HttpClient::class);
         $this->config = $this->createMock(Configuration::class);

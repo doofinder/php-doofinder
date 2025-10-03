@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Changed
+- Removed all Cart v1 code and references (obsolete/legacy functionality removed).
+- Made test tooling and CI compatible with PHP 7.1 through 8.3:
+  - Relaxed `phpunit/phpunit`, `phpunit/php-timer` and `php-mock/php-mock-phpunit` version constraints to allow Composer to resolve compatible test libraries per PHP runtime.
+  - Updated GitHub Actions matrix to run tests on PHP 7.1–8.3 and removed Docker-based CI job.
+
+
 ## [7.0.7] - 2025-01-21
 ### Fixed
 - Fixed RequestException constructor to properly handle integer error codes

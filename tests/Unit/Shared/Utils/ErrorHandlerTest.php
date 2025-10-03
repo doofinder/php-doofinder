@@ -5,10 +5,10 @@ namespace Tests\Unit\Shared\Utils;
 use Doofinder\Shared\Exceptions\ApiException;
 use Doofinder\Shared\HttpStatusCode;
 use Doofinder\Shared\Utils\ErrorHandler;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Exception;
 
-class ErrorHandlerTest extends PHPUnit_Framework_TestCase
+class ErrorHandlerTest extends TestCase
 {
     public function errorsProvider()
     {

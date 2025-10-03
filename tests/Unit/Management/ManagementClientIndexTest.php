@@ -13,7 +13,7 @@ class ManagementClientIndexTest extends BaseManagementClientTest
      */
     private $index;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

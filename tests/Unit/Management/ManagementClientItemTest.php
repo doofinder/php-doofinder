@@ -19,7 +19,7 @@ class ManagementClientItemTest extends BaseManagementClientTest
      */
     private $itemParams;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
