@@ -5,12 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [7.1.0] - 2025-10-03
+
 ### Changed
 - Removed all Cart v1 code and references (obsolete/legacy functionality removed).
 - Made test tooling and CI compatible with PHP 7.1 through 8.3:
   - Relaxed `phpunit/phpunit`, `phpunit/php-timer` and `php-mock/php-mock-phpunit` version constraints to allow Composer to resolve compatible test libraries per PHP runtime.
   - Updated GitHub Actions matrix to run tests on PHP 7.1–8.3 and removed Docker-based CI job.
 
+### Changed
+- Bumped version in `composer.json`.
 
 ## [7.0.7] - 2025-01-21
 ### Fixed
@@ -108,7 +113,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Support for partial updates.
 
 ## [5.7.4] - 2018-06-13
-### Added
+
+### Added
+
 - TypeAlreadyExists error.
 
 ## [5.7.3] - 2018-02-20
@@ -136,7 +143,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Bug reading error response details.
 
 ## [5.6.1]
-### Added
+### Added
 - Support for exclusion filters (thanks to @sPooKee).
 
 ## [5.6.0]
@@ -179,7 +186,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Stats retrieval.
 
 ## [5.2.4]
-### Changed
+
+### Changed
+
 - Bugfixes.
 
 ## [5.2.3]
@@ -202,3 +211,43 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Allow unprefixed parameters.
 - Allow custom query parameter name.
 - API Key Authorization. API Key required in client constructor. **BREAKING**
+
+[Unreleased]: https://github.com/doofinder/php-doofinder/compare/v7.1.0...HEAD
+[7.1.0]: https://github.com/doofinder/php-doofinder/releases/tag/v7.1.0
+[7.0.7]: https://github.com/doofinder/php-doofinder/releases/tag/v7.0.7
+[7.0.6]: https://github.com/doofinder/php-doofinder/releases/tag/v7.0.6
+[7.0.5]: https://github.com/doofinder/php-doofinder/releases/tag/v7.0.5
+[7.0.4]: https://github.com/doofinder/php-doofinder/releases/tag/v7.0.4
+[7.0.3]: https://github.com/doofinder/php-doofinder/releases/tag/v7.0.3
+[7.0.2]: https://github.com/doofinder/php-doofinder/releases/tag/v7.0.2
+[7.0.1]: https://github.com/doofinder/php-doofinder/releases/tag/v7.0.1
+[7.0.0]: https://github.com/doofinder/php-doofinder/releases/tag/v7.0.0
+[6.1.2]: https://github.com/doofinder/php-doofinder/releases/tag/v6.1.2
+[6.1.1]: https://github.com/doofinder/php-doofinder/releases/tag/v6.1.1
+[6.1.0]: https://github.com/doofinder/php-doofinder/releases/tag/v6.1.0
+[6.0.0]: https://github.com/doofinder/php-doofinder/releases/tag/v6.0.0
+[5.9.1]: https://github.com/doofinder/php-doofinder/releases/tag/v5.9.1
+[5.9.0]: https://github.com/doofinder/php-doofinder/releases/tag/v5.9.0
+[5.8.0]: https://github.com/doofinder/php-doofinder/releases/tag/v5.8.0
+[5.7.6]: https://github.com/doofinder/php-doofinder/releases/tag/v5.7.6
+[5.7.5]: https://github.com/doofinder/php-doofinder/releases/tag/v5.7.5
+[5.7.4]: https://github.com/doofinder/php-doofinder/releases/tag/v5.7.4
+[5.7.3]: https://github.com/doofinder/php-doofinder/releases/tag/v5.7.3
+[5.7.2]: https://github.com/doofinder/php-doofinder/releases/tag/v5.7.2
+[5.7.1]: https://github.com/doofinder/php-doofinder/releases/tag/v5.7.1
+[5.7.0]: https://github.com/doofinder/php-doofinder/releases/tag/v5.7.0
+[5.6.3]: https://github.com/doofinder/php-doofinder/releases/tag/v5.6.3
+[5.6.2]: https://github.com/doofinder/php-doofinder/releases/tag/v5.6.2
+[5.6.1]: https://github.com/doofinder/php-doofinder/releases/tag/v5.6.1
+[5.6.0]: https://github.com/doofinder/php-doofinder/releases/tag/v5.6.0
+[5.5.1]: https://github.com/doofinder/php-doofinder/releases/tag/v5.5.1
+[5.5.0]: https://github.com/doofinder/php-doofinder/releases/tag/v5.5.0
+[5.4.3]: https://github.com/doofinder/php-doofinder/releases/tag/v5.4.3
+[5.3.1]: https://github.com/doofinder/php-doofinder/releases/tag/v5.3.1
+[5.2.6]: https://github.com/doofinder/php-doofinder/releases/tag/v5.2.6
+[5.2.5]: https://github.com/doofinder/php-doofinder/releases/tag/v5.2.5
+[5.2.4]: https://github.com/doofinder/php-doofinder/releases/tag/v5.2.4
+[5.2.3]: https://github.com/doofinder/php-doofinder/releases/tag/v5.2.3
+[5.2.2]: https://github.com/doofinder/php-doofinder/releases/tag/v5.2.2
+[5.2.1]: https://github.com/doofinder/php-doofinder/releases/tag/v5.2.1
+[5.1]: https://github.com/doofinder/php-doofinder/releases/tag/v5.1
