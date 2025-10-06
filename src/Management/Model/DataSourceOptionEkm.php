@@ -27,7 +27,7 @@ class DataSourceOptionEkm extends DataSourceOption
     /**
      * @return string[]
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'url' => $this->url,
